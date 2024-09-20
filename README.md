@@ -1,4 +1,4 @@
-# Streamlit Document の半端な日本語訳
+# Streamlit ドキュメント（半端な）
 
 [Streamlit]([Streamlit](https://docs.streamlit.io/)) の中途半端な日本語訳です。    
 公式の日本語ドキュメントが見つからなかったので、読んだ部分だけでも日本語ドキュメントとして残そうと思います。
