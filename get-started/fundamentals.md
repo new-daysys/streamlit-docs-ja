@@ -137,6 +137,172 @@ dataframe = pd.DataFrame(
 st.table(dataframe)
 ````
 
+#### チャートや地図を描く
+Streamlit は、Matplotlib、Altair、deck.gl などのいくつかの一般的なデータグラフ作成ライブラリをサポートしています。
+このセクションでは、棒グラフ、折れ線グラフ、地図をアプリに追加します。
+
+`st.line_chart()` を使用すると、アプリに折れ線グラフを簡単に追加できます。
+Numpy を使用してランダムなサンプルを生成し、グラフ化します。
+
+```py
+import streamlit as st
+import numpy as np
+import pandas as pd
+
+chart_data = pd.DataFrame(
+     np.random.randn(20, 3),
+     columns=['a', 'b', 'c'])
+
+st.line_chart(chart_data)
+```
+
+`st.map()` を使用すると、地図上にデータ ポイントを表示できます。
+Numpy を使用してサンプル データを生成し、サンフランシスコの地図上にプロットしてみましょう。
+
+```py
+import streamlit as st
+import numpy as np
+import pandas as pd
+
+map_data = pd.DataFrame(
+    np.random.randn(1000, 2) / [50, 50] + [37.76, -122.4],
+    columns=['lat', 'lon'])
+
+st.map(map_data)
+```
+
+### ウィジェット
+
+データまたはモデルを調査したい状態にしたら、st.slider()、st.button()、st.selectbox() などのウィジェットを追加できます。
+これは非常に簡単です。ウィジェットを変数として扱います。
+
+```py
+import streamlit as st
+x = st.slider('x')  # 👈 this is a widget
+st.write(x, 'squared is', x * x)
+```
+
+最初の実行時に、上記のアプリは「0 の 2 乗は 0」というテキストを出力するはずです。
+その後、ユーザーがウィジェットを操作するたびに、Streamlit はスクリプトを上から下に再実行し、ウィジェットの現在の状態をプロセス内の変数に割り当てます。
+
+たとえば、ユーザーがスライダーを 10 の位置に移動すると、Streamlit は上記のコードを再実行し、それに応じて x を 10 に設定します。
+これで、「10 の 2 乗は 100」というテキストが表示されるはずです。
+
+ウィジェットの一意のキーとして使用する文字列を指定する場合は、キーによってウィジェットにアクセスすることもできます。
+
+```py
+import streamlit as st
+st.text_input("Your name", key="name")
+
+# You can access the value at any point with:
+st.session_state.name
+```
+
+キーを持つすべてのウィジェットは、セッション状態に自動的に追加されます。
+セッション状態、ウィジェット状態との関連付けの詳細については、[API リファレンスガイド](https://docs.streamlit.io/develop/api-reference/caching-and-state/st.session_state)を参照してください。
+
+#### チェックボックスを使用してデータを表示/非表示にします
+チェックボックスの使用例の 1 つは、アプリ内の特定のグラフまたはセクションを非表示または表示することです。
+`st.checkbox()` は、ウィジェットのラベルを 1 つの引数として受け取ります。
+このサンプルでは、​​チェックボックスを使用して条件文を切り替えます。
+
+```py
+import streamlit as st
+import numpy as np
+import pandas as pd
+
+if st.checkbox('Show dataframe'):
+    chart_data = pd.DataFrame(
+       np.random.randn(20, 3),
+       columns=['a', 'b', 'c'])
+
+    chart_data
+```
+
+#### オプションのセレクトボックスを使用する
+
+シリーズから選択するには `st.selectbox` を使用します。必要なオプションを書き込むことも、配列またはデータ フレーム列を渡すこともできます。   
+先ほど作成した df データ フレームを使用してみましょう。
+
+```py
+import streamlit as st
+import pandas as pd
+
+df = pd.DataFrame({
+    'first column': [1, 2, 3, 4],
+    'second column': [10, 20, 30, 40]
+    })
+
+option = st.selectbox(
+    'Which number do you like best?',
+     df['first column'])
+
+'You selected: ', option
+```
+
+### レイアウト
+Streamlit を使用すると、`st.sidebar` を使用して左側のパネルのサイドバーでウィジェットを簡単に整理できます。
+`st.sidebar` に渡される各要素は左側に固定されるため、ユーザーは UI コントロールにアクセスしながらアプリ内のコンテンツに集中できます。
+
+たとえば、セレクトボックスとスライダーをサイドバーに追加する場合は、`st.slider` と `st.selectbox` の代わりに `st.sidebar.slider` と `st.sidebar.selectbox` を使用します。
+
+```py
+import streamlit as st
+
+# Add a selectbox to the sidebar:
+add_selectbox = st.sidebar.selectbox(
+    'How would you like to be contacted?',
+    ('Email', 'Home phone', 'Mobile phone')
+)
+
+# Add a slider to the sidebar:
+add_slider = st.sidebar.slider(
+    'Select a range of values',
+    0.0, 100.0, (25.0, 75.0)
+)
+```
+
+サイドバー以外にも、Streamlit はアプリのレイアウトを制御する他の方法をいくつか提供します。
+`st.columns` を使用するとウィジェットを並べて配置でき、`st.expander` を使用すると大きなコンテンツを隠してスペースを節約できます。
+
+```py
+import streamlit as st
+
+left_column, right_column = st.columns(2)
+# You can use a column just like st.sidebar:
+left_column.button('Press me!')
+
+# Or even better, call Streamlit functions inside a "with" block:
+with right_column:
+    chosen = st.radio(
+        'Sorting hat',
+        ("Gryffindor", "Ravenclaw", "Hufflepuff", "Slytherin"))
+    st.write(f"You are in {chosen} house!")
+```
+
+#### 進行状況を表示する
+長時間実行される計算をアプリに追加する場合、`st.progress()` を使用してステータスをリアルタイムで表示できます。    
+`time.sleep()` メソッドを使用して、長時間実行される計算をシミュレートし、進行状況バーを作成します。
+
+```py
+import streamlit as st
+import time
+
+'Starting a long computation...'
+
+# Add a placeholder
+latest_iteration = st.empty()
+bar = st.progress(0)
+
+for i in range(100):
+  # Update the progress bar with each iteration.
+  latest_iteration.text(f'Iteration {i+1}')
+  bar.progress(i + 1)
+  time.sleep(0.1)
+
+'...and now we\'re done!'
+```
+
 
 
 ## 先進的なコンセプト
