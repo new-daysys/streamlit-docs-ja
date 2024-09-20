@@ -1,4 +1,4 @@
-https://docs.streamlit.io/get-started
+https://docs.streamlit.io/get-started/installation
 
 # インストール
 
