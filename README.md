@@ -1,12 +1,26 @@
-# streamlit-doc
+# Streamlit Document の半端な日本語訳
 
-[Streamlit]([Streamlit](https://docs.streamlit.io/)) の日本語訳です。    
-公式ドキュメントの日本語訳が見つからなかったので、せっかくなので読んだ部分だけざっくり訳しました。
+[Streamlit]([Streamlit](https://docs.streamlit.io/)) の中途半端な日本語訳です。    
+公式の日本語ドキュメントが見つからなかったので、読んだ部分だけでも日本語ドキュメントとして残そうと思います。
 
-訳の正確さはありません。
-自分で見返すかもしれませんし、誰かの役に立つかもしれません。
+翻訳の正しさは心掛けていません。雰囲気がわかれば良いというスタンスです。
+少しくらい誰かの何かの役に立つかもな、という程度です。
 
-1. [Get started](/get-started)
-2. [Develop](/get-started)
-3. [Deploy](/get-started)
-4. [Knowledge base](/get-started)
+1. [さぁはじめよう！ - Get started](/get-started)
+   + [インストール](/get-started/installation.md)
+   + [基本概念](get-started/fundamentals.md)
+   + [はじめの一歩](/get-started/tutorials.md)
+2. [開発する - Develop](/develop/concepts)
+   + Concepts
+   + API reference
+   + Tutorials
+   + Quick reference
+4. [デプロイする - Deploy](/get-started)
+   + Concepts
+   + Streamlit Community Cloud
+   + Streamlit in Snowflake
+   + Other platforms
+5. [ナレッジベース - Knowledge base](/get-started)
+   + FAQ
+   + Installing dependencies
+   + Deployment issues
