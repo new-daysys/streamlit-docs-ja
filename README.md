@@ -5,3 +5,8 @@
 
 訳の正確さはありません。
 自分で見返すかもしれませんし、誰かの役に立つかもしれません。
+
+1. [Get started](/get-started)
+2. [Develop](/get-started)
+3. [Deploy](/get-started)
+4. [Knowledge base](/get-started)
