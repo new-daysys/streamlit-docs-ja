@@ -1,6 +1,6 @@
 # Streamlit ドキュメント
 
-[Streamlit]([Streamlit](https://docs.streamlit.io/)) の中途半端な日本語訳です。    
+[Streamlit](https://docs.streamlit.io/) の中途半端な日本語訳です。    
 公式の日本語ドキュメントが見つからなかったので、読んだ部分だけでも日本語ドキュメントとして残そうと思います。
 
 翻訳の正しさは心掛けていません。雰囲気がわかれば良いというスタンスです。
