@@ -107,6 +107,9 @@ Streamlit は変更があったかどうかを検出し、アプリを再実行�
 コードを入力して保存し、ライブで試してから、満足のいく結果が得られるまで、さらにコードを入力して保存し、試してみることを繰り返します。
 コーディングと結果のライブ表示の間のこの緊密なループは、Streamlit が作業を容易にする1つの手段です。
 
+> [!Note]
+> Streamlit アプリを開発するときは、コードとアプリを同時に表示できるように、エディターとブラウザーのウィンドウを並べてレイアウトすることをお勧めします。試してみてください!
+
 ### データの流れ
 Streamlit のアーキテクチャを使用すると、プレーンな Python スクリプトを作成するのと同じ方法でアプリを作成できます。
 これを解決するために、Streamlit アプリには独自のデータフローがあります。
@@ -117,6 +120,92 @@ Streamlit のアーキテクチャを使用すると、プレーンな Python �
 + アプリのソースコードを変更するとき。
 + ユーザーがアプリ内のウィジェットを操作するとき。たとえば、スライダーをドラッグするとき、入力ボックスにテキストを入力するとき、またはボタンをクリックするときです。
 
+### データの表示とスタイル設定
+Streamlit アプリでデータ (テーブル、配列、データ フレーム) を表示するには、いくつかの方法があります。    
+以下では、テキストからテーブルまであらゆるものを書き込むために使用できるマジックコマンドと `st.write()` の２つを紹介します。    
+その後、データを視覚化するために特別に設計されたメソッドを見てみましょう。
+
+#### マジックコマンドを使う
+はじめに、Streamlit メソッドを呼び出さずに表示を行う方法「マジックコマンド」を説明します。
+通常は後述する `st.write()` を使用して画面表示を行いますが、マジックコマンドは `st.write()` をまったく使用する必要がありません。
+これを実際に確認するには、次のスニペットを試してください。
+
+````py
+import streamlit as st
+import pandas as pd
+df = pd.DataFrame({
+  'first column': [1, 2, 3, 4],
+  'second column': [10, 20, 30, 40]
+})
+
+df
+````
+
+Streamlit が独自の行に変数またはリテラル値を見つけるたびに、st.write() を使用してそれをアプリに自動的に書き込みます。
+詳細については、マジックコマンドに関するドキュメントを読んでみてください。
+
+#### データフレームを書き込む
+魔法のコマンドと同様に、`st.write()` は Streamlit の万能コマンド（Swiss Army knife：スイスのアーミーナイフのように）です。
+テキスト、データ、Matplotlib の図、Altair チャートなど、ほとんどすべてのものを `st.write()` に渡すことができます。心配しないでください。Streamlit はそれが何であるかを理解し、正しい方法でレンダリングします。
+
+````py
+import streamlit as st
+import pandas as pd
+
+st.write("Here's our first attempt at using data to create a table:")
+st.write(pd.DataFrame({
+    'first column': [1, 2, 3, 4],
+    'second column': [10, 20, 30, 40]
+}))
+````
+
+`st.write()` とは別に、データの表示に使用できる `st.dataframe()` や `st.table()` などのデータ固有の関数もあります。
+これらの機能をいつ使用するのか、また色やスタイルを追加する方法を理解しましょう。
+
+「なぜ常に st.write() を使用しないのですか?」と自問しているかもしれません。理由はいくつかあります。
+
++ マジックコマンドと `st.write()` は、渡されたデータのタイプを検査し、アプリ内でそれを最適にレンダリングする方法を決定します。別の方法で描きたい場合もあります。たとえば、データフレームを対話型テーブルとして描画する代わりに、`st.table(df)` を使用して静的テーブルとして描画したい場合があります。
++ 2番目の理由は、他のメソッドが、データを追加するか置き換えることによって使用および変更できるオブジェクトを返すためです。
++ 最後に、より具体的な Streamlit メソッドを使用する場合は、追加の引数を渡してその動作をカスタマイズできます。
+
+たとえば、データ フレームを作成し、Pandas Styler オブジェクトを使用してその書式設定を変更してみましょう。
+この例では、Numpy を使用してランダム サンプルを生成し、`st.dataframe()` メソッドを使用して対話型テーブルを描画します。
+
+````py
+import streamlit as st
+import numpy as np
+
+df = np.random.randn(10, 20)
+st.dataframe(df)
+````
+
+Pandas Styler オブジェクトを使用して、対話型テーブル内のいくつかの要素を強調表示する最初の例を拡張してみましょう。
+列の中で最も大きな数値がハイライトされるのが確認できたでしょう。
+
+````py
+import streamlit as st
+import numpy as np
+import pandas as pd
+
+dataframe = pd.DataFrame(
+    np.random.randn(10, 20),
+    columns=('col %d' % i for i in range(20)))
+
+st.dataframe(dataframe.style.highlight_max(axis=0))
+````
+
+Streamlit には、静的テーブルを生成するためのメソッド `st.table()` もあります。
+
+````py
+import streamlit as st
+import numpy as np
+import pandas as pd
+
+dataframe = pd.DataFrame(
+    np.random.randn(10, 20),
+    columns=('col %d' % i for i in range(20)))
+st.table(dataframe)
+````
 
 
 
