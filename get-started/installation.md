@@ -13,8 +13,12 @@ Linux や Python に馴染みのある方は次のコマンドですぐにイン
 エキスパートの方は読み飛ばしてください。より詳しい情報が必要な方だけ読み進めてください。
 
 `venv` と `pip` は推奨ツールですが、他のツールに精通している場合は、お気に入りのツールを使用することもできます。
-Python 環境をの構築に GUI を使用したい場合は、Anaconda を使用してください。
-詳しくは https://docs.streamlit.io/get-started/installation/anaconda-distribution を確認してください。
+例えば、Python 環境をの構築に GUI を使用したい場合は、Anaconda を使用してください。
+
+> [!Important]
+> Python によほど精通している人以外は `venv` と `pip` 使うのが良いです。    
+> なぜなら、インターネット上の情報のほとんどがこれを前提にしているからです。    
+> また、`venv` と `pip` がわからない人は、それが何なのかをインターネットで調べてから読み進めるとより理解が得られます。
 
 ## 事前準備
 
@@ -65,4 +69,4 @@ Python 環境の詳細については、「[Python 仮想環境: 入門](https:/
 
 アクティブ化すると、次の例のようにプロンプトの前に環境名 **"(.venv)"** が括弧内に表示されます。
 
-   (.venv) yourname@local ~ $
+    (.venv) yourname@local ~ $
