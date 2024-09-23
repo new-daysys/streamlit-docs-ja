@@ -3,7 +3,7 @@ title: Basic concepts of Streamlit
 slug: /get-started/fundamentals/main-concepts
 ---
 
-# 基本コンセプト
+# 基本的な概念
 Streamlit の基本コンセプトを学びます。
 Streamlit アプリはどのように構成されているか?    
 どのように動作するのか?    
