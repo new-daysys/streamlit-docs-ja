@@ -8,7 +8,8 @@
 
 1. [さぁはじめよう！ - Get started](/get-started)
    + [インストール](/get-started/installation.md)
-   + [基本概念](get-started/fundamentals/main-concepts.md)
+   + [基本的な概念](get-started/fundamentals/main-concepts.md)
+   + [少し高度な概念](get-started/fundamentals/advanced-concepts.md)
    + [はじめの一歩](/get-started/tutorials.md)
 2. [開発する - Develop](/develop/concepts)
    + Concepts
