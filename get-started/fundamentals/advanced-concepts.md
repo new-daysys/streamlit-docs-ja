@@ -26,29 +26,27 @@ def long_running_function(param1, param2):
     return …
 ```
 
-上記の例では、`long_running_function` が `@st.cache_data` で修飾されています。その結果、Streamlit は次のように指摘しています。
+上記の例では、`long_running_function` が `@st.cache_data` で修飾されています。その結果、Streamlit は以下を記録します。
 
 - 関数の名前 (`"long_running_function"`)
 - 入力の値 (`param1`、`param2`)
 - 関数内のコード
 
-「long_running_function」内のコードを実行する前に、Streamlit はキャッシュに以前に保存された結果がないかチェックします。指定された関数と入力値のキャッシュされた結果が見つかった場合、そのキャッシュされた結果が返され、関数のコードは再実行されません。それ以外の場合、Streamlit は関数を実行し、結果をキャッシュに保存し、スクリプトの実行を続行します。開発中、関数コードが変更されるとキャッシュが自動的に更新され、最新の変更がキャッシュに確実に反映されます。
-
-<Image src="/images/caching-high-level-diagram.png" caption="Streamlit の 2 つのキャッシュ デコレータとその使用例。" alt="Streamlit の 2 つのキャッシュ デコレータとその使用例。データベースに保存するものには st.cache_data を使用します。データベースやマシンへの接続など、データベースに保存できないものには st.cache_resource を使用します。学習モデル。」 />
+`long_running_function` 内のコードを実行する前に、Streamlit はキャッシュに以前に保存された結果がないかチェックします。指定された関数と入力値のキャッシュされた結果が見つかった場合、そのキャッシュされた結果が返され、関数のコードは再実行されません。それ以外の場合、Streamlit は関数を実行し、結果をキャッシュに保存し、スクリプトの実行を続行します。開発中、関数コードが変更されるとキャッシュが自動的に更新され、最新の変更がキャッシュに確実に反映されます。
 
 Streamlit キャッシュ デコレーター、その構成パラメーター、およびその制限の詳細については、「[Caching](/develop/concepts/architecture/caching)」を参照してください。
 
-## Session State
+## セッション状態
 
-Session State provides a dictionary-like interface where you can save information that is preserved between script reruns. Use `st.session_state` with key or attribute notation to store and recall values. For example, `st.session_state["my_key"]` or `st.session_state.my_key`. Remember that widgets handle their statefulness all by themselves, so you won't always need to use Session State!
+セッション状態は、スクリプトの再実行の間に保持される情報を保存できる辞書のようなインターフェイスを提供します。値を保存したり呼び出したりするには、キーまたは属性の表記とともに `st.session_state` を使用します。たとえば、`st.session_state["my_key"]` または `st.session_state.my_key` です。ウィジェットはステートフル性をすべて単独で処理するため、必ずしもセッション状態を使用する必要はないことに注意してください。
 
-### What is a session?
+### セッションとは何ですか?
 
-A session is a single instance of viewing an app. If you view an app from two different tabs in your browser, each tab will have its own session. So each viewer of an app will have a Session State tied to their specific view. Streamlit maintains this session as the user interacts with the app. If the user refreshes their browser page or reloads the URL to the app, their Session State resets and they begin again with a new session.
+セッションは、アプリを表示する単一のインスタンスです。ブラウザーの 2 つの異なるタブからアプリを表示する場合、各タブには独自のセッションが存在します。したがって、アプリの各ビューアは、特定のビューに関連付けられたセッション状態を持ちます。 Streamlit は、ユーザーがアプリを操作している間、このセッションを維持します。ユーザーがブラウザ ページを更新するか、アプリに URL をリロードすると、セッション状態がリセットされ、新しいセッションが再び開始されます。
 
-### Examples of using Session State
+### セッション状態の使用例
 
-Here's a simple app that counts the number of times the page has been run. Every time you click the button, the script will rerun.
+これは、ページが実行された回数をカウントする単純なアプリです。ボタンをクリックするたびに、スクリプトが再実行されます。
 
 ```python
 import streamlit as st
@@ -62,16 +60,16 @@ st.header(f"This page has run {st.session_state.counter} times.")
 st.button("Run it again")
 ```
 
-- **First run:** The first time the app runs for each user, Session State is empty. Therefore, a key-value pair is created (`"counter":0`). As the script continues, the counter is immediately incremented (`"counter":1`) and the result is displayed: "This page has run 1 times." When the page has fully rendered, the script has finished and the Streamlit server waits for the user to do something. When that user clicks the button, a rerun begins.
+- **初回実行:** 各ユーザーに対して初めてア​​プリを実行するとき、セッション状態は空です。したがって、キーと値のペアが作成されます (`"counter":0`)。スクリプトが続行すると、カウンタはすぐにインクリメントされ (`"counter":1`)、「このページは 1 回実行されました。」という結果が表示されます。ページが完全にレンダリングされると、スクリプトは終了し、Streamlit サーバーはユーザーが何らかの操作を行うのを待ちます。そのユーザーがボタンをクリックすると、再実行が開始されます。
 
-- **Second run:** Since "counter" is already a key in Session State, it is not reinitialized. As the script continues, the counter is incremented (`"counter":2`) and the result is displayed: "This page has run 2 times."
+- **2 回目の実行:** 「counter」はすでにセッション状態のキーであるため、再初期化されません。スクリプトが続行されると、カウンタがインクリメントされ (`"counter":2`)、「このページは 2 回実行されました。」という結果が表示されます。
 
-There are a few common scenarios where Session State is helpful. As demonstrated above, Session State is used when you have a progressive process that you want to build upon from one rerun to the next. Session State can also be used to prevent recalculation, similar to caching. However, the differences are important:
+セッション状態が役立つ一般的なシナリオがいくつかあります。上で示したように、セッション状態は、ある再実行から次の再実行に基づいて構築する漸進的なプロセスがある場合に使用されます。セッション状態は、キャッシュと同様に、再計算を防ぐために使用することもできます。ただし、相違点は重要です。
 
-- Caching associates stored values to specific functions and inputs. Cached values are accessible to all users across all sessions.
-- Session State associates stored values to keys (strings). Values in session state are only available in the single session where it was saved.
+- キャッシュは、保存された値を特定の関数および入力に関連付けます。キャッシュされた値は、すべてのセッションにわたってすべてのユーザーがアクセスできます。
+- セッション状態は、保存された値をキー (文字列) に関連付けます。セッション状態の値は、それが保存された単一セッションでのみ使用できます。
 
-If you have random number generation in your app, you'd likely use Session State. Here's an example where data is generated randomly at the beginning of each session. By saving this random information in Session State, each user gets different random data when they open the app but it won't keep changing on them as they interact with it. If you select different colors with the picker you'll see that the data does not get re-randomized with each rerun. (If you open the app in a new tab to start a new session, you'll see different data!)
+アプリで乱数を生成する場合は、セッション状態を使用する可能性があります。以下は、各セッションの開始時にデータがランダムに生成される例です。このランダムな情報をセッション状態に保存すると、各ユーザーがアプリを開いたときに異なるランダム データを取得しますが、アプリを操作するときにデータが変化し続けることはありません。ピッカーで別の色を選択すると、再実行のたびにデータが再ランダム化されないことがわかります。 (新しいタブでアプリを開いて新しいセッションを開始すると、異なるデータが表示されます。)
 
 ```python
 import streamlit as st
@@ -87,9 +85,9 @@ st.divider()
 st.scatter_chart(st.session_state.df, x="x", y="y", color=color)
 ```
 
-If you are pulling the same data for all users, you'd likely cache a function that retrieves that data. On the other hand, if you pull data specific to a user, such as querying their personal information, you may want to save that in Session State. That way, the queried data is only available in that one session.
+すべてのユーザーに対して同じデータを取得する場合は、そのデータを取得する関数をキャッシュする可能性があります。一方、個人情報のクエリなど、ユーザーに固有のデータを取得する場合は、それをセッション状態に保存することができます。こうすることで、クエリされたデータはその 1 つのセッションでのみ利用可能になります。
 
-As mentioned in [Basic concepts](/get-started/fundamentals/main-concepts#widgets), Session State is also related to widgets. Widgets are magical and handle statefulness quietly on their own. As an advanced feature however, you can manipulate the value of widgets within your code by assigning keys to them. Any key assigned to a widget becomes a key in Session State tied to the value of the widget. This can be used to manipulate the widget. After you finish understanding the basics of Streamlit, check out our guide on [Widget behavior](/develop/concepts/architecture/widget-behavior) to dig in the details if you're interested.
+[基本概念](/get-started/fundamentals/main-concepts#widgets) で説明したように、セッション状態はウィジェットにも関連しています。ウィジェットは魔法のようで、ステートフル性を単独で静かに処理します。ただし、高度な機能として、ウィジェットにキーを割り当てることで、コード内のウィジェットの値を操作できます。ウィジェットに割り当てられたキーは、ウィジェットの値に関連付けられたセッション状態のキーになります。これを使用してウィジェットを操作できます。 Streamlit の基本を理解したら、興味があれば [ウィジェットの動作](/develop/concepts/architecture/widget-behavior) に関するガイドを参照して詳細を調べてください。
 
 ## Connections
 
