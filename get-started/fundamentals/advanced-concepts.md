@@ -5,21 +5,18 @@ slug: /get-started/fundamentals/advanced-concepts
 
 # 先進的なコンセプト
 
-Streamlit の再実行ロジックを理解したら、キャッシュとセッション状態を使用して効率的で動的なアプリを作成する方法を学びます。
-データベース接続の処理について説明します。
+Streamlit アプリがどのように実行され、データが処理されるかがわかったので、効率について話しましょう。キャッシュを使用すると、関数の出力を保存できるため、再実行時にスキップできます。セッション状態を使用すると、各ユーザーの情報を保存し、再実行の間に保存できます。これにより、不必要な再計算を回避できるだけでなく、動的なページを作成して段階的なプロセスを処理することもできます。
 
-Now that you know how a Streamlit app runs and handles data, let's talk about being efficient. Caching allows you to save the output of a function so you can skip over it on rerun. Session State lets you save information for each user that is preserved between reruns. This not only allows you to avoid unecessary recalculation, but also allows you to create dynamic pages and handle progressive processes.
+## キャッシュ
 
-## Caching
+キャッシュを使用すると、Web からデータを読み込んだり、大規模なデータセットを操作したり、高価な計算を実行したりする場合でも、アプリのパフォーマンスを維持できます。
 
-Caching allows your app to stay performant even when loading data from the web, manipulating large datasets, or performing expensive computations.
+キャッシュの基本的な考え方は、負荷の高い関数呼び出しの結果を保存し、同じ入力が再び発生したときにキャッシュされた結果を返すというものです。これにより、同じ入力値を使用した関数の繰り返し実行が回避されます。
 
-The basic idea behind caching is to store the results of expensive function calls and return the cached result when the same inputs occur again. This avoids repeated execution of a function with the same input values.
+Streamlit で関数をキャッシュするには、関数にキャッシュデコレーターを適用する必要があります。選択肢は 2 つあります。
 
-To cache a function in Streamlit, you need to apply a caching decorator to it. You have two choices:
-
-- `st.cache_data` is the recommended way to cache computations that return data. Use `st.cache_data` when you use a function that returns a serializable data object (e.g. str, int, float, DataFrame, dict, list). **It creates a new copy of the data at each function call**, making it safe against [mutations and race conditions](/develop/concepts/architecture/caching#mutation-and-concurrency-issues). The behavior of `st.cache_data` is what you want in most cases – so if you're unsure, start with `st.cache_data` and see if it works!
-- `st.cache_resource` is the recommended way to cache global resources like ML models or database connections. Use `st.cache_resource` when your function returns unserializable objects that you don’t want to load multiple times. **It returns the cached object itself**, which is shared across all reruns and sessions without copying or duplication. If you mutate an object that is cached using `st.cache_resource`, that mutation will exist across all reruns and sessions.
+- `st.cache_data` は、データを返す計算をキャッシュするための推奨される方法です。シリアル化可能なデータ オブジェクト (str、int、float、DataFrame、dict、list など) を返す関数を使用する場合は、`st.cache_data` を使用します。 **関数呼び出しごとにデータの新しいコピーが作成されます**。これにより、[突然変異と競合状態](/develop/concepts/architecture/caching#mutation-and-concurrency-issues) に対して安全になります。ほとんどの場合、`st.cache_data` の動作はあなたが望むものです。そのため、よくわからない場合は、`st.cache_data` から始めて、それが機能するかどうかを確認してください。
+- `st.cache_resource` は、ML モデルやデータベース接続などのグローバル リソースをキャッシュするための推奨される方法です。関数が複数回ロードしたくないシリアル化できないオブジェクトを返す場合は、「st.cache_resource」を使用します。 **キャッシュされたオブジェクト自体を返します**。これは、コピーや複製を行わずにすべての再実行とセッションで共有されます。 `st.cache_resource` を使用してキャッシュされたオブジェクトを変更すると、その変更はすべての再実行とセッションにわたって存在します。
 
 Example:
 
@@ -29,17 +26,17 @@ def long_running_function(param1, param2):
     return …
 ```
 
-In the above example, `long_running_function` is decorated with `@st.cache_data`. As a result, Streamlit notes the following:
+上記の例では、`long_running_function` が `@st.cache_data` で修飾されています。その結果、Streamlit は次のように指摘しています。
 
-- The name of the function (`"long_running_function"`).
-- The value of the inputs (`param1`, `param2`).
-- The code within the function.
+- 関数の名前 (`"long_running_function"`)
+- 入力の値 (`param1`、`param2`)
+- 関数内のコード
 
-Before running the code within `long_running_function`, Streamlit checks its cache for a previously saved result. If it finds a cached result for the given function and input values, it will return that cached result and not rerun function's code. Otherwise, Streamlit executes the function, saves the result in its cache, and proceeds with the script run. During development, the cache updates automatically as the function code changes, ensuring that the latest changes are reflected in the cache.
+「long_running_function」内のコードを実行する前に、Streamlit はキャッシュに以前に保存された結果がないかチェックします。指定された関数と入力値のキャッシュされた結果が見つかった場合、そのキャッシュされた結果が返され、関数のコードは再実行されません。それ以外の場合、Streamlit は関数を実行し、結果をキャッシュに保存し、スクリプトの実行を続行します。開発中、関数コードが変更されるとキャッシュが自動的に更新され、最新の変更がキャッシュに確実に反映されます。
 
-<Image src="/images/caching-high-level-diagram.png" caption="Streamlit's two caching decorators and their use cases." alt="Streamlit's two caching decorators and their use cases. Use st.cache_data for anything you'd store in a database. Use st.cache_resource for anything you can't store in a database, like a connection to a database or a machine learning model." />
+<Image src="/images/caching-high-level-diagram.png" caption="Streamlit の 2 つのキャッシュ デコレータとその使用例。" alt="Streamlit の 2 つのキャッシュ デコレータとその使用例。データベースに保存するものには st.cache_data を使用します。データベースやマシンへの接続など、データベースに保存できないものには st.cache_resource を使用します。学習モデル。」 />
 
-For more information about the Streamlit caching decorators, their configuration parameters, and their limitations, see [Caching](/develop/concepts/architecture/caching).
+Streamlit キャッシュ デコレーター、その構成パラメーター、およびその制限の詳細については、「[Caching](/develop/concepts/architecture/caching)」を参照してください。
 
 ## Session State
 
