@@ -3,7 +3,7 @@ title: First steps building Streamlit apps
 slug: /get-started/tutorials
 ---
 
-# Streamlitアプリの最初のステップ
+# Streamlit アプリのはじめの一歩
 
 基本的な概念を読んで、Streamlit を実際に使ってみたいと思ったら、こちらのチュートリアルをみてください。
 コードを自分で実行できるように、Streamlitをインストールしておくことを忘れずに！
