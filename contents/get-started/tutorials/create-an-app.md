@@ -3,24 +3,23 @@ title: Create an app
 slug: /get-started/tutorials/create-an-app
 ---
 
-# Create an app
+# アプリの作成
 
-If you've made it this far, chances are you've [installed Streamlit](/get-started/installation) and run through the basics in [Basic concepts](/get-started/fundamentals/main-concepts) and [Advanced concepts](/get-started/fundamentals/advanced-concepts). If not, now is a good time to take a look.
+ここまで進んだということは、[Streamlit をインストール](../installation.md)し、[基本的な概念](../fundamentals/main-concepts.md)と[少し高度な概念](../fundamentals/advanced-concepts.md)を学んだ可能性が高いですね。まだの場合は、今が確認する良い機会です。
 
-The easiest way to learn how to use Streamlit is to try things out yourself. As you read through this guide, test each method. As long as your app is running, every time you add a new element to your script and save, Streamlit's UI will ask if you'd like to rerun the app and view the changes. This allows you to work in a fast interactive loop: you write some code, save it, review the output, write some more, and so on, until you're happy with the results. The goal is to use Streamlit to create an interactive app for your data or model and along the way to use Streamlit to review, debug, perfect, and share your code.
+Streamlit の使い方を学ぶ最も簡単な方法は、自分で試してみることです。このガイドを読み進めながら、各メソッドを実際に試してみましょう。
+アプリが実行中であれば、スクリプトに新しい要素を追加して保存するたびに、StreamlitのUIがアプリを再実行して変更を確認するかどうかを尋ねてきます。
+これにより、素早いインタラクティブな開発サイクルを回せます。
+コードを書いて保存し、出力を確認し、さらにコードを追加していくと、最終的に満足する結果に到達できます。
 
-In this guide, you're going to use Streamlit's core features to
-create an interactive app; exploring a public Uber dataset for pickups and
-drop-offs in New York City. When you're finished, you'll know how to fetch
-and cache data, draw charts, plot information on a map, and use interactive
-widgets, like a slider, to filter results.
+このガイドの目標は、Streamlit を使ってデータやモデルのためのインタラクティブなアプリを作成し、途中でStreamlitを活用してコードを確認、デバッグ、改善、共有することです。
 
-<Tip>
+このガイドでは、Streamlit のコア機能を使って、ニューヨーク市の Uber のピックアップとドロップオフに関する公開データセットを探索するインタラクティブなアプリを作成します。
+終了時には、データを取得してキャッシュする方法、チャートを描く方法、地図上に情報をプロットする方法、そしてスライダーのようなインタラクティブなウィジェットを使用して
+結果をフィルタリングする方法を習得できます。
 
-If you'd like to skip ahead and see everything at once, the [complete script
-is available below](#lets-put-it-all-together).
-
-</Tip>
+> [!Tip]
+> すべてを一度に見たい場合は、完全なスクリプトが以下にあります。
 
 ## Create your first app
 
