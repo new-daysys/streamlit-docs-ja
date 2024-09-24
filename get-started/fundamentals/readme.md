@@ -14,8 +14,9 @@ Streamlitの基本概念を学びましょう。Streamlitアプリはどのよ�
 
 ### [少し高度な概念](/get-started/fundamentals/advanced-concepts)
 
-Streamlitの再実行ロジックを理解した後は、キャッシングやセッションステートを使って効率的で動的なアプリを作成する方法を学びましょう。データベース接続の取り扱いにも慣れていきましょう。
+Streamlit の再実行ロジックを理解した後は、キャッシュやセッション状態を使って効率的で動的なアプリを作成する方法を学びましょう。
+加えて、データベース接続の取り扱いにも慣れていきましょう。
 
 ### [さらなる機能](/get-started/fundamentals/additional-features)
 
-Learn about Streamlit's additional features. You don't need to know these concepts for your first app, but check it out to know what's available.
+Streamlit のさらなる機能について学びます。初めてのアプリでこれらの概念を知る必要はありませんが、何が利用できるのかを確認してみてください。
