@@ -6,60 +6,61 @@ slug: /get-started/fundamentals/additional-features
 # 追加機能
 Streamlit の追加機能について学びます。初めてのアプリでこれらの概念を知る必要はありませんが、何が利用できるのかを確認するためにチェックしてください。
 
-So you've read all about Streamlit's [Basic concepts](/get-started/fundamentals/main-concepts) and gotten a taste of caching and Session State in [Advanced concepts](/get-started/fundamentals/advanced-concepts). But what about the bells and whistles? Here's a quick look at some extra features to take your app to the next level.
+これで、Streamlit の [基本概念](/get-started/fundamentals/main-concepts) をすべて読み、[高度な概念](/get-started/fundamentals/advanced-concepts) でキャッシュとセッション状態を体験しました。一方で、付加機能についてはどうでしょうか? ここでは、アプリを次のレベルに引き上げるための追加機能をいくつか紹介します。
 
 ## Theming
 
-Streamlit supports Light and Dark themes out of the box. Streamlit will first
-check if the user viewing an app has a Light or Dark mode preference set by
-their operating system and browser. If so, then that preference will be used.
-Otherwise, the Light theme is applied by default.
+Streamlit は、すぐに使えるライト テーマとダーク テーマをサポートします。
+Streamlit はまずユーザーがライトモードまたはダークモードの設定をオペレーティングシステムまたはブラウザで行っているかどうかを確認します。
+そうであれば、その設定が使用され、それ以外の場合はデフォルトでライトテーマが適用されます。
 
-You can also change the active theme from "⋮" → "Settings".
+アクティブなテーマは、"⋮" → "Settings" から変更することもできます。
 
-![Changing Themes](/images/change_theme.gif)
+自分のアプリに独自のテーマを追加したいですか？
+「設定」メニューには「アクティブなテーマを編集」という項目があり、そこからテーマエディタにアクセスできます。
+このエディタを使用して、さまざまな色を試し、リアルタイムでアプリの変更を確認してみてください。
 
-Want to add your own theme to an app? The "Settings" menu has a theme editor
-accessible by clicking on "Edit active theme". You can use this editor to try
-out different colors and see your app update live.
+作業に満足したら、次の方法でテーマを保存できます。
+[構成オプションの設定](/develop/concepts/configuration)
+`[テーマ]` 設定セクション内。アプリのテーマを定義すると、
+テーマセレクターに「カスタムテーマ」として表示され、次の方法で適用されます。
+付属のライトテーマとダークテーマの代わりにデフォルトで使用されます。
 
-![Editing Themes](/images/edit_theme.gif)
+テーマの定義時に使用できるオプションの詳細については、こちらをご覧ください。
+[テーマ オプションのドキュメント](/develop/concepts/configuration/theming) にあります。
 
-When you're happy with your work, themes can be saved by
-[setting config options](/develop/concepts/configuration)
-in the `[theme]` config section. After you've defined a theme for your app, it
-will appear as "Custom Theme" in the theme selector and will be applied by
-default instead of the included Light and Dark themes.
+作業に満足したら、テーマは [theme] 設定セクションで設定オプションを設定することで保存できます。
+一度アプリにテーマを定義すると、テーマセレクタに「カスタムテーマ」として表示され、デフォルトで適用されます。    
+（既存のライトおよびダークテーマの代わりに）
 
-More information about the options available when defining a theme can be found
-in the [theme option documentation](/develop/concepts/configuration/theming).
+テーマを定義する際に利用できるオプションの詳細は、[テーマ オプションのドキュメント](/develop/concepts/configuration/theming)で確認できます。
 
-<Note>
+> [!Note]
+> テーマエディタメニューはローカル開発時にのみ利用可能です。
+> アプリを Streamlit Community Cloudでデプロイした場合、「設定」メニューにある「アクティブなテーマを編集」ボタンは表示されなくなります。
 
-The theme editor menu is available only in local development. If you've deployed your app using
-Streamlit Community Cloud, the "Edit active theme" button will no longer be displayed in the "Settings"
-menu.
+> [!Tip]
+> 異なるテーマカラーを試すもう一つの方法は、「保存時に実行」オプションをオンにして、`config.toml` ファイルを編集することです。
+> これにより、新しいテーマカラーが適用された状態でアプリが再実行される様子を確認できます。
 
-</Note>
+## 複数ページ
 
-<Tip>
+アプリが大きくなるにつれて、アプリを複数のページに整理すると便利になります。
+これにより、開発者としてはアプリの管理が容易になり、ユーザーとしては操作が容易になります。
+Streamlit は、複数ページのアプリをスムーズに作成する方法を提供します。
 
-Another way to experiment with different theme colors is to turn on the "Run on save" option, edit
-your config.toml file, and watch as your app reruns with the new theme colors applied.
+この機能は、複数ページのアプリの構築が単一ページのアプリの構築と同じくらい簡単になるように設計されています。
+次のように既存のアプリにページを追加するだけです。
 
-</Tip>
+1. メインスクリプトを含むフォルダに、新しい `pages` フォルダーを作成します。メインスクリプトの名前が `main_page.py` であるとします。
+2. アプリにページをさらに追加するには、新しい `.py` ファイルを `pages` フォルダに追加します。
+3. 通常どおり `streamlit run main_page.py` を実行します。
 
-## Pages
+これでおしまいです！`main_page.py` スクリプトがアプリのメインページに対応するようになります。
+そして、サイドバーのページセレクターの `pages` フォルダにある他のスクリプトが表示されます。
+ページはファイル名に従ってリストされます。(ファイル拡張子とアンダースコアは無視されます)
 
-As apps grow large, it becomes useful to organize them into multiple pages. This makes the app easier to manage as a developer and easier to navigate as a user. Streamlit provides a frictionless way to create multipage apps.
-
-We designed this feature so that building a multipage app is as easy as building a single-page app! Just add more pages to an existing app as follows:
-
-1. In the folder containing your main script, create a new `pages` folder. Let’s say your main script is named `main_page.py`.
-2. Add new `.py` files in the `pages` folder to add more pages to your app.
-3. Run `streamlit run main_page.py` as usual.
-
-That’s it! The `main_page.py` script will now correspond to the main page of your app. And you’ll see the other scripts from the `pages` folder in the sidebar page selector. The pages are listed according to filename (without file extensions and disregarding underscores). For example:
+例えば：
 
 <details open>
 <summary><code>main_page.py</code></summary>
