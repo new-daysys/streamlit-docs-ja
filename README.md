@@ -14,7 +14,7 @@
        - [さらなる機能](get-started/fundamentals/additional-features.md)
    + [はじめの一歩](/get-started/tutorials)
        -  [アプリを作る](get-started/tutorials/create-an-app.md)
-       -  [マルチページアプリを作る](get-started/tutorials/create-a-multipage-apps.md)
+       -  [マルチページアプリを作る](get-started/tutorials/create-a-multi-page-app.md)
 2. [開発する - Develop](/develop/concepts)
    + Concepts
    + API reference
