@@ -4,10 +4,10 @@ slug: /get-started/fundamentals/additional-features
 ---
 
 # さらなる機能
-Streamlit のさらなる機能について学びます。初めてのアプリでこれらの概念を知る必要はありませんが、何が利用できるのかを確認するためにチェックしてください。
+Streamlit のさらなる機能について学びます。初めてのアプリでこれらの概念を知る必要はありませんが、何が利用できるのかを確認してみてください。
 
-これで、Streamlit の [基本概念](/get-started/fundamentals/main-concepts) をすべて読み、[高度な概念](/get-started/fundamentals/advanced-concepts) でキャッシュとセッション状態を体験しました。
-一方で、付加機能についてはどうでしょうか？ここでは、アプリを次のレベルに引き上げるための追加機能をいくつか紹介します。
+ここまでに Streamlit の [基本概念](/get-started/fundamentals/main-concepts) をすべて読み、[高度な概念](/get-started/fundamentals/advanced-concepts) でキャッシュとセッション状態を体験しました。
+さらなる機能についてはどうでしょうか？ここでは、アプリを次のレベルに引き上げるための追加機能をいくつか紹介します。
 
 ## テーマ設定
 
