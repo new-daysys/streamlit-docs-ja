@@ -52,13 +52,11 @@ Streamlitは、データアプリを作成するためのツールであるだ�
 
 5. いつものように、アプリは自動的にブラウザの新しいタブで開くはずです。
 
-## Fetch some data
+## データを取得する
 
-Now that you have an app, the next thing you'll need to do is fetch the Uber
-dataset for pickups and drop-offs in New York City.
+アプリができたので、次に行うことは、ニューヨーク市の Uber のピックアップとドロップオフのデータセットを取得することです。
 
-1. Let's start by writing a function to load the data. Add this code to your
-   script:
+1. まず、データを読み込む関数を作成しましょう。スクリプトに以下のコードを追加してください：
 
    ```python
    DATE_COLUMN = 'date/time'
@@ -72,14 +70,11 @@ dataset for pickups and drop-offs in New York City.
        data[DATE_COLUMN] = pd.to_datetime(data[DATE_COLUMN])
        return data
    ```
+   
+   ご覧の通り、`load_data` は単純な関数で、データをダウンロードし、それを Pandas のデータフレームに格納し、日付の列をテキストから日時に変換します。
+   この関数は1つのパラメータ (`nrows`) を受け取ります。このパラメータは、データフレームに読み込む行数を指定します。
 
-   You'll notice that `load_data` is a plain old function that downloads some
-   data, puts it in a Pandas dataframe, and converts the date column from text
-   to datetime. The function accepts a single parameter (`nrows`), which
-   specifies the number of rows that you want to load into the dataframe.
-
-2. Now let's test the function and review the output. Below your function, add
-   these lines:
+2. 次に、関数をテストして出力を確認しましょう。関数の下に次の行を追加してください：
 
    ```python
    # Create a text element and let the reader know the data is loading.
@@ -89,42 +84,38 @@ dataset for pickups and drop-offs in New York City.
    # Notify the reader that the data was successfully loaded.
    data_load_state.text('Loading data...done!')
    ```
+   
+   これにより、アプリの右上にいくつかのボタンが表示され、アプリを再実行するかどうかを尋ねられます。
+   **Always rerun** を選択すると、保存するたびに変更が自動的に反映されます。
 
-   You'll see a few buttons in the upper-right corner of your app asking if
-   you'd like to rerun the app. Choose **Always rerun**, and you'll see your
-   changes automatically each time you save.
+うーん、少し物足りないですね...
 
-Ok, that's underwhelming...
+実際のところ、データをダウンロードして10,000行をデータフレームに読み込むには時間がかかります。
+また、日付の列を日時型に変換するのもすぐには終わりません。アプリが更新されるたびにデータを再読み込みしたくないですよね。
+幸運なことに、Streamlitではデータをキャッシュすることができます。
 
-It turns out that it takes a long time to download data, and load 10,000 lines
-into a dataframe. Converting the date column into datetime isn’t a quick job
-either. You don’t want to reload the data each time the app is updated –
-luckily Streamlit allows you to cache the data.
+## 簡単なキャッシュ
 
-## Effortless caching
-
-1. Try adding `@st.cache_data` before the `load_data` declaration:
+1. `load_data` 関数の宣言の前に `@st.cache_data` を追加してみましょう：
 
    ```python
    @st.cache_data
    def load_data(nrows):
    ```
 
-2. Then save the script, and Streamlit will automatically rerun your app. Since
-   this is the first time you’re running the script with `@st.cache_data`, you won't
-   see anything change. Let’s tweak your file a little bit more so that you can
-   see the power of caching.
+2. スクリプトを保存すると、Streamlit が自動的にアプリを再実行します。
+   このスクリプトを `@st.cache_data` と一緒に実行するのは初めてなので、最初は特に変化は見られません。
+   キャッシングの力を実感できるように、もう少しファイルを調整しましょう。
 
-3. Replace the line `data_load_state.text('Loading data...done!')` with this:
+3. `data_load_state.text('Loading data...done!')` の行を以下のように置き換えます：
 
    ```python
    data_load_state.text("Done! (using st.cache_data)")
    ```
 
-4. Now save. See how the line you added appeared immediately? If you take a
-   step back for a second, this is actually quite amazing. Something magical is
-   happening behind the scenes, and it only takes one line of code to activate
-   it.
+4. さて、保存してみましょう。追加した行がすぐに表示されるのがわかりますか？
+   一歩引いて考えると、これは実際に驚くべきことです。
+   背後では何かマジカルなことが起こっており、たった一行のコードでそれが有効になるのです。
 
 ### How's it work?
 
