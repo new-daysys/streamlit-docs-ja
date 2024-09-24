@@ -14,7 +14,7 @@ Streamlitの基本概念を学びましょう。Streamlitアプリはどのよ�
 
 ### [少し高度な概念](/get-started/fundamentals/advanced-concepts)
 
-After you understand the rerun logic of Streamlit, learn how to make efficient and dynamic apps with caching and Session State. Get introduced to handling database connections.
+Streamlitの再実行ロジックを理解した後は、キャッシングやセッションステートを使って効率的で動的なアプリを作成する方法を学びましょう。データベース接続の取り扱いにも慣れていきましょう。
 
 ### [さらなる機能](/get-started/fundamentals/additional-features)
 
