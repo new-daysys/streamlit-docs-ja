@@ -6,7 +6,8 @@ slug: /get-started/fundamentals/additional-features
 # さらなる機能
 Streamlit のさらなる機能について学びます。初めてのアプリでこれらの概念を知る必要はありませんが、何が利用できるのかを確認するためにチェックしてください。
 
-これで、Streamlit の [基本概念](/get-started/fundamentals/main-concepts) をすべて読み、[高度な概念](/get-started/fundamentals/advanced-concepts) でキャッシュとセッション状態を体験しました。一方で、付加機能についてはどうでしょうか? ここでは、アプリを次のレベルに引き上げるための追加機能をいくつか紹介します。
+これで、Streamlit の [基本概念](/get-started/fundamentals/main-concepts) をすべて読み、[高度な概念](/get-started/fundamentals/advanced-concepts) でキャッシュとセッション状態を体験しました。
+一方で、付加機能についてはどうでしょうか？ここでは、アプリを次のレベルに引き上げるための追加機能をいくつか紹介します。
 
 ## テーマ設定
 
@@ -105,11 +106,11 @@ st.sidebar.markdown("# Page 3 🎉")
 
 ## カスタムコンポーネント
 
-If you can't find the right component within the Streamlit library, try out custom components to extend Streamlit's built-in functionality. Explore and browse through popular, community-created components in the [Components gallery](https://streamlit.io/components). If you dabble in frontend development, you can build your own custom component with Streamlit's [components API](/develop/concepts/custom-components/intro).
+Streamlit ライブラリ内で適切なコンポーネントが見つからない場合は、カスタム コンポーネントを試して Streamlit の組み込み機能を拡張してください。人気のあるコミュニティ作成のコンポーネントは [コンポーネント ギャラリー](https://streamlit.io/components)で探すことができます。 フロントエンド開発に興味がある場合は、Streamlit の [コンポーネント API](/develop/concepts/custom-components/intro) を使って独自のカスタムコンポーネントを作成することもできます。
 
 ## 静的ファイルの提供
 
-As you learned in Streamlit fundamentals, Streamlit runs a server that clients connect to. That means viewers of your app don't have direct access to the files which are local to your app. Most of the time, this doesn't matter because Streamlt commands handle that for you. When you use `st.image(<path-to-image>)` your Streamlit server will access the file and handle the necessary hosting so your app viewers can see it. However, if you want a direct URL to an image or file you'll need to host it. This requires setting the correct configuration and placing your hosted files in a directory named `static`. For example, your project could look like:
+Streamlit の基礎で学んだように、Streamlit はクライアントが接続するサーバーを実行します。つまり、アプリの閲覧者は、アプリのローカルにあるファイルに直接アクセスできません。ほとんどの場合、これは、問題にはなりません。なぜなら、Streamlt のコマンドがそれを自動的に処理してくれるからです。`st.image(<path-to-image>)` を使用すると、Streamlit サーバーがファイルにアクセスし、アプリの閲覧者がファイルを見ることができるように必要なホスティングを処理します。ただし、画像またはファイルへの直接 URL が必要な場合は、それをホストする必要があります。これには、正しい構成を設定し、ホストされたファイルを `static` という名前のディレクトリに配置する必要があります。たとえば、プロジェクト構成は次のようになります。
 
 ```bash
 your-project/
@@ -118,8 +119,8 @@ your-project/
 └── streamlit_app.py
 ```
 
-To learn more, read our guide on [Static file serving](/develop/concepts/configuration/serving-static-files).
+詳細については、[静的ファイルの提供](/develop/concepts/configuration/serving-static-files) に関するガイドをお読みください。
 
 ## アプリのテスト
 
-Good development hygeine includes testing your code. Automated testing allows you to write higher quality code, faster! Streamlit has a built-in testing framework that let's you build tests easily. Use your favorite testing framework to run your tests. We like [`pytest`](https://pypi.org/project/pytest/). When you test a Streamlit app, you simulate running the app, declare user input, and inspect the results. You can use GitHub workflows to automate your tests and get instant alerts about breaking changes. Learn more in our guide to [App testing](/develop/concepts/app-testing).
+良い開発習慣には、コードのテストが含まれます。自動テストにより、より高品質のコードをより速く作成できるようになります。 Streamlit には、テストを簡単に構築できるテスト フレームワークが組み込まれています。お気に入りのテスト フレームワークを使用してテストを実行することができます。私たちのお薦めは [`pytest`](https://pypi.org/project/pytest/) です。 Streamlit アプリをテストするときは、アプリの実行をシミュレートし、ユーザー入力を宣言し、結果を検査します。 GitHub ワークフローを使用してテストを自動化し、重大な変更に関するアラートを即時に受け取ることができます。詳細については、[アプリのテスト](/develop/concepts/app-testing) のガイドをご覧ください。
