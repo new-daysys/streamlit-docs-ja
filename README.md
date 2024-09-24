@@ -13,8 +13,8 @@
        - [少し高度な概念](get-started/fundamentals/advanced-concepts.md)
        - [さらなる機能](get-started/fundamentals/additional-features.md)
    + [はじめの一歩](/get-started/tutorials)
-       -  [アプリを作る](get-started/fundamentals/tutorials/create-an-app.md)
-       -  [マルチページアプリを作る](get-started/fundamentals/tutorials/create-a-multipage-apps.md)
+       -  [アプリを作る](get-started/tutorials/create-an-app.md)
+       -  [マルチページアプリを作る](get-started/tutorials/create-a-multipage-apps.md)
 2. [開発する - Develop](/develop/concepts)
    + Concepts
    + API reference
