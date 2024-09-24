@@ -6,7 +6,7 @@
 翻訳の正しさは心掛けていません。雰囲気がわかれば良いというスタンスです。
 少しくらい誰かの何かの役に立つかもな、という程度です。
 
-1. [さぁはじめよう！](/get-started)
+1. [さぁはじめよう！](/contents/get-started)
    + [インストール](/get-started/installation.md)
    + [基本的なこと](get-started/fundamentals/)
        - [基礎的な概念](get-started/fundamentals/main-concepts.md)
