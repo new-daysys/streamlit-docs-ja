@@ -16,7 +16,7 @@ Streamlit アプリがどのように実行され、どのようにデータが�
 Streamlit で関数をキャッシュするには、関数にキャッシュデコレーターを適用する必要があります。選択肢は 2 つあります。
 
 - `st.cache_data` は、データを返す計算をキャッシュするための推奨される方法です。シリアル化可能なデータ オブジェクト (str、int、float、DataFrame、dict、list など) を返す関数を使用する場合は、`st.cache_data` を使用します。 **関数呼び出しごとにデータの新しいコピーが作成されます**。これにより、[突然変異と競合状態](/develop/concepts/architecture/caching#mutation-and-concurrency-issues) に対して安全になります。ほとんどの場合、`st.cache_data` の動作はあなたが望むものです。そのため、よくわからない場合は、`st.cache_data` から始めて、それが機能するかどうかを確認してください。
-- `st.cache_resource` は、ML モデルやデータベース接続などのグローバル リソースをキャッシュするための推奨される方法です。関数が複数回ロードしたくないシリアル化できないオブジェクトを返す場合は、「st.cache_resource」を使用します。 **キャッシュされたオブジェクト自体を返します**。これは、コピーや複製を行わずにすべての再実行とセッションで共有されます。 `st.cache_resource` を使用してキャッシュされたオブジェクトを変更すると、その変更はすべての再実行とセッションにわたって存在します。
+- `st.cache_resource` は、ML モデルやデータベース接続などのグローバル リソースをキャッシュするための推奨される方法です。関数が複数回ロードしたくないシリアル化できないオブジェクトを返す場合は、`st.cache_resource` を使用します。 **キャッシュされたオブジェクト自体を返します**。これは、コピーや複製を行わずにすべての再実行とセッションで共有されます。 `st.cache_resource` を使用してキャッシュされたオブジェクトを変更すると、その変更はすべての再実行とセッションにわたって存在します。
 
 Example:
 
@@ -34,7 +34,7 @@ def long_running_function(param1, param2):
 
 `long_running_function` 内のコードを実行する前に、Streamlit はキャッシュに以前に保存された結果がないかチェックします。指定された関数と入力値のキャッシュされた結果が見つかった場合、そのキャッシュされた結果が返され、関数のコードは再実行されません。それ以外の場合、Streamlit は関数を実行し、結果をキャッシュに保存し、スクリプトの実行を続行します。開発中、関数コードが変更されるとキャッシュが自動的に更新され、最新の変更がキャッシュに確実に反映されます。
 
-Streamlit キャッシュ デコレーター、その構成パラメーター、およびその制限の詳細については、「[Caching](/develop/concepts/architecture/caching)」を参照してください。
+Streamlit キャッシュ デコレーター、その構成パラメーター、およびその制限の詳細については、[キャッシュ](/develop/concepts/architecture/caching)を参照してください。
 
 ## セッション状態
 
@@ -62,7 +62,7 @@ st.button("Run it again")
 
 - **初回実行:** 各ユーザーに対して初めてア​​プリを実行するとき、セッション状態は空です。したがって、キーと値のペアが作成されます (`"counter":0`)。スクリプトが続行すると、カウンタはすぐにインクリメントされ (`"counter":1`)、「このページは 1 回実行されました。」という結果が表示されます。ページが完全にレンダリングされると、スクリプトは終了し、Streamlit サーバーはユーザーが何らかの操作を行うのを待ちます。そのユーザーがボタンをクリックすると、再実行が開始されます。
 
-- **2 回目の実行:** 「counter」はすでにセッション状態のキーであるため、再初期化されません。スクリプトが続行されると、カウンタがインクリメントされ (`"counter":2`)、「このページは 2 回実行されました。」という結果が表示されます。
+- **2 回目の実行:** `counter` はすでにセッション状態のキーであるため、再初期化されません。スクリプトが続行されると、カウンタがインクリメントされ (`"counter":2`)、「このページは 2 回実行されました。」という結果が表示されます。
 
 セッション状態が役立つ一般的なシナリオがいくつかあります。上で示したように、セッション状態は、ある再実行から次の再実行に基づいて構築する漸進的なプロセスがある場合に使用されます。セッション状態は、キャッシュと同様に、再計算を防ぐために使用することもできます。ただし、相違点は重要です。
 
@@ -89,9 +89,9 @@ st.scatter_chart(st.session_state.df, x="x", y="y", color=color)
 
 [基本概念](/get-started/fundamentals/main-concepts#widgets) で説明したように、セッション状態はウィジェットにも関連しています。ウィジェットは魔法のようで、ステートフル性を単独で静かに処理します。ただし、高度な機能として、ウィジェットにキーを割り当てることで、コード内のウィジェットの値を操作できます。ウィジェットに割り当てられたキーは、ウィジェットの値に関連付けられたセッション状態のキーになります。これを使用してウィジェットを操作できます。 Streamlit の基本を理解したら、興味があれば [ウィジェットの動作](/develop/concepts/architecture/widget-behavior) に関するガイドを参照して詳細を調べてください。
 
-## Connections
+## 接続する
 
-As hinted above, you can use `@st.cache_resource` to cache connections. This is the most general solution which allows you to use almost any connection from any Python library. However, Streamlit also offers a convenient way to handle some of the most popular connections, like SQL! `st.connection` takes care of the caching for you so you can enjoy fewer lines of code. Getting data from your database can be as easy as:
+上でヒントしたように、`@st.cache_resource` を使用して接続をキャッシュできます。これは最も一般的なソリューションであり、任意の Python ライブラリからのほぼすべての接続を使用できます。ただし、Streamlit は、SQL などの最も一般的な接続を処理する便利な方法も提供します。 `st.connection` がキャッシュを処理してくれるので、コード行を減らすことができます。データベースからデータを取得するのは次のように簡単です。
 
 ```python
 import streamlit as st
@@ -101,7 +101,7 @@ df = conn.query("select * from my_table")
 st.dataframe(df)
 ```
 
-Of course, you may be wondering where your username and password go. Streamlit has a convenient mechanism for [Secrets management](/develop/concepts/connections/secrets-management). For now, let's just see how `st.connection` works very nicely with secrets. In your local project directory, you can save a `.streamlit/secrets.toml` file. You save your secrets in the toml file and `st.connection` just uses them! For example, if you have an app file `streamlit_app.py` your project directory may look like this:
+もちろん、ユーザー名とパスワードがどこに行くのか疑問に思うかもしれません。 Streamlit には、[シークレット管理](/develop/concepts/connections/secrets-management) のための便利なメカニズムがあります。ここでは、`st.connection` がシークレットに対してどのようにうまく機能するかを見てみましょう。ローカルのプロジェクトディレクトリに、`.streamlit/secrets.toml` ファイルを保存できます。シークレットを toml ファイルに保存すると、`st.connection` はそれを使用するだけです。たとえば、アプリファイル `streamlit_app.py` がある場合、プロジェクト ディレクトリは次のようになります。
 
 ```bash
 your-LOCAL-repository/
@@ -110,7 +110,7 @@ your-LOCAL-repository/
 └── streamlit_app.py
 ```
 
-For the above SQL example, your `secrets.toml` file might look like the following:
+上記の SQL 例の場合、`secrets.toml` ファイルは次のようになります。
 
 ```toml
 [connections.my_database]
@@ -123,4 +123,5 @@ For the above SQL example, your `secrets.toml` file might look like the followin
     database="mydb" # Database name
 ```
 
-Since you don't want to commit your `secrets.toml` file to your repository, you'll need to learn how your host handles secrets when you're ready to publish your app. Each host platform may have a different way for you to pass your secrets. If you use Streamlit Community Cloud for example, each deployed app has a settings menu where you can load your secrets. After you've written an app and are ready to deploy, you can read all about how to [Deploy your app](/deploy/streamlit-community-cloud/deploy-your-app) on Community Cloud.
+`secrets.toml` ファイルをリポジトリにコミットしたくないため、アプリを公開する準備ができたら、ホストがシークレットを処理する方法を学ぶ必要があります。ホストプラットフォームごとに、シークレットを渡す方法が異なる場合があります。たとえば、Streamlit Community Cloud を使用する場合、デプロイされた各アプリには、シークレットをロードできる設定メニューがあります。アプリを作成し、デプロイする準備ができたら、Community Cloud で [アプリをデプロイ](/deploy/streamlit-community-cloud/deploy-your-app) する方法をすべて読むことができます。
+
