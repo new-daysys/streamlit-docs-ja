@@ -6,7 +6,7 @@
 翻訳の正しさは心掛けていません。雰囲気がわかれば良いというスタンスです。
 少しくらい誰かの何かの役に立つかもな、という程度です。
 
-1. [さぁはじめよう！ - Get started](/get-started)
+1. [さぁはじめよう！](/get-started)
    + [インストール](/get-started/installation.md)
    + [基本的なこと](get-started/fundamentals/)
        - [基礎的な概念](get-started/fundamentals/main-concepts.md)
@@ -15,17 +15,17 @@
    + [はじめの一歩](/get-started/tutorials)
        -  [アプリを作る](get-started/tutorials/create-an-app.md)
        -  [マルチページアプリを作る](get-started/tutorials/create-a-multi-page-app.md)
-2. [開発する - Develop](/develop/concepts)
+2. [開発する](/contents/develop)
    + Concepts
    + API reference
    + Tutorials
    + Quick reference
-4. [デプロイする - Deploy](/get-started)
+4. [デプロイする](/contents/deploy)
    + Concepts
    + Streamlit Community Cloud
    + Streamlit in Snowflake
    + Other platforms
-5. [ナレッジベース - Knowledge base](/get-started)
+5. [ナレッジベース](/contents/knowledge-base)
    + FAQ
    + Installing dependencies
    + Deployment issues
