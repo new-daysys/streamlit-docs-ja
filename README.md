@@ -8,9 +8,13 @@
 
 1. [さぁはじめよう！ - Get started](/get-started)
    + [インストール](/get-started/installation.md)
-   + [基本的な概念](get-started/fundamentals/main-concepts.md)
-   + [少し高度な概念](get-started/fundamentals/advanced-concepts.md)
-   + [はじめの一歩](/get-started/tutorials.md)
+   + [基本的なこと](get-started/fundamentals/)
+       - [基礎的な概念](get-started/fundamentals/main-concepts.md)
+       - [少し高度な概念](get-started/fundamentals/advanced-concepts.md)
+       - [さらなる機能](get-started/fundamentals/additional-features.md)
+   + [はじめの一歩](/get-started/tutorials)
+       -  [アプリを作る](get-started/fundamentals/tutorials/create-an-app.md)
+       -  [マルチページアプリを作る](get-started/fundamentals/tutorials/create-a-multipage-apps.md)
 2. [開発する - Develop](/develop/concepts)
    + Concepts
    + API reference
