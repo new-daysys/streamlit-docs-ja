@@ -7,14 +7,14 @@
 少しくらい誰かの何かの役に立つかもな、という程度です。
 
 1. [さぁはじめよう！](/contents/get-started)
-   + [インストール](/get-started/installation.md)
-   + [基本的なこと](get-started/fundamentals/)
-       - [基礎的な概念](get-started/fundamentals/main-concepts.md)
-       - [少し高度な概念](get-started/fundamentals/advanced-concepts.md)
-       - [さらなる機能](get-started/fundamentals/additional-features.md)
-   + [はじめの一歩](/get-started/tutorials)
-       -  [アプリを作る](get-started/tutorials/create-an-app.md)
-       -  [マルチページアプリを作る](get-started/tutorials/create-a-multi-page-app.md)
+   + [インストール](/contents/get-started/installation.md)
+   + [基本的なこと](/contents/get-started/fundamentals/)
+       - [基礎的な概念](/contents/get-started/fundamentals/main-concepts.md)
+       - [少し高度な概念](/contents/get-started/fundamentals/advanced-concepts.md)
+       - [さらなる機能](/contents/get-started/fundamentals/additional-features.md)
+   + [はじめの一歩](/contents/get-started/tutorials)
+       -  [アプリを作る](/contents/get-started/tutorials/create-an-app.md)
+       -  [マルチページアプリを作る](/contents/get-started/tutorials/create-a-multi-page-app.md)
 2. [開発する](/contents/develop)
    + Concepts
    + API reference
