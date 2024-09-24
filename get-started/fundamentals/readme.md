@@ -3,13 +3,13 @@ title: Fundamental concepts
 slug: /get-started/fundamentals
 ---
 
-# Fundamental concepts
+# fundamentals
 
 Streamlit を初めて使用しますが、グランド ツアーをご希望ですか?もしそうなら、あなたは正しい場所にいます！
 
 ### [基本的な概念](/get-started/fundamentals/main-concepts.md)
 
-Streamlitの基本概念を学びましょう。Streamlitアプリはどのように構成されているのでしょうか？
+Streamlit の基本概念を学びましょう。Streamlitアプリはどのように構成されているのでしょうか？
 どのように実行されるのでしょうか？データがどのようにしてウェブページに表示されるのでしょうか？
 
 ### [少し高度な概念](/get-started/fundamentals/advanced-concepts.md)
@@ -19,4 +19,5 @@ Streamlit の再実行ロジックを理解した後は、キャッシュやセ�
 
 ### [さらなる機能](/get-started/fundamentals/additional-features.md)
 
-Streamlit のさらなる機能について学びます。初めてのアプリでこれらの概念を知る必要はありませんが、何が利用できるのかを確認してみてください。
+Streamlit のさらなる機能について学びます。
+初めてのアプリでこれらの概念を知る必要はありませんが、何が利用できるのかを確認してみてください。
