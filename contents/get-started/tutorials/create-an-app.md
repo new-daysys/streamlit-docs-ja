@@ -21,15 +21,14 @@ Streamlit の使い方を学ぶ最も簡単な方法は、自分で試してみ�
 > [!Tip]
 > すべてを一度に見たい場合は、完全なスクリプトが以下にあります。
 
-## Create your first app
+## 最初のアプリを作成する
 
-Streamlit is more than just a way to make data apps, it’s also a community of creators that share their apps and ideas and help each other make their work better. Please come join us on the community forum. We love to hear your questions, ideas, and help you work through your bugs — stop by today!
+Streamlitは、データアプリを作成するためのツールであるだけでなく、アプリやアイデアを共有し、お互いに助け合うクリエイターのコミュニティでもあります。
+ぜひコミュニティフォーラムに参加してください！質問やアイデアをお聞かせいただき、バグ解決のお手伝いもいたします。今日ぜひ立ち寄ってください！
 
-1. The first step is to create a new Python script. Let's call it
-   `uber_pickups.py`.
+1. 最初のステップは、新しいPythonスクリプトを作成することです。`uber_pickups.py` と名付けましょう。
 
-2. Open `uber_pickups.py` in your favorite IDE or text editor, then add these
-   lines:
+2. `uber_pickups.py` をお気に入りの IDE またはテキストエディタで開き、次の行を追加します：
 
    ```python
    import streamlit as st
@@ -37,32 +36,21 @@ Streamlit is more than just a way to make data apps, it’s also a community of 
    import numpy as np
    ```
 
-3. Every good app has a title, so let's add one:
+3. すべての良いアプリにはタイトルが必要ですので、次のコードを追加します：
 
    ```python
    st.title('Uber pickups in NYC')
    ```
 
-4. Now it's time to run Streamlit from the command line:
+4. 次に、コマンドラインから Streamlit を実行します：
 
    ```bash
    streamlit run uber_pickups.py
    ```
 
-   Running a Streamlit app is no different than any other Python script. Whenever you need to view the app, you can use this command.
+   Streamlit アプリの実行は、他の Python スクリプトと同じように行われます。アプリを表示する必要がある場合は、いつでもこのコマンドを使用できます。
 
-   <Tip>
-
-   Did you know you can also pass a URL to `streamlit run`? This is great when combined with GitHub Gists. For example:
-
-   ```bash
-   streamlit run https://raw.githubusercontent.com/streamlit/demo-uber-nyc-pickups/master/streamlit_app.py
-   ```
-
-   </Tip>
-
-5. As usual, the app should automatically open in a new tab in your
-   browser.
+5. いつものように、アプリは自動的にブラウザの新しいタブで開くはずです。
 
 ## Fetch some data
 
