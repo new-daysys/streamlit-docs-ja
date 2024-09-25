@@ -8,13 +8,13 @@
 Windows、macOS、またはLinuxでStreamlitをインストールする手順を案内します。
 あるいは、GitHub Codespaces や Snowflake 上の Streamlit を使って、ブラウザで直接コードを書くこともできます。
 
-### [基本的なこと](/contents/get-started/fundamentals.md)
+### [基本的なこと](/contents/get-started/fundamentals)
 
 Streamlit のデータモデルと開発フローを紹介します。
 Streamlit がデータアプリの構築において最も強力なツールである理由、データの表示とスタイル設定、チャートやマップの描画、
 インタラクティブなウィジェットの追加、アプリレイアウトのカスタマイズ、計算のキャッシング、テーマの定義などの機能を学びます。
 
-### [最初のステップ](/contents/get-started/tutorials.md)
+### [最初のステップ](/contents/get-started/tutorials)
 
 コア機能を使用して、データの取得とキャッシング、チャートの描画、マップ上での情報のプロット、インタラクティブウィジェットを
 使った結果のフィルタリングを行うアプリの作成手順を案内します。
