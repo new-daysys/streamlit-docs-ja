@@ -8,8 +8,8 @@
 
 1. [さぁはじめよう！](/contents/get-started)
    + [インストール](/contents/get-started/installation.md)
-   + [基本的なこと](/contents/get-started/fundamentals/)
-       - [基礎的な概念](/contents/get-started/fundamentals/main-concepts.md)
+   + [基礎的なこと](/contents/get-started/fundamentals/)
+       - [基本的な概念](/contents/get-started/fundamentals/main-concepts.md)
        - [少し高度な概念](/contents/get-started/fundamentals/advanced-concepts.md)
        - [さらなる機能](/contents/get-started/fundamentals/additional-features.md)
    + [はじめの一歩](/contents/get-started/tutorials)
