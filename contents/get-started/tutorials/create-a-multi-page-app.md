@@ -5,7 +5,7 @@ slug: /get-started/tutorials/create-a-multipage-app
 
 ## マルチページアプリの作成
 
-[追加機能](/get-started/fundamentals/additional-features.md)では、マルチページアプリについて説明し、ページの定義方法、アプリの構造と実行、ユーザーインターフェースでのページ間のナビゲーションについて紹介しました。詳しくは、[マルチページアプリのガイド](/develop/concepts/multipage-apps.md)をご覧ください。
+[追加機能](/contents/get-started/fundamentals/additional-features.md)では、マルチページアプリについて説明し、ページの定義方法、アプリの構造と実行、ユーザーインターフェースでのページ間のナビゲーションについて紹介しました。詳しくは、[マルチページアプリのガイド](/contents/develop/concepts/multipage-apps.md)をご覧ください。
 
 このガイドでは、`streamlit hello` アプリをマルチページアプリに変換することで理解を深め、実際に活用してみましょう！
 
@@ -565,8 +565,8 @@ streamlit run Hello.py
 
 ここから始めるためのいくつかのリソースを紹介します：
 
-- Streamlit の[Community Cloud](/deploy/streamlit-community-cloud.md) で、アプリを無料でデプロイ。
+- Streamlit の[Community Cloud](/contents/deploy/streamlit-community-cloud.md) で、アプリを無料でデプロイ。
 - [コミュニティフォーラム](https://discuss.streamlit.io/c/streamlit-examples/9) で質問を投稿したり、マルチページアプリを共有したり。
-- [マルチページアプリ](/develop/concepts/multipage-apps.md) に関するドキュメントをチェック。
-- キャッシング、テーマ設定、アプリに状態を持たせる方法については[コンセプト](/develop/concepts) を読んでみましょう。
-- Streamlit のすべてのコマンドの例を確認するために、[APIリファレンス](/develop/api-reference/) を参照。
+- [マルチページアプリ](/contents/develop/concepts/multipage-apps.md) に関するドキュメントをチェック。
+- キャッシング、テーマ設定、アプリに状態を持たせる方法については[コンセプト](/contents/develop/concepts) を読んでみましょう。
+- Streamlit のすべてのコマンドの例を確認するために、[APIリファレンス](/contents/develop/api-reference/) を参照。
