@@ -3,63 +3,48 @@ title: Development concepts
 slug: /develop/concepts
 ---
 
-# Development concepts
+# 開発の概念
 
-This section gives you background on how different parts of Streamlit work.
+このセクションでは、Streamlitのさまざまな部分がどのように機能するかについての背景を紹介します。
 
-### /develop/concepts/architecture
+### [Streamlitのアーキテクチャと実行モデル](/contents/develop/concepts/architecture)
 
-**Streamlit's architecture and execution model**
+Streamlitの実行モデルにより、スクリプトを美しいインタラクティブなウェブアプリに簡単に変換できます。
 
-Streamlit's execution model makes it easy to turn your scripts into beautiful, interactive web apps.
+- アプリの実行方法を理解する。
+- Streamlitの実行モデルとクライアントサーバーモデルを理解する。
+- Streamlitの再実行に関連する主要なツールを理解する。
 
-- Understand how to run your app.
-- Understand Streamlit's execution and client-server model.
-- Understand the primary tools to work with Streamlit reruns.
+### [マルチページアプリ](/contents/develop/concepts/multipage-apps)
 
-### /develop/concepts/multipage-apps
+Streamlitはディレクトリ構造を使用して、マルチページアプリを自動で構築する方法を提供しています。
 
-Multipage apps
+- マルチページアプリの構造と設定を学ぶ。
 
-Streamlit provides an automated way to build multipage apps through directory structure.
+### [アプリデザインの考慮点](/develop/concepts/design)
 
-- Learn how to structure and configure your multipage app.
+Streamlitのアーキテクチャと実行モデルを活用して、アプリをデザインします。Streamlitコマンドを使って動的でインタラクティブなコンテンツをユーザーに提供します。
 
-### /develop/concepts/design
+- パフォーマンスが高く管理しやすいアプリの作成方法を学ぶ。
+- プロジェクトの構造とデザインの方法を学ぶ。
 
-**App design considerations**
+### [接続とシークレット](/develop/concepts/connections)
 
-Bring together Streamlit's architecture and execution model to design your app. Work with Streamlit commands to render dynamic and
-interactic content for your users.
+- Streamlitの便利な組み込み機能を使用して、接続やシークレットの管理方法を学ぶ。
 
-- Learn how to make your apps performant and easy-to-manage.
-- Learn how to structure and design your project.
+### [カスタムコンポーネントの作成](/contents/develop/concepts/custom-components)
 
-### /develop/concepts/connections
+カスタムコンポーネントは、Streamlitの機能を拡張します。
 
-**Connections and secrets**
+- 独自のカスタムコンポーネントの作成方法を学ぶ。
+- サードパーティのコンポーネントをインストールする方法を学ぶ。
 
-- Learn how to manage connections and secrets with Streamlit's convenient, built-in features.
+### [設定とテーマ](/contents/develop/concepts/configuration)
 
-### /develop/concepts/custom-components
+Streamlitでは、アプリをカスタマイズおよび設定するためのさまざまなオプションが提供されています。
 
-**Creating custom components**
+- サーバー設定、クライアント設定、テーマ設定を含む設定オプションの使用方法を学ぶ。
 
-Custom components extend Streamlit's functionality.
+### [アプリテスト](/contents/develop/concepts/app-testing)
 
-- Learn how to build your own custom component.
-- Learn how install a third-party component.
-
-### /develop/concepts/configuration
-
-**Configuration and theming**
-
-Streamlit provides a variety options to customize and configure your app.
-
-- Learn how to work with configuration options, including server settings, client settings, and theming.
-
-### /develop/concepts/app-testing
-
-**App testing**
-
-Streamlit app testing enables developers to build and run automated tests. Bring your favorite test automation software and enjoy simple syntax to simulate user input and inspect rendered output.
+Streamlitのアプリテスト機能により、開発者は自動テストを構築および実行できます。お気に入りのテスト自動化ソフトウェアを使って、ユーザー入力をシミュレートし、レンダリングされた出力を確認する簡単な構文を楽しみましょう。
