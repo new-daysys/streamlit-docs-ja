@@ -3,64 +3,34 @@ title: Working with Streamlit's execution model
 slug: /develop/concepts/architecture
 ---
 
-# Working with Streamlit's execution model
+# Streamlitの実行モデルを理解する
 
-<TileContainer layout="list">
+### [アプリの実行](/contents/develop/concepts/architecture/run-your-app.md)
 
-<RefCard href="/develop/concepts/architecture/run-your-app">
+Streamlitアプリの起動方法を理解します。
 
-<h5>Run your app</h5>
 
-Understand how to start your Streamlit app.
+### [Streamlitのアーキテクチャ](/contents/develop/concepts/architecture/architecture.md)
 
-</RefCard>
+Streamlitのクライアントサーバーアーキテクチャと関連する考慮事項を理解します。
 
-<RefCard href="/develop/concepts/architecture/architecture">
+### [アプリのクローム](/contents/develop/concepts/architecture/app-chrome.md)
 
-<h5>Streamlit's architecture</h5>
+すべての Streamlit アプリには、右上にいくつかのウィジェットがあり、アプリ開発やユーザーがアプリを閲覧する際に役立ちます。
+これを「アプリのクローム」と呼びます。
 
-Understand Streamlit's client-server architecture and related considerations.
+### [キャッシング](/contents/develop/concepts/architecture/caching.md)
 
-</RefCard>
+結果をキャッシュして再計算を避け、アプリのパフォーマンスを向上させます。
 
-<RefCard href="/develop/concepts/architecture/app-chrome">
+### [セッションステート](/contsnts/develop/concepts/architecture/session-state.md)
 
-<h5>The app chrome</h5>
+セッションステートを使用してアプリの状態管理を行います。
 
-Every Streamlit app has a few widgets in the top right to help you as you develop your app and help your users as they view your app. This is called the app chrome.
+### [フォーム](/contents/develop/concepts/architecture/forms.md)
 
-</RefCard>
+フォームを使用してユーザー入力を分離し、不要なアプリの再実行を防ぎます。
 
-<RefCard href="/develop/concepts/architecture/caching">
+### [ウィジェットの動作](/contsnts/develop/concepts/architecture/widget-behavior.md)
 
-<h5>Caching</h5>
-
-Make your app performant by caching results to avoid unecessary recomputation with each rerun.
-
-</RefCard>
-
-<RefCard href="/develop/concepts/architecture/session-state">
-
-<h5>Session State</h5>
-
-Manage your app's statefulness with Session State.
-
-</RefCard>
-
-<RefCard href="/develop/concepts/architecture/forms">
-
-<h5>Forms</h5>
-
-Use forms to isolate user input and prevent unnecessary app reruns.
-
-</RefCard>
-
-<RefCard href="/develop/concepts/architecture/widget-behavior">
-
-<h5>Widget behavior</h5>
-
-Understand how widgets work in detail.
-
-</RefCard>
-
-</TileContainer>
+ウィジェットがどのように動作するかを詳しく理解します。
