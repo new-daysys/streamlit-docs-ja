@@ -16,10 +16,10 @@
        -  [アプリを作る](/contents/get-started/tutorials/create-an-app.md)
        -  [マルチページアプリを作る](/contents/get-started/tutorials/create-a-multi-page-app.md)
 2. [開発しよう](/contents/develop)
-   + Concepts
-   + API reference
-   + Tutorials
-   + Quick reference
+   + [コンセプト](/contents/develop/concepts)
+   + [APIリファレンス](/contents/develop/api-reference)
+   + [チュートリアル](/contents/develop/tutorials)
+   + [クイックリファレンス](/contents/develop/quick-reference)
 4. [デプロイしよう](/contents/deploy)
    + Concepts
    + Streamlit Community Cloud
