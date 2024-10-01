@@ -117,146 +117,120 @@ Streamlitは、データアプリを作成するためのツールであるだ�
    一歩引いて考えると、これは実際に驚くべきことです。
    背後では何かマジカルなことが起こっており、たった一行のコードでそれが有効になるのです。
 
-### How's it work?
+翻訳しました。
 
-Let's take a few minutes to discuss how `@st.cache_data` actually works.
+---
 
-When you mark a function with Streamlit’s cache annotation, it tells Streamlit
-that whenever the function is called that it should check two things:
+### どう動いてるの？
 
-1. The input parameters you used for the function call.
-2. The code inside the function.
+ここで少し時間を取って、`@st.cache_data` が実際にどのように機能するかを説明しましょう。
 
-If this is the first time Streamlit has seen both these items, with these exact
-values, and in this exact combination, it runs the function and stores the
-result in a local cache. The next time the function is called, if the two
-values haven't changed, then Streamlit knows it can skip executing the function
-altogether. Instead, it reads the output from the local cache and passes it on
-to the caller -- like magic.
+Streamlit のキャッシュアノテーションを使って関数にマークを付けると、Streamlit はその関数が呼び出されるたびに以下の2つのことをチェックします：
 
-"But, wait a second," you’re saying to yourself, "this sounds too good to be
-true. What are the limitations of all this awesomesauce?"
+1. 関数呼び出しで使用した入力パラメータ。
+2. 関数内のコード。
 
-Well, there are a few:
+これらの要素が、初めて Streamlit に認識されたものである場合（入力パラメータと関数コードが初めての組み合わせである場合）、関数を実行し、その結果をローカルキャッシュに保存します。次回、同じ関数が呼び出される際に、2つの値が変更されていない場合、Streamlit は関数の実行をスキップできると判断します。その代わりに、キャッシュから出力を読み込み、それを呼び出し元に渡します——まるで魔法のようです。
 
-1. Streamlit will only check for changes within the current working directory.
-   If you upgrade a Python library, Streamlit's cache will only notice this if
-   that library is installed inside your working directory.
-2. If your function is not deterministic (that is, its output depends on random
-   numbers), or if it pulls data from an external time-varying source (for
-   example, a live stock market ticker service) the cached value will be
-   none-the-wiser.
-3. Lastly, you should avoid mutating the output of a function cached with `st.cache_data` since cached
-   values are stored by reference.
+「でも、ちょっと待って、」とあなたは思っているかもしれません。「これはあまりにも良すぎる話だ。何か制約があるんじゃないの？」
 
-While these limitations are important to keep in mind, they tend not to be an
-issue a surprising amount of the time. Those times, this cache is really
-transformational.
+はい、いくつか制約があります：
 
-<Tip>
+1. Streamlit は現在の作業ディレクトリ内での変更しか確認しません。もし Python ライブラリをアップグレードした場合、そのライブラリが作業ディレクトリ内にインストールされている場合にのみ、Streamlit のキャッシュは変更を検知します。
+2. 関数が非決定的（つまり、ランダムな数値に依存する）場合や、外部の時間変動データソース（例: リアルタイムの株式市場ティッカーサービス）からデータを取得する場合、キャッシュされた値は更新されません。
+3. 最後に、`st.cache_data` でキャッシュされた関数の出力を変更することは避けるべきです。キャッシュされた値は参照によって保存されるためです。
 
-Whenever you have a long-running computation in your code, consider
-refactoring it so you can use `@st.cache_data`, if possible. Please read [Caching](/develop/concepts/architecture/caching) for more details.
+これらの制約は覚えておくべき重要なポイントですが、実際のところ、それほど問題になることは少ないです。そのため、キャッシュは非常に革新的な機能となります。
 
-</Tip>
+> [!Tip]
+> コード内に長時間実行される計算がある場合、可能であればそれをリファクタリングし、`@st.cache_data` を使用することを検討してください。
+> 詳細は[キャッシング](/develop/concepts/architecture/caching)を参照してください。
 
-Now that you know how caching with Streamlit works, let’s get back to the Uber
-pickup data.
+Streamlit でのキャッシングの仕組みを理解したところで、Uber のピックアップデータに戻りましょう。
 
-## Inspect the raw data
+翻訳しました。
 
-It's always a good idea to take a look at the raw data you're working with
-before you start working with it. Let's add a subheader and a printout of the
-raw data to the app:
+---
+
+## 生データの確認
+
+作業を始める前に、扱っている生データを確認することは常に良いアイデアです。アプリにサブヘッダーと生データの出力を追加してみましょう：
 
 ```python
 st.subheader('Raw data')
 st.write(data)
 ```
 
-In the [Basic concepts](/get-started/fundamentals/main-concepts) guide you learned that
-[`st.write`](/develop/api-reference/write-magic/st.write) will render almost anything you pass
-to it. In this case, you're passing in a dataframe and it's rendering as an
-interactive table.
+[基本概念](/get-started/fundamentals/main-concepts) ガイドで学んだように、[`st.write`](/develop/api-reference/write-magic/st.write) は、
+渡されたほぼすべてのデータをレンダリングします。この場合、データフレームを渡しているため、インタラクティブなテーブルとして表示されます。
 
-[`st.write`](/develop/api-reference/write-magic/st.write) tries to do the right thing based on
-the data type of the input. If it isn't doing what you expect you can use a
-specialized command like [`st.dataframe`](/develop/api-reference/data/st.dataframe)
-instead. For a full list, see [API reference](/develop/api-reference).
+[`st.write`](/develop/api-reference/write-magic/st.write) は入力のデータ型に基づいて、適切な方法でデータを表示しようとします。
+もし期待通りに表示されない場合は、[`st.dataframe`](/develop/api-reference/data/st.dataframe) のような専用のコマンドを使用することもできます。
+詳細なリストは [APIリファレンス](/develop/api-reference) を参照してください。
 
-## Draw a histogram
+翻訳しました。
 
-Now that you've had a chance to take a look at the dataset and observe what's
-available, let's take things a step further and draw a histogram to see what
-Uber's busiest hours are in New York City.
+---
 
-1. To start, let's add a subheader just below the raw data section:
+## ヒストグラムの描画
+
+データセットを確認して何が含まれているかを把握したところで、次のステップに進み、ニューヨーク市における Uber の最も忙しい時間帯を確認するためにヒストグラムを描きましょう。
+
+1. まず、生データセクションのすぐ下にサブヘッダーを追加します：
 
    ```python
    st.subheader('Number of pickups by hour')
    ```
 
-2. Use NumPy to generate a histogram that breaks down pickup times binned by
-   hour:
+2. NumPy を使用して、ピックアップ時間を1時間ごとに分けたヒストグラムを生成します：
 
    ```python
    hist_values = np.histogram(
        data[DATE_COLUMN].dt.hour, bins=24, range=(0,24))[0]
    ```
 
-3. Now, let's use Streamlit's
-   [`st.bar_chart()`](/develop/api-reference/charts/st.bar_chart) method to draw this
-   histogram.
+3. 次に、Streamlit の[`st.bar_chart()`](/develop/api-reference/charts/st.bar_chart) メソッドを使って、このヒストグラムを描画します：
 
    ```python
    st.bar_chart(hist_values)
    ```
 
-4. Save your script. This histogram should show up in your app right away.
-   After a quick review, it looks like the busiest time is 17:00 (5 P.M.).
+4. スクリプトを保存します。このヒストグラムはすぐにアプリに表示されるはずです。確認してみると、最も忙しい時間は17:00（午後5時）のようです。
 
-To draw this diagram we used Streamlit's native `bar_chart()` method, but it's
-important to know that Streamlit supports more complex charting libraries like
-Altair, Bokeh, Plotly, Matplotlib and more. For a full list, see
-[supported charting libraries](/develop/api-reference/charts).
+この図を描画するために、Streamlit のネイティブメソッドである `bar_chart()` を使用しましたが、Streamlitは Altair、Bokeh、Plotly、Matplotlib などのより複雑なチャートライブラリもサポートしています。詳細なリストは、[サポートされているチャートライブラリ](/develop/api-reference/charts) をご覧ください。
 
-## Plot data on a map
+翻訳しました。
 
-Using a histogram with Uber's dataset helped us determine what the busiest
-times are for pickups, but what if we wanted to figure out where pickups were
-concentrated throughout the city. While you could use a bar chart to show this
-data, it wouldn't be easy to interpret unless you were intimately familiar with
-latitudinal and longitudinal coordinates in the city. To show pickup
-concentration, let's use Streamlit [`st.map()`](/develop/api-reference/charts/st.map)
-function to overlay the data on a map of New York City.
+---
 
-1. Add a subheader for the section:
+## データを地図上にプロットする
+
+Uber のデータセットを使ったヒストグラムで、ピックアップの最も忙しい時間帯を特定できましたが、ピックアップが市内のどこに集中しているのかを確認したい場合はどうでしょうか。棒グラフを使ってこのデータを表示することもできますが、緯度と経度に精通していない限り、解釈が難しいでしょう。ピックアップの集中を表示するために、Streamlit の[`st.map()`](/develop/api-reference/charts/st.map) 関数を使ってニューヨーク市の地図にデータを重ねて表示しましょう。
+
+1. セクションのサブヘッダーを追加します：
 
    ```python
    st.subheader('Map of all pickups')
    ```
 
-2. Use the `st.map()` function to plot the data:
+2. `st.map()` 関数を使用してデータをプロットします：
 
    ```python
    st.map(data)
    ```
 
-3. Save your script. The map is fully interactive. Give it a try by panning or
-   zooming in a bit.
+3. スクリプトを保存します。この地図は完全にインタラクティブです。少しパニングやズームを試してみてください。
 
-After drawing your histogram, you determined that the busiest hour for Uber
-pickups was 17:00. Let's redraw the map to show the concentration of pickups
-at 17:00.
+ヒストグラムを描いた後、Uber のピックアップの最も忙しい時間帯が 17:00 であることが分かりました。次に、17:00 時点でのピックアップの集中を表示するために地図を再描画しましょう。
 
-1. Locate the following code snippet:
+1. 次のコードスニペットを見つけます：
 
    ```python
    st.subheader('Map of all pickups')
    st.map(data)
    ```
 
-2. Replace it with:
+2. これを次のコードに置き換えます：
 
    ```python
    hour_to_filter = 17
@@ -265,11 +239,9 @@ at 17:00.
    st.map(filtered_data)
    ```
 
-3. You should see the data update instantly.
+3. データが即座に更新されるのが確認できるはずです。
 
-To draw this map we used the [`st.map`](/develop/api-reference/charts/st.map) function that's built into Streamlit, but
-if you'd like to visualize complex map data, we encourage you to take a look at
-the [`st.pydeck_chart`](/develop/api-reference/charts/st.pydeck_chart).
+この地図を描画するために、Streamlit に組み込まれている[`st.map`](/develop/api-reference/charts/st.map) 関数を使用しましたが、より複雑な地図データを視覚化したい場合は、[`st.pydeck_chart`](/develop/api-reference/charts/st.pydeck_chart) もぜひご覧ください。
 
 ## Filter results with a slider
 
