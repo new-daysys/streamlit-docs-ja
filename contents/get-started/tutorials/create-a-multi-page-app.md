@@ -3,21 +3,21 @@ title: Create a multipage app
 slug: /get-started/tutorials/create-a-multipage-app
 ---
 
-# Create a multipage app
+## マルチページアプリの作成
 
-In [Additional features](/get-started/fundamentals/additional-features), we introduced multipage apps, including how to define pages, structure and run multipage apps, and navigate between pages in the user interface. You can read more details in our guide to [Multipage apps](/develop/concepts/multipage-apps)
+[追加機能](/get-started/fundamentals/additional-features)では、マルチページアプリについて説明し、ページの定義方法、アプリの構造と実行、ユーザーインターフェースでのページ間のナビゲーションについて紹介しました。詳しくは、[マルチページアプリのガイド](/develop/concepts/multipage-apps)をご覧ください。
 
-In this guide, let’s put our understanding of multipage apps to use by converting the previous version of our `streamlit hello` app to a multipage app!
+このガイドでは、`streamlit hello` アプリをマルチページアプリに変換することで理解を深め、実際に活用してみましょう！
 
-## Motivation
+## 動機
 
-Before Streamlit 1.10.0, the streamlit hello command was a large single-page app. As there was no support for multiple pages, we resorted to splitting the app's content using `st.selectbox` in the sidebar to choose what content to run. The content is comprised of three demos for plotting, mapping, and dataframes.
+Streamlit 1.10.0より前は、`streamlit hello` コマンドは大きなシングルページアプリでした。マルチページのサポートがなかったため、サイドバーの `st.selectbox` を使用してアプリの内容を分割し、実行するコンテンツを選択していました。コンテンツは、プロット、マッピング、データフレームの3つのデモで構成されています。
 
-Here's what the code and single-page app looked like:
+以下は、そのコードとシングルページアプリの例です：
 
 <details>
-<summary><b><code>hello.py</code></b>  (👈 Toggle to expand)</summary>
-<br />
+
+<summary><b><code>hello.py</code></b> (👈 Toggle to expand)</summary> 
 
 ```python
 import streamlit as st
@@ -254,24 +254,26 @@ page_names_to_funcs[demo_name]()
 
 </details>
 
-<Cloud name="doc-hello" height="700px" />
+このファイルがどれほど大きいかに気づくでしょう！
+各アプリの「ページ」は関数として記述され、`selectbox` を使用して表示するページを選択しています。
+アプリが大きくなるにつれて、コードの保守には多くの追加作業が必要になります。
+また、`st.selectbox` のUIで「ページ」を選択することに制限されており、`st.set_page_config` を使って個別のページタイトルをカスタマイズできず、
+URLを使ってページ間をナビゲートすることもできません。
 
-Notice how large the file is! Each app “page" is written as a function, and the selectbox is used to pick which page to display. As our app grows, maintaining the code requires a lot of additional overhead. Moreover, we’re limited by the `st.selectbox` UI to choose which “page" to run, we cannot customize individual page titles with `st.set_page_config`, and we’re unable to navigate between pages using URLs.
+## 既存のアプリをマルチページアプリに変換する
 
-## Convert an existing app into a multipage app
+シングルページアプリの制約を確認したところで、次に何をすべきでしょうか？前のセクションで学んだ知識を活かして、既存のアプリをマルチページアプリに変換することができます！大まかに、次のステップを実行します：
 
-Now that we've identified the limitations of a single-page app, what can we do about it? Armed with our knowledge from the previous section, we can convert the existing app to be a multipage app, of course! At a high level, we need to perform the following steps:
-
-1. Create a new `pages` folder in the same folder where the “entrypoint file" (`hello.py`) lives
-2. Rename our entrypoint file to `Hello.py` , so that the title in the sidebar is capitalized
-3. Create three new files inside of `pages`:
+1. 「エントリーポイントファイル」（`hello.py`）があるフォルダに新しい `pages` フォルダを作成します。
+2. エントリーポイントファイルの名前を `Hello.py` に変更して、サイドバーのタイトルを大文字にします。
+3. `pages` フォルダ内に次の3つの新しいファイルを作成します：
    - `pages/1_📈_Plotting_Demo.py`
    - `pages/2_🌍_Mapping_Demo.py`
    - `pages/3_📊_DataFrame_Demo.py`
-4. Move the contents of the `plotting_demo`, `mapping_demo`, and `data_frame_demo` functions into their corresponding new files from Step 3
-5. Run `streamlit run Hello.py` to view your newly converted multipage app!
+4. `plotting_demo`、`mapping_demo`、`data_frame_demo` 関数の内容をステップ3で作成した対応する新しいファイルに移動します。
+5. `streamlit run Hello.py` を実行して、新しく変換したマルチページアプリを表示します！
 
-Now, let’s walk through each step of the process and view the corresponding changes in code.
+では、プロセスの各ステップを確認し、対応するコードの変更を見ていきましょう。
 
 ## Create the entrypoint file
 
@@ -312,22 +314,21 @@ st.markdown(
 </details>
 <br />
 
-We rename our entrypoint file to `Hello.py` , so that the title in the sidebar is capitalized and only the code for the intro page is included. Additionally, we’re able to customize the page title and favicon — as it appears in the browser tab with `st.set_page_config`. We can do so for each of our pages too!
+エントリーポイントファイルの名前を `Hello.py` に変更すると、サイドバーのタイトルが大文字になり、イントロページのコードのみが含まれます。さらに、`st.set_page_config` を使用して、ブラウザタブに表示されるページタイトルやファビコンをカスタマイズすることができます。
+この設定は、各ページに対しても行うことができます！
 
-<Image src="/images/mpa-hello.png" />
+ご覧のとおり、サイドバーにはまだページラベルが表示されていません。これは、まだページを作成していないためです。
 
-Notice how the sidebar does not contain page labels as we haven’t created any pages yet.
+## 複数ページの作成
 
-## Create multiple pages
+ここで覚えておくべきポイント：
 
-A few things to remember here:
+1. Pythonファイルの名前の先頭に数字を追加することで、マルチページアプリ(MPA)のページの順序を変更できます。ファイル名の先頭に「1」を追加すると、Streamlitはそのファイルをリストの最初に表示します。
+2. 各Streamlitアプリの名前はファイル名によって決まるため、アプリ名を変更する場合はファイル名を変更する必要があります！
+3. ファイル名に絵文字を追加することで、アプリに楽しい要素を加えることができます。これらの絵文字はStreamlitアプリ内で表示されます。
+4. 各ページにはファイル名で定義された独自のURLが付きます。
 
-1. We can change the ordering of pages in our MPA by adding numbers to the beginning of each Python file. If we add a 1 to the front of our file name, Streamlit will put that file first in the list.
-2. The name of each Streamlit app is determined by the file name, so to change the app name you need to change the file name!
-3. We can add some fun to our app by adding emojis to our file names that will render in our Streamlit app.
-4. Each page will have its own URL, defined by the name of the file.
-
-Check out how we do all this below! For each new page, we create a new file inside the pages folder, and add the appropriate demo code into it.
+以下の方法でこれを実現します！新しいページごとに、`pages` フォルダ内に新しいファイルを作成し、対応するデモコードを追加します。
 
 <br />
 
@@ -373,7 +374,6 @@ st.button("Re-run")
 
 </details>
 
-<Image src="/images/mpa-plotting-demo.png" />
 
 <details>
 <summary><code>pages/2_🌍_Mapping_Demo.py</code></summary>
@@ -479,7 +479,6 @@ except URLError as e:
 
 </details>
 
-<Image src="/images/mpa-mapping-demo.png" />
 
 <details>
 <summary><code>pages/3_📊_DataFrame_Demo.py</code></summary>
@@ -545,30 +544,29 @@ except URLError as e:
 
 </details>
 
-<Image src="/images/mpa-dataframe-demo.png" />
+追加ページが作成されたので、以下の最終ステップでそれらをすべてまとめましょう。
 
-With our additional pages created, we can now put it all together in the final step below.
+## マルチページアプリを実行する
 
-## Run the multipage app
-
-To run your newly converted multipage app, run:
+新しく変換したマルチページアプリを実行するには、次のコマンドを実行します：
 
 ```bash
 streamlit run Hello.py
 ```
 
-That’s it! The `Hello.py` script now corresponds to the main page of your app, and other scripts that Streamlit finds in the pages folder will also be present in the new page selector that appears in the sidebar.
+これで完了です！`Hello.py` スクリプトがアプリのメインページに対応し、Streamlitが `pages` フォルダ内で見つけた他のスクリプトも、サイドバーに表示される新しいページセレクターに追加されます。
 
-<Cloud name="doc-mpa-hello" height="700px" />
+## 次のステップ
 
-## Next steps
+おめでとうございます！🎉 ここまで読み進めたあなたは、シングルページアプリとマルチページアプリの両方を作成する方法を学んだはずです。
+ここからは、あなたの創造力次第です！アプリにページを追加することがこれまで以上に簡単になったので、どんなアプリを作成するか楽しみにしています。
+練習として、今回作成したアプリにさらにページを追加してみてください。
+また、フォーラムであなたのマルチページアプリを Streamlit コミュニティに紹介することもできます！🎈
 
-Congratulations! 🎉 If you've read this far, chances are you've learned to create both single-page and multipage apps. Where you go from here is entirely up to your creativity! We’re excited to see what you’ll build now that adding additional pages to your apps is easier than ever. Try adding more pages to the app we've just built as an exercise. Also, stop by the forum to show off your multipage apps with the Streamlit community! 🎈
+ここから始めるためのいくつかのリソースを紹介します：
 
-Here are a few resources to help you get started:
-
-- Deploy your app for free on Streamlit's [Community Cloud](/deploy/streamlit-community-cloud).
-- Post a question or share your multipage app on our [community forum](https://discuss.streamlit.io/c/streamlit-examples/9).
-- Check out our documentation on [Multipage apps](/develop/concepts/multipage-apps).
-- Read through [Concepts](/develop/concepts) for things like caching, theming, and adding statefulness to apps.
-- Browse our [API reference](/develop/api-reference/) for examples of every Streamlit command.
+- Streamlit の[Community Cloud](/deploy/streamlit-community-cloud) で、アプリを無料でデプロイ。
+- [コミュニティフォーラム](https://discuss.streamlit.io/c/streamlit-examples/9) で質問を投稿したり、マルチページアプリを共有したり。
+- [マルチページアプリ](/develop/concepts/multipage-apps) に関するドキュメントをチェック。
+- キャッシング、テーマ設定、アプリに状態を持たせる方法については[コンセプト](/develop/concepts) を読んでみましょう。
+- Streamlit のすべてのコマンドの例を確認するために、[APIリファレンス](/develop/api-reference/) を参照。
