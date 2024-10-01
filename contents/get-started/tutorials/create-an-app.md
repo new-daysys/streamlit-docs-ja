@@ -221,7 +221,8 @@ Uber のデータセットを使ったヒストグラムで、ピックアップ
 
 3. スクリプトを保存します。この地図は完全にインタラクティブです。少しパニングやズームを試してみてください。
 
-ヒストグラムを描いた後、Uber のピックアップの最も忙しい時間帯が 17:00 であることが分かりました。次に、17:00 時点でのピックアップの集中を表示するために地図を再描画しましょう。
+ヒストグラムを描いた後、Uber のピックアップの最も忙しい時間帯が 17:00 であることが分かりました。
+次に、17:00 時点でのピックアップの集中を表示するために地図を再描画しましょう。
 
 1. 次のコードスニペットを見つけます：
 
@@ -243,36 +244,38 @@ Uber のデータセットを使ったヒストグラムで、ピックアップ
 
 この地図を描画するために、Streamlit に組み込まれている[`st.map`](/develop/api-reference/charts/st.map) 関数を使用しましたが、より複雑な地図データを視覚化したい場合は、[`st.pydeck_chart`](/develop/api-reference/charts/st.pydeck_chart) もぜひご覧ください。
 
-## Filter results with a slider
+翻訳しました。
 
-In the last section, when you drew the map, the time used to filter results was
-hardcoded into the script, but what if we wanted to let a reader dynamically
-filter the data in real time? Using Streamlit's widgets you can. Let's add a
-slider to the app with the `st.slider()` method.
+---
 
-1. Locate `hour_to_filter` and replace it with this code snippet:
+## スライダーで結果をフィルタリングする
+
+前のセクションでは、地図を描画する際、フィルタリングに使う時間がスクリプトにハードコーディングされていましたが、これを動的にリアルタイムでデータをフィルタリングできるようにしたい場合はどうでしょうか？Streamlitのウィジェットを使えば可能です。`st.slider()` メソッドを使ってアプリにスライダーを追加しましょう。
+
+1. `hour_to_filter` を見つけて、次のコードスニペットに置き換えます：
 
    ```python
-   hour_to_filter = st.slider('hour', 0, 23, 17)  # min: 0h, max: 23h, default: 17h
+   hour_to_filter = st.slider('hour', 0, 23, 17)  # 最小: 0時, 最大: 23時, デフォルト: 17時
    ```
 
-2. Use the slider and watch the map update in real time.
+2. スライダーを使用して、地図がリアルタイムで更新されるのを確認してください。
 
-## Use a button to toggle data
+---
 
-Sliders are just one way to dynamically change the composition of your app.
-Let's use the [`st.checkbox`](/develop/api-reference/widgets/st.checkbox) function to add a
-checkbox to your app. We'll use this checkbox to show/hide the raw data
-table at the top of your app.
+## ボタンを使ってデータの表示を切り替える
 
-1. Locate these lines:
+スライダーは、アプリの構成を動的に変更する1つの方法です。
+次に、[`st.checkbox`](/develop/api-reference/widgets/st.checkbox) 関数を使ってアプリにチェックボックスを追加しましょう。
+このチェックボックスを使って、アプリの上部にある生データのテーブルを表示/非表示に切り替えます。
+
+1. 次のコードを見つけます：
 
    ```python
    st.subheader('Raw data')
    st.write(data)
    ```
 
-2. Replace these lines with the following code:
+2. このコードを次のように置き換えます：
 
    ```python
    if st.checkbox('Show raw data'):
@@ -280,18 +283,19 @@ table at the top of your app.
        st.write(data)
    ```
 
-We're sure you've got your own ideas. When you're done with this tutorial, check out all the widgets that Streamlit exposes in our [API Reference](/develop/api-reference).
+きっとご自身のアイデアもあると思います。
+このチュートリアルが終わったら、Streamlit で利用可能なすべてのウィジェットを、[APIリファレンス](/develop/api-reference) で確認してみてください。
 
-## Let's put it all together
+翻訳しました。
 
-That's it, you've made it to the end. Here's the complete script for our interactive app.
+---
 
-<Tip>
+## すべてをまとめよう
 
-If you've skipped ahead, after you've created your script, the command to run
-Streamlit is `streamlit run [app name]`.
+これで完成です。インタラクティブなアプリの完全なスクリプトを以下に示します。
 
-</Tip>
+> [!tip]
+> 先に進めた場合でも、スクリプトを作成した後、Streamlitを実行するためのコマンドは `streamlit run [app name]` です。
 
 ```python
 import streamlit as st
@@ -324,7 +328,7 @@ st.subheader('Number of pickups by hour')
 hist_values = np.histogram(data[DATE_COLUMN].dt.hour, bins=24, range=(0,24))[0]
 st.bar_chart(hist_values)
 
-# Some number in the range 0-23
+# 0から23の範囲で任意の数を指定
 hour_to_filter = st.slider('hour', 0, 23, 17)
 filtered_data = data[data[DATE_COLUMN].dt.hour == hour_to_filter]
 
@@ -332,26 +336,34 @@ st.subheader('Map of all pickups at %s:00' % hour_to_filter)
 st.map(filtered_data)
 ```
 
-## Share your app
+これで、最初の Streamlit アプリが完成です！
 
-After you’ve built a Streamlit app, it's time to share it! To show it off to the world you can use **Streamlit Community Cloud** to deploy, manage, and share your app for free.
+翻訳しました。
 
-It works in 3 simple steps:
+---
 
-1. Put your app in a public GitHub repo (and make sure it has a requirements.txt!)
-2. Sign into [share.streamlit.io](https://share.streamlit.io)
-3. Click 'Deploy an app' and then paste in your GitHub URL
+## アプリを共有する
 
-That's it! 🎈 You now have a publicly deployed app that you can share with the world. Click to learn more about [how to use Streamlit Community Cloud](/deploy/streamlit-community-cloud).
+Streamlit アプリを作成した後は、それを共有する時が来ました！ **Streamlit Community Cloud** を使って、アプリを無料でデプロイ、管理、共有することができます。
 
-## Get help
+このプロセスは3つの簡単なステップで完了します：
 
-That's it for getting started, now you can go and build your own apps! If you
-run into difficulties here are a few things you can do.
+1. アプリを公開 GitHub リポジトリに配置します（requirements.txtがあることを確認してください！）
+2. [share.streamlit.io](https://share.streamlit.io) にサインインします
+3. 「Deploy an app」をクリックして、GitHub の URL を貼り付けます
 
-- Check out our [community forum](https://discuss.streamlit.io/) and post a question
-- Quick help from command line with `streamlit help`
-- Go through our [Knowledge Base](/knowledge-base) for tips, step-by-step tutorials, and articles that answer your questions about creating and deploying Streamlit apps.
-- Read more documentation! Check out:
-  - [Concepts](/develop/concepts) for things like caching, theming, and adding statefulness to apps.
-  - [API reference](/develop/api-reference/) for examples of every Streamlit command.
+これで完了です！🎈 あなたのアプリが公開され、世界中に共有できるようになりました。
+詳しくは [Streamlit Community Cloud の使い方](/deploy/streamlit-community-cloud)をクリックしてご確認ください。
+
+---
+
+## ヘルプを受ける
+
+これで準備は完了です。あなた自身のアプリを作成しに行きましょう！もし問題が発生した場合、以下の方法でサポートを受けられます。
+
+- [コミュニティフォーラム](https://discuss.streamlit.io/)をチェックして、質問を投稿してください
+- コマンドラインで `streamlit help` を使ってクイックヘルプを受けられます
+- [ナレッジベース](/knowledge-base) を通して、チュートリアルやアプリ作成やデプロイに関する質問への回答が得られます
+- さらにドキュメントを読みましょう！以下の資料をチェックしてください：
+  - [コンセプト](/develop/concepts)：キャッシング、テーマ設定、アプリに状態を持たせる方法など
+  - [APIリファレンス](/develop/api-reference/)：すべてのStreamlitコマンドの例
