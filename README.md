@@ -15,12 +15,12 @@
    + [はじめの一歩](/contents/get-started/tutorials)
        -  [アプリを作る](/contents/get-started/tutorials/create-an-app.md)
        -  [マルチページアプリを作る](/contents/get-started/tutorials/create-a-multi-page-app.md)
-2. [開発する](/contents/develop)
+2. [開発しよう](/contents/develop)
    + Concepts
    + API reference
    + Tutorials
    + Quick reference
-4. [デプロイする](/contents/deploy)
+4. [デプロイしよう](/contents/deploy)
    + Concepts
    + Streamlit Community Cloud
    + Streamlit in Snowflake
