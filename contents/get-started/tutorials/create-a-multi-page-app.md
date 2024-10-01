@@ -5,7 +5,7 @@ slug: /get-started/tutorials/create-a-multipage-app
 
 ## マルチページアプリの作成
 
-[追加機能](/contents/get-started/fundamentals/additional-features.md)では、マルチページアプリについて説明し、ページの定義方法、アプリの構造と実行、ユーザーインターフェースでのページ間のナビゲーションについて紹介しました。詳しくは、[マルチページアプリのガイド](/contents/develop/concepts/multipage-apps.md)をご覧ください。
+[さらなる機能](/contents/get-started/fundamentals/additional-features.md)では、マルチページアプリについて説明し、ページの定義方法、アプリの構造と実行、ユーザーインターフェースでのページ間のナビゲーションについて紹介しました。詳しくは、[マルチページアプリのガイド](/contents/develop/concepts/multipage-apps.md)をご覧ください。
 
 このガイドでは、`streamlit hello` アプリをマルチページアプリに変換することで理解を深め、実際に活用してみましょう！
 
