@@ -275,7 +275,7 @@ URLを使ってページ間をナビゲートすることもできません。
 
 では、プロセスの各ステップを確認し、対応するコードの変更を見ていきましょう。
 
-## Create the entrypoint file
+## エントリポイントファイルを作成する
 
 <details open>
 <summary><code>Hello.py</code></summary>
