@@ -1,25 +1,15 @@
-# Get Started ガイド
+# 開発しよう
 
-このガイドでは、Streamlit の仕組み、Streamlit をインストールする方法、そして最初の Streamlit アプリを作成する方法を説明します！
+Streamlit を使って、美しく高性能なウェブアプリを作成するために必要な情報をすべて手に入れましょう！
 
-### [インストール](/contents/get-started/installation.md)
+### 📘 [コンセプト](/contents/concepts)
+Streamlitの仕組みを、実行モデルや機能に関する詳細なガイドで学びましょう。
 
-開発環境のセットアップを支援します。
-Windows、macOS、またはLinuxでStreamlitをインストールする手順を案内します。
-あるいは、GitHub Codespaces や Snowflake 上の Streamlit を使って、ブラウザで直接コードを書くこともできます。
+### 📄 [APIリファレンス](/contents/api-reference)
+APIについて、関数定義と例を使って学びましょう。
 
-### [基本的なこと](/contents/get-started/fundamentals)
+### 🚀 [チュートリアル](/contents/tutrials)
+ステップバイステップの指示に従って、アプリの例や便利なスニペットを作成しましょう。
 
-Streamlit のデータモデルと開発フローを紹介します。
-Streamlit がデータアプリの構築において最も強力なツールである理由、データの表示とスタイル設定、チャートやマップの描画、
-インタラクティブなウィジェットの追加、アプリレイアウトのカスタマイズ、計算のキャッシング、テーマの定義などの機能を学びます。
-
-### [最初のステップ](/contents/get-started/tutorials)
-
-コア機能を使用して、データの取得とキャッシング、チャートの描画、マップ上での情報のプロット、インタラクティブウィジェットを
-使った結果のフィルタリングを行うアプリの作成手順を案内します。
-
-### GitHub Codespacesの使用
-
-ローカルインストールをスキップして、ブラウザで直接コードを書きたい場合は、GitHub Codespaces を利用できます。
-このガイドでは、Streamlit Community Cloud を使って、自動的にコードスペースを設定する方法を紹介します。
+### ⚡ [クイックリファレンス](/contents/quick-reference)
+変更ログ、チートシート、プレリリース機能、ロードマップなど、便利な情報に簡単にアクセスできるクイックリファレンスをチェックしてください。
