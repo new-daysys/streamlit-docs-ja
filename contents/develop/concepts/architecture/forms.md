@@ -3,17 +3,20 @@ title: Using forms
 slug: /develop/concepts/architecture/forms
 ---
 
-# Using forms
+# フォームの使用
 
-When you don't want to rerun your script with each input made by a user, [`st.form`](/develop/api-reference/execution-flow/st.form) is here to help! Forms make it easy to batch user input into a single rerun. This guide to using forms provides examples and explains how users interact with forms.
+ユーザーが入力するたびにスクリプトを再実行したくない場合は、[`st.form`](/develop/api-reference/execution-flow/st.form) が役立ちます！
+フォームを使えば、ユーザー入力を一度にまとめて再実行することが簡単になります。
+このフォームの使用ガイドでは、具体例を示し、ユーザーがフォームとどのようにやり取りするかを説明しています。
 
-## Example
+## 例
 
-In the following example, a user can set multiple parameters to update the map. As the user changes the parameters, the script will not rerun and the map will not update. When the user submits the form with the button labeled "**Update map**", the script reruns and the map updates.
+次の例では、ユーザーが複数のパラメータを設定して地図を更新できます。ユーザーがパラメータを変更しても、スクリプトは再実行されず、地図も更新されません。
+ユーザーが「**Update map**」とラベル付けされたボタンでフォームを送信すると、スクリプトが再実行され、地図が更新されます。
 
-If at any time the user clicks "**Generate new points**" which is outside of the form, the script will rerun. If the user has any unsubmitted changes within the form, these will _not_ be sent with the rerun. All changes made to a form will only be sent to the Python backend when the form itself is submitted.
-
-<Collapse title="View source code" expanded={false} >
+ユーザーがいつでもフォームの外にある「**Generate new points**」をクリックすると、スクリプトが再実行されます。
+この時、フォーム内で未送信の変更は**送信されません**。
+フォームに加えたすべての変更は、フォーム自体が送信されたときにのみ Python のバックエンドに送られます。
 
 ```python
 import streamlit as st
@@ -61,58 +64,56 @@ df['size'] = np.where(df.team=='A',sizeA, sizeB)
 st.map(df, size='size', color='color')
 ```
 
-</Collapse>
+## ユーザーインタラクション
 
-<Cloud name="doc-forms-overview" height="800px"/>
+ウィジェットがフォーム外にある場合、そのウィジェットの値が変更されるたびにスクリプトが再実行されます。
+キー入力を受け付けるウィジェット（`st.number_input`、`st.text_input`、`st.text_area`）では、
+ユーザーがウィジェットからクリックやタブで外れたときに新しい値が再実行をトリガーします。
+ユーザーがウィジェット内でカーソルをアクティブにしている場合、`Enter`キーを押して変更を送信することも可能です。
 
-## User interaction
+一方、ウィジェットがフォーム内にある場合、ユーザーがウィジェットからクリックやタブで外れてもスクリプトは再実行されません。
+フォーム内のウィジェットでは、フォームが送信されたときにスクリプトが再実行され、フォーム内のすべてのウィジェットが更新された値を Python のバックエンドに送信します。
 
-If a widget is not in a form, that widget will trigger a script rerun whenever a user changes its value. For widgets with keyed input (`st.number_input`, `st.text_input`, `st.text_area`), a new value triggers a rerun when the user clicks or tabs out of the widget. A user can also submit a change by pressing `Enter` while thier cursor is active in the widget.
+ユーザーは、カーソルがキー入力を受け付けるウィジェットにアクティブな状態であれば、キーボードの**Enter**キーを使ってフォームを送信できます。`st.number_input`や`st.text_input`では、**Enter**キーを押すことでフォームが送信されます。`st.text_area`内では、**Ctrl+Enter**（Windows）/**⌘+Enter**（Mac）を押してフォームを送信します。
 
-On the other hand if a widget is inside of a form, the script will not rerun when a user clicks or tabs out of that widget. For widgets inside a form, the script will rerun when the form is submitted and all widgets within the form will send their updated values to the Python backend.
+## ウィジェットの値
 
-![Forms](/images/forms.gif)
-
-A user can submit a form using **Enter** on their keyboard if their cursor active in a widget that accepts keyed input. Within `st.number_input` and `st.text_input` a user presses **Enter** to submit the form. Within `st.text_area` a user presses **Ctrl+Enter**/**⌘+Enter** to submit the form.
-
-![Keyboard-submit forms](/images/form-submit-keyboard.png)
-
-## Widget values
-
-Before a form is submitted, all widgets within that form will have default values, just like widgets outside of a form have default values.
+フォームが送信される前は、フォーム内のすべてのウィジェットにはデフォルト値があります。
+これは、フォーム外のウィジェットにデフォルト値があるのと同じです。
 
 ```python
 import streamlit as st
 
 with st.form("my_form"):
-   st.write("Inside the form")
-   my_number = st.slider('Pick a number', 1, 10)
-   my_color = st.selectbox('Pick a color', ['red','orange','green','blue','violet'])
-   st.form_submit_button('Submit my picks')
+   st.write("フォーム内")
+   my_number = st.slider('数値を選択', 1, 10)
+   my_color = st.selectbox('色を選択', ['赤','オレンジ','緑','青','紫'])
+   st.form_submit_button('選択を送信')
 
-# This is outside the form
+# これはフォーム外です
 st.write(my_number)
 st.write(my_color)
 ```
 
-<Cloud name="doc-forms-default" height="450px"/>
+## フォームはコンテナ
 
-## Forms are containers
-
-When `st.form` is called, a container is created on the frontend. You can write to that container like you do with other [container elements](/develop/api-reference/layout). That is, you can use Python's `with` statement as shown in the example above, or you can assign the form container to a variable and call methods on it directly. Additionally, you can place `st.form_submit_button` anywhere in the form container.
+`st.form` が呼び出されると、フロントエンドにコンテナが作成されます。
+これは、他の[コンテナ要素](/develop/api-reference/layout)と同様に、そのコンテナに書き込むことができます。
+つまり、上記の例のように Python の `with` 文を使用するか、フォームコンテナを変数に割り当てて、その変数上でメソッドを直接呼び出すことができます。
+さらに、`st.form_submit_button` はフォームコンテナのどこにでも配置できます。
 
 ```python
 import streamlit as st
 
 animal = st.form('my_animal')
 
-# This is writing directly to the main body. Since the form container is
-# defined above, this will appear below everything written in the form.
+# これはメインボディに直接書き込まれます。フォームコンテナが
+# 上で定義されているので、フォーム内に書かれたすべての下に表示されます。
 sound = st.selectbox('Sounds like', ['meow','woof','squeak','tweet'])
 
-# These methods called on the form container, so they appear inside the form.
-submit = animal.form_submit_button(f'Say it with {sound}!')
-sentence = animal.text_input('Your sentence:', 'Where\'s the tuna?')
+# これらのメソッドはフォームコンテナに対して呼び出されるため、フォーム内に表示されます。
+submit = animal.form_submit_button(f'{sound}で言う!')
+sentence = animal.text_input('あなたの文:', 'Where\'s the tuna?')
 say_it = sentence.rstrip('.,!?') + f', {sound}!'
 if submit:
     animal.subheader(say_it)
@@ -120,28 +121,27 @@ else:
     animal.subheader('&nbsp;')
 ```
 
-<Cloud name="doc-forms-container" height="375px"/>
+## フォーム送信の処理
 
-## Processing form submissions
+フォームの目的は、ユーザーが変更を加えた瞬間にスクリプトを再実行するという Streamlit のデフォルトの動作を上書きすることです。
+フォーム外のウィジェットでは、論理フローは次の通りです：
 
-The purpose of a form is to override the default behavior of Streamlit which reruns a script as soon as the user makes a change. For widgets outside of a form, the logical flow is:
+1. ユーザーがフロントエンドでウィジェットの値を変更します。
+2. ウィジェットの値が `st.session_state` と Python のバックエンド（サーバー）で更新されます。
+3. スクリプトの再実行が開始されます。
+4. ウィジェットにコールバックがある場合、それがページの再実行の前に実行されます。
+5. 再実行中にウィジェットの関数が実行されると、新しい値が出力されます。
 
-1. The user changes a widget's value on the frontend.
-2. The widget's value in `st.session_state` and in the Python backend (server) is updated.
-3. The script rerun begins.
-4. If the widget has a callback, it is executed as a prefix to the page rerun.
-5. When the updated widget's function is executed during the rerun, it outputs the new value.
+フォーム内のウィジェットでは、ユーザーが行った変更（ステップ1）は、フォームが送信されるまで Python のバックエンド（ステップ2）に渡されません。さらに、フォーム内でコールバック関数を持つことができる唯一のウィジェットは `st.form_submit_button` です。新しく送信された値を使ってプロセスを実行する必要がある場合、主に3つのパターンでそれを実行できます。
 
-For widgets inside a form, any changes made by a user (step 1) do not get passed to the Python backend (step 2) until the form is submitted. Furthermore, the only widget inside a form that can have a callback function is the `st.form_submit_button`. If you need to execute a process using newly submitted values, you have three major patterns for doing so.
+### フォームの後にプロセスを実行する
 
-### Execute the process after the form
-
-If you need to execute a one-time process as a result of a form submission, you can condition that process on the `st.form_submit_button` and execute it after the form. If you need results from your process to display above the form, you can use containers to control where the form displays relative to your output.
+フォーム送信の結果として1回だけ実行するプロセスが必要な場合、そのプロセスを `st.form_submit_button` に依存させて、フォームの後に実行できます。結果をフォームの上に表示する必要がある場合は、コンテナを使ってフォームの表示位置を制御できます。
 
 ```python
 import streamlit as st
 
-col1,col2 = st.columns([1,2])
+col1, col2 = st.columns([1, 2])
 col1.title('Sum:')
 
 with st.form('addition'):
@@ -150,20 +150,17 @@ with st.form('addition'):
     submit = st.form_submit_button('add')
 
 if submit:
-    col2.title(f'{a+b:.2f}')
+    col2.title(f'{a + b:.2f}')
 ```
 
-<Cloud name="doc-forms-process1" height="400px"/>
+### セッションステートとコールバックを使う
 
-### Use a callback with session state
+コールバックを使用して、スクリプトの再実行の前にプロセスを実行できます。
 
-You can use a callback to execute a process as a prefix to the script rerunning.
-
-<Important>
-
-When processing newly updated values within a callback, do not pass those values to the callback directly through the `args` or `kwargs` parameters. You need to assign a key to any widget whose value you use within the callback. If you look up the value of that widget from `st.session_state` within the body of the callback, you will be able to access the newly submitted value. See the example below.
-
-</Important>
+> [!Important]
+> コールバック内で新しく更新された値を処理する場合、それらの値を直接 `args` または `kwargs` パラメータを介してコールバックに渡さないでください。
+> コールバック内で使用するウィジェットの値には、キーを割り当てる必要があります。
+> コールバックの中で `st.session_state` からそのウィジェットの値を取得することで、新しく送信された値にアクセスできます。以下の例を参照してください。
 
 ```python
 import streamlit as st
@@ -175,22 +172,20 @@ def sum():
     result = st.session_state.a + st.session_state.b
     st.session_state.sum = result
 
-col1,col2 = st.columns(2)
+col1, col2 = st.columns(2)
 col1.title('Sum:')
 if isinstance(st.session_state.sum, float):
     col2.title(f'{st.session_state.sum:.2f}')
 
 with st.form('addition'):
-    st.number_input('a', key = 'a')
-    st.number_input('b', key = 'b')
+    st.number_input('a', key='a')
+    st.number_input('b', key='b')
     st.form_submit_button('add', on_click=sum)
 ```
 
-<Cloud name="doc-forms-process2" height="400px"/>
+### `st.rerun` を使う
 
-### Use `st.rerun`
-
-If your process affects content above your form, another alternative is using an extra rerun. This can be less resource-efficient though, and may be less desirable that the above options.
+プロセスがフォームの上のコンテンツに影響する場合、別の方法として追加の再実行を使用することもできます。ただし、これはリソース効率が悪くなる可能性があり、上記のオプションに比べて望ましくない場合があります。
 
 ```python
 import streamlit as st
@@ -198,7 +193,7 @@ import streamlit as st
 if 'sum' not in st.session_state:
     st.session_state.sum = ''
 
-col1,col2 = st.columns(2)
+col1, col2 = st.columns(2)
 col1.title('Sum:')
 if isinstance(st.session_state.sum, float):
     col2.title(f'{st.session_state.sum:.2f}')
@@ -208,20 +203,18 @@ with st.form('addition'):
     b = st.number_input('b')
     submit = st.form_submit_button('add')
 
-# The value of st.session_state.sum is updated at the end of the script rerun,
-# so the displayed value at the top in col2 does not show the new sum. Trigger
-# a second rerun when the form is submitted to update the value above.
+# st.session_state.sum の値はスクリプトの再実行の最後に更新されるため、
+# col2の表示された値には新しい合計が表示されません。フォームが送信されたときに
+# 再実行をトリガーして、上の値を更新します。
 st.session_state.sum = a + b
 if submit:
     st.rerun()
 ```
 
-<Cloud name="doc-forms-process3" height="400px"/>
+## 制限事項
 
-## Limitations
-
-- Every form must contain a `st.form_submit_button`.
-- `st.button` and `st.download_button` cannot be added to a form.
-- `st.form` cannot be embedded inside another `st.form`.
-- Callback functions can only be assigned to `st.form_submit_button` within a form; no other widgets in a form can have a callback.
-- Interdependent widgets within a form are unlikely to be particularly useful. If you pass `widget1`'s value into `widget2` when they are both inside a form, then `widget2` will only update when the form is submitted.
+- 各フォームには必ず `st.form_submit_button` が含まれていなければなりません。
+- `st.button` と `st.download_button` はフォームに追加できません。
+- `st.form` は、他の `st.form` の中に埋め込むことはできません。
+- コールバック関数は、フォーム内では `st.form_submit_button` にのみ割り当てることができます。他のウィジェットにはコールバックを設定できません。
+- フォーム内で相互に依存するウィジェットはあまり有用ではない可能性があります。`widget1` の値を `widget2` に渡す場合、両方ともフォーム内にあると `widget2` はフォームが送信されるまで更新されません。
