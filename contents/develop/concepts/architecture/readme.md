@@ -31,7 +31,7 @@ slug: /develop/concepts/architecture
 
    フォームを使用してユーザー入力を分離し、不要なアプリの再実行を防ぎます。
 
-+ [**ウィジェットの動作**](/contsnts/develop/concepts/architecture/widget-behavior.md)
++ [**ウィジェットの動作**](/contents/develop/concepts/architecture/widget-behavior.md)
 
    ウィジェットがどのように動作するかを詳しく理解します。
 
