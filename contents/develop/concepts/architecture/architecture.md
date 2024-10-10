@@ -3,23 +3,23 @@ title: Understanding Streamlit's client-server architecture
 slug: /develop/concepts/architecture/architecture
 ---
 
-# Understanding Streamlit's client-server architecture
+# Streamlit のクライアントサーバーアーキテクチャの理解
 
-Streamlit apps have a client-server structure. The Python backend of your app is the server. The frontend you view through a browser is the client. When you develop an app locally, your computer runs both the server and the client. If someone views your app across a local or global network, the server and client run on different machines. If you intend to share or deploy your app, it's important to understand this client-server structure to avoid common pitfalls.
+Streamlit アプリはクライアントサーバー構造を持っています。アプリの Python バックエンドはサーバーであり、ブラウザを介して表示するフロントエンドはクライアントです。ローカルでアプリを開発するときは、コンピュータがサーバーとクライアントの両方を実行します。誰かがローカルまたはグローバルネットワークを介してあなたのアプリを表示する場合、サーバーとクライアントは異なるマシン上で実行されます。アプリを共有またはデプロイする予定がある場合は、このクライアントサーバー構造を理解することが重要です。
 
-## Python backend (server)
+## Python バックエンド（サーバー）
 
-When you execute the command `streamlit run your_app.py`, your computer uses Python to start up a Streamlit server. This server is the brains of your app and performs the computations for all users who view your app. Whether users view your app across a local network or the internet, the Streamlit server runs on the one machine where the app was initialized with `streamlit run`. The machine running your Streamlit server is also called a host.
+`streamlit run your_app.py` コマンドを実行すると、コンピュータが Python を使って Streamlit サーバーを起動します。このサーバーはアプリの「頭脳」であり、アプリを表示するすべてのユーザーに対して計算を行います。ユーザーがローカルネットワークやインターネットを介してアプリを表示する場合でも、Streamlit サーバーは `streamlit run` でアプリが初期化された1台のマシンで実行されます。この Streamlit サーバーを実行しているマシンは「ホスト」とも呼ばれます。
 
-## Browser frontend (client)
+## ブラウザフロントエンド（クライアント）
 
-When someone views your app through a browser, their device is a Streamlit client. When you view your app from the same computer where you are running or developing your app, then server and client are coincidentally running on the same machine. However, when users view your app across a local network or the internet, the client runs on a different machine from the server.
+誰かがブラウザを通じてアプリを表示する場合、そのデバイスは treamlit クライアントです。同じコンピュータでアプリを実行または開発しているときは、サーバーとクライアントが同じマシンで偶然にも動作しています。しかし、ユーザーがローカルネットワークやインターネットを介してアプリを表示する場合、クライアントはサーバーとは異なるマシンで実行されます。
 
-## Server-client impact on app design
+## サーバークライアント構造がアプリ設計に与える影響
 
-Keep in mind the following considerations when building your Streamlit app:
+Streamlit アプリを構築する際、次の点に注意してください：
 
-- The computer running or hosting your Streamlit app is responsible for providing the compute and storage necessary to run your app for all users and must be sized appropriately to handle concurrent users.
-- Your app will not have access to a user's files, directories, or OS. Your app can only work with specific files a user has uploaded to your app through a widget like `st.file_uploader`.
-- If your app communicates with any peripheral devices (like cameras), you must use Streamlit commands or custom components that will access those devices _through the user's browser_ and correctly communicate between the client (frontend) and server (backend).
-- If your app opens or uses any program or process outside of Python, they will run on the server. For example, you may want to use `webrowser` to open a browser for the user, but this will not work as expected when viewing your app over a network; it will open a browser on the Streamlit server, unseen by the user.
+- Streamlit アプリを実行またはホスティングするコンピュータは、すべてのユーザーに対してアプリを実行するために必要な計算とストレージを提供する責任があり、同時接続ユーザーを処理できるように適切にサイズを調整する必要があります。
+- アプリはユーザーのファイル、ディレクトリ、またはOSにアクセスできません。アプリは、`st.file_uploader` のようなウィジェットを介してユーザーがアップロードした特定のファイルのみを操作できます。
+- アプリがカメラなどの周辺機器と通信する場合は、_ユーザーのブラウザを介して_ それらのデバイスにアクセスし、クライアント（フロントエンド）とサーバー（バックエンド）間で正しく通信する Streamlit コマンドまたはカスタムコンポーネントを使用する必要があります。
+- アプリが Python 以外のプログラムやプロセスを開く場合、それらはサーバー上で実行されます。例えば、ユーザーのために `webbrowser` を使ってブラウザを開こうとすると、ネットワークを介してアプリを表示する場合は期待通りに動作しません。それはユーザーが見えない Streamlit サーバー上のブラウザを開くことになります。
