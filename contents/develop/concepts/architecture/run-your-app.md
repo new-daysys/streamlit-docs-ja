@@ -3,46 +3,46 @@ title: Run your Streamlit app
 slug: /develop/concepts/architecture/run-your-app
 ---
 
-# Run your Streamlit app
+# Streamlitアプリを実行する
 
-Working with Streamlit is simple. First you sprinkle a few Streamlit commands into a normal Python script, and then you run it. We list few ways to run your script, depending on your use case.
+Streamlitを使うのは簡単です。まず通常のPythonスクリプトにいくつかのStreamlitコマンドを追加し、それを実行します。利用ケースに応じたスクリプトの実行方法をいくつか紹介します。
 
-## Use streamlit run
+## `streamlit run` を使用する
 
-Once you've created your script, say `your_script.py`, the easiest way to run it is with `streamlit run`:
+スクリプトを作成したら、例えば `your_script.py` という名前のスクリプトを以下のように実行するのが最も簡単です：
 
 ```bash
 streamlit run your_script.py
 ```
 
-As soon as you run the script as shown above, a local Streamlit server will spin up and your app will open in a new tab in your default web browser.
+上記のようにスクリプトを実行すると、ローカルのStreamlitサーバーが起動し、デフォルトのウェブブラウザの新しいタブでアプリが開きます。
 
-### Pass arguments to your script
+### スクリプトに引数を渡す
 
-When passing your script some custom arguments, they must be passed after two dashes. Otherwise the arguments get interpreted as arguments to Streamlit itself:
+スクリプトにカスタム引数を渡す場合、2つのダッシュの後に引数を指定する必要があります。それ以外の場合、引数は Streamlit 自体への引数として解釈されます：
 
 ```bash
 streamlit run your_script.py [-- script args]
 ```
 
-### Pass a URL to streamlit run
+### `streamlit run` にURLを渡す
 
-You can also pass a URL to `streamlit run`! This is great when your script is hosted remotely, such as a GitHub Gist. For example:
+`streamlit run` にURLを渡すことも可能です！これは、GitHub Gist などでリモートにホストされたスクリプトを実行する場合に便利です。例えば：
 
 ```bash
 streamlit run https://raw.githubusercontent.com/streamlit/demo-uber-nyc-pickups/master/streamlit_app.py
 ```
 
-## Run Streamlit as a Python module
+## PythonモジュールとしてStreamlitを実行する
 
-Another way of running Streamlit is to run it as a Python module. This is useful when configuring an IDE like PyCharm to work with Streamlit:
+もう一つの方法として、Streamlit を Python モジュールとして実行することができます。これは、PyCharm などの IDE で Streamlit を設定する際に便利です：
 
 ```bash
-# Running
+# 実行
 python -m streamlit run your_script.py
 ```
 
 ```bash
-# is equivalent to:
+# 上記と同じです：
 streamlit run your_script.py
 ```
