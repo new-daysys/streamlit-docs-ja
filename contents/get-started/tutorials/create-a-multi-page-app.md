@@ -564,6 +564,6 @@ streamlit run Hello.py
 
 - Streamlit の[Community Cloud](/contents/deploy/streamlit-community-cloud.md) で、アプリを無料でデプロイ。
 - [コミュニティフォーラム](https://discuss.streamlit.io/c/streamlit-examples/9) で質問を投稿したり、マルチページアプリを共有したり。
-- [マルチページアプリ](/contents/develop/concepts/multipage-apps.md) に関するドキュメントをチェック。
+- [マルチページアプリ](/contents/develop/concepts/multipage-apps) に関するドキュメントをチェック。
 - キャッシング、テーマ設定、アプリに状態を持たせる方法については[コンセプト](/contents/develop/concepts) を読んでみましょう。
 - Streamlit のすべてのコマンドの例を確認するために、[APIリファレンス](/contents/develop/api-reference/) を参照。
