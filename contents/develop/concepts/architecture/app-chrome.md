@@ -3,135 +3,76 @@ title: The app chrome
 slug: /develop/concepts/architecture/app-chrome
 ---
 
-# The app chrome
+# アプリクローム
 
-Your Streamlit app has a few widgets in the top right to help you as you develop. These widgets also help your viewers as they use your app. We call this things “the app chrome”. The chrome includes a status area, toolbar, and app menu.
+Streamlit アプリには、開発時に役立つ右上にいくつかのウィジェットがあります。これらのウィジェットは、アプリの利用者にとっても便利です。この要素を「アプリクローム」と呼びます。クロームには、ステータスエリア、ツールバー、アプリメニューが含まれます。
 
-Your app menu is configurable. By default, you can access developer options from the app menu when viewing an app locally or on Streamlit Community Cloud while logged into an account with administrative access. While viewing an app, click the icon in the upper-right corner to access the menu.
+アプリメニューはカスタマイズ可能です。デフォルトでは、ローカルでアプリを表示している場合や、Streamlit Community Cloud で管理者権限のアカウントでログインしている場合に、開発者オプションにアクセスできます。アプリを表示しているときは、右上のアイコンをクリックしてメニューにアクセスします。
 
-![App menu](/images/app-menu/app-menu-developer.png)
+## メニューオプション
 
-## Menu options
+メニューは2つのセクションに分かれています。上部のセクションにはすべてのユーザーが利用できるオプションが含まれており、下部のセクションには開発者向けのオプションが含まれています。このページの最後で[このメニューのカスタマイズ方法](#customize-the-menu)について詳しく説明しています。
 
-The menu is split into two sections. The upper section contains options available to all viewers and the lower section contains options for developers. Read more about [customizing this menu](#customize-the-menu) at the end of this page.
+### 再実行
 
-### Rerun
+アプリメニューの「**Rerun**」をクリックしてアプリの再実行を手動でトリガーできます。この再実行はセッションをリセットしません。ウィジェットの状態や[`st.session_state`](/develop/concepts/architecture/session-state)に保存された値は保持されます。ショートカットとして、アプリメニューを開かずにキーボードで「**R**」を押すと、（入力要素にフォーカスしていない場合）アプリを再実行できます。
 
-You can manually trigger a rerun of your app by clicking "**Rerun**" from the app menu. This rerun will not reset your session. Your widget states and values stored in [`st.session_state`](/develop/concepts/architecture/session-state) will be preserved. As a shortcut, without opening the app menu, you can rerun your app by pressing "**R**" on your keyboard (if you aren't currently focused on an input element).
+### 設定
 
-### Settings
+「**Settings**」オプションを使用すると、アプリの実行中にその外観を制御できます。ローカルでアプリを表示している場合は、ソースコードの変更に対するアプリの応答方法を設定できます。開発フローの詳細は[基本概念](/get-started/fundamentals/main-concepts#development-flow)を参照してください。さらに、スクリプトで[`st.set_page_config`](/develop/api-reference/configuration/st.set_page_config)を使用しなくても、アプリを強制的にワイドモードで表示することができます。
 
-With the "**Settings**" option, you can control the appearance of your app while it is running. If viewing the app locally, you can set how your app responds to changes in your source code. See more about development flow in [Basic concepts](/get-started/fundamentals/main-concepts#development-flow). You can also force your app to appear in wide mode, even if not set within the script using [`st.set_page_config`](/develop/api-reference/configuration/st.set_page_config).
+#### テーマ設定
 
-#### Theme settings
+アプリメニューから「**Settings**」をクリックすると、アプリのベーステーマとして「**Light**」、「**Dark**」、または「**Use system setting**」を選択できます。「**Edit active theme**」をクリックして、色ごとにテーマをカスタマイズできます。
 
-After clicking "**Settings**" from the app menu, you can choose between "**Light**", "**Dark**", or "**Use system setting**" for the app's base theme. Click "**Edit active theme**" to modify the theme, color-by-color.
+### 印刷
 
-<div style={{ maxWidth: '90%', margin: '0 2em 0 2em' }}>
-    <Image src="/images/app-menu/app-menu-settings-modal.png" alt="Settings" clean />
-</div>
+「**Print**」をクリックするか、キーボードショートカット（`⌘+P` または `Ctrl+P`）を使用して印刷ダイアログを開きます。このオプションは、ブラウザの組み込みのPDFへの印刷機能を使用します。印刷の外観を変更するには、次の操作が可能です：
 
-<br />
+- 印刷前にサイドバーを展開または折りたたんで、それぞれサイドバーを印刷に含めるか除外できます。
+- アプリ内のサイドバーの右境界をクリックしてドラッグし、目的の幅に調整できます。
+- ダークモードで印刷する場合、印刷ダイアログで「**背景グラフィックス**」を有効にする必要があるかもしれません。
+- [設定](#設定) でワイドモードを無効にするか、印刷スケールを調整して、要素がページから切り取られないようにする必要があるかもしれません。
 
-<div style={{ maxWidth: '90%', margin: '0 2em 0 2em' }}>
-    <Image src="/images/app-menu/app-menu-settings-theme.png" alt="Theme" clean />
-</div>
+### スクリーンキャストを録画する
 
-### Print
+アプリから簡単に画面録画を行うことができます！最新バージョンのChrome、Edge、Firefoxで画面録画がサポートされています。互換性のためにブラウザが最新であることを確認してください。現在の設定によっては、画面録画や音声録音のためにブラウザに許可を与える必要があるかもしれません。
 
-Click "**Print**" or use keyboard shortcuts (`⌘+P` or `Ctrl+P`) to open a print dialog. This option uses your browser's built-in print-to-pdf function. To modify the appearance of your print, you can do the following:
-
-- Expand or collapse the sidebar before printing to respectively include or exclude it from the print.
-- Resize the sidebar in your app by clicking and dragging its right border to achieve your desired width.
-- You may need to enable "**Background graphics**" in your print dialog if you are printing in dark mode.
-- You may need to disable wide mode in [Settings](#settings) or adjust the print scale to prevent elements from clipping off the page.
-
-### Record a screencast
-
-You can easily make screen recordings right from your app! Screen recording is supported in the latest versions of Chrome, Edge, and Firefox. Ensure your browser is up-to-date for compatibility. Depending on your current settings, you may need to grant permission to your browser to record your screen or to use your microphone if recording a voiceover.
-
-1. While viewing your app, open the app menu from the upper-right corner.
-2. Click "**Record a screencast**."
-3. If you want to record audio through your microphone, check "**Also record audio**."
-4. Click "**Start recording**." (You may be prompted by your OS to permit your browser to record your screen or use your microphone.)
-
-<div style={{ maxWidth: '90%', margin: '0 2em 0 2em' }}>
-    <Image src="/images/app-menu/app-menu-record-2.png" alt="Record" />
-</div>
-
-5. Select which tab, window, or monitor you want to record from the listed options. The interface will vary depending on your browser.
-
-<div style={{ maxWidth: '90%', margin: '0 2em 0 2em' }}>
-    <Image src="/images/app-menu/app-menu-record-3.png" alt="Record" />
-</div>
-
-6. Click "**Share**."
-
-<div style={{ maxWidth: '90%', margin: '0 2em 0 2em' }}>
-    <Image src="/images/app-menu/app-menu-record-4.png" alt="Record" />
-</div>
-
-7. While recording, you will see a red circle on your app's tab and on the app menu icon. If you want to cancel the recording, click "**Stop sharing**" at the bottom of your app.
-
-<div style={{ maxWidth: '90%', margin: '0 2em 0 2em' }}>
-    <Image src="/images/app-menu/app-menu-record-5.png" alt="Record" />
-</div>
-
-8. When you are done recording, press "**Esc**" on your keyboard or click "**Stop recording**" from your app's menu.
-
-<div style={{ maxWidth: '90%', margin: '0 2em 0 2em' }}>
-    <Image src="/images/app-menu/app-menu-record-6.png" alt="Record" />
-</div>
-
-9. Follow your browser's instructions to save your recording. Your saved recording will be available where your browser saves downloads.
-
-The whole process looks like this:
-
-<div style={{ maxWidth: '90%', margin: '0 2em 0 2em' }}>
-    <Image src="/images/app-menu/app-menu-record.gif" alt="Record" />
-</div>
+1. アプリを表示しているときに、右上のアプリメニューを開きます。
+2. 「**Record a screencast**」をクリックします。
+3. マイクを通じて音声を録音したい場合は、「**Also record audio**」をチェックします。
+4. 「**Start recording**」をクリックします。（OSにより、画面録画やマイク使用の許可を求められることがあります。）
+5. 録画するタブ、ウィンドウ、またはモニターを選択します。インターフェースはブラウザによって異なります。
+6. 「**Share**」をクリックします。
+7. 録画中は、アプリのタブとアプリメニューアイコンに赤い円が表示されます。録画をキャンセルしたい場合は、アプリの下部にある「**Stop sharing**」をクリックします。
+8. 録画を終了するには、キーボードの「**Esc**」を押すか、アプリのメニューから「**Stop recording**」をクリックします。
+9. ブラウザの指示に従って録画を保存します。録画ファイルは、ブラウザのダウンロードフォルダに保存されます。
 
 ### About
 
-You can conveniently check what version of Streamlit is running from the "**About**" option. Developers also have the option to customize the message shown here using [`st.set_page_config`](/develop/api-reference/configuration/st.set_page_config).
+「**About**」オプションを使用して、現在実行中の Streamlit のバージョンを確認できます。開発者は [`st.set_page_config`](/develop/api-reference/configuration/st.set_page_config) を使用して、ここに表示されるメッセージをカスタマイズすることも可能です。
 
-## Developer options
+## 開発者オプション
 
-By default, developer options only show when viewing an app locally or when viewing a Community Cloud app while logged in with administrative permission. You can [customize the menu](#customize-the-menu) if you want to make these options available for all users.
+デフォルトでは、開発者オプションはローカルでアプリを表示している場合や、Community Cloudのアプリを管理者権限でログインしている場合にのみ表示されます。これらのオプションをすべてのユーザーが利用できるようにするには、[メニューをカスタマイズ](#customize-the-menu) することができます。
 
-### Clear cache
+### キャッシュをクリアする
 
-Reset your app's cache by clicking "**Clear cache**" from the app's menu or by pressing "**C**" on your keyboard while not focused on an input element. This will remove all cached entries for [`@st.cache_data`](/develop/api-reference/caching-and-state/st.cache_data) and [`@st.cache_resource`](/develop/api-reference/caching-and-state/st.cache_resource).
+アプリメニューから「**Clear cache**」をクリックするか、入力要素にフォーカスしていない状態でキーボードの「**C**」を押して、アプリのキャッシュをリセットします。これにより、[`@st.cache_data`](/develop/api-reference/caching-and-state/st.cache_data) および [`@st.cache_resource`](/develop/api-reference/caching-and-state/st.cache_resource) に関連するすべてのキャッシュエントリが削除されます。
 
-### Deploy this app
+### このアプリをデプロイする
 
-If you are running an app locally from within a git repo, you can deploy your app to Streamlit Community Cloud in a few easy clicks! Make sure your work has been pushed to your online GitHub repository before beginning. For the greatest convenience, make sure you have already created your [Community Cloud account](/deploy/streamlit-community-cloud/get-started/create-your-account) and are signed in.
+gitリポジトリ内からローカルでアプリを実行している場合、数回のクリックでアプリを Streamlit Community Cloud にデプロイできます！開始する前に、作業内容を GitHub のオンラインリポジトリにプッシュしてください。最大の利便性のために、[Community Cloudアカウント](/deploy/streamlit-community-cloud/get-started/create-your-account)を既に作成し、サインインしていることを確認してください。
 
-1. Click "**Deploy**" next to the app menu icon (<i style={{ verticalAlign: "-.25em" }} className={{ class: "material-icons-sharp" }}>more_vert</i>).
+1. アプリメニューアイコンの隣にある「**Deploy**」をクリックします。
+2. 「**Deploy now**」をクリックします。
+3. Community Cloud の「Deploy an app」ページに移動します。アプリのリポジトリ、ブランチ、ファイル名は現在のアプリに合わせて自動的に入力されます！Streamlit Community Cloud での[アプリのデプロイ方法](/deploy/streamlit-community-cloud/deploy-your-app)の詳細をご覧ください。
 
-<div style={{ maxWidth: '90%', margin: '0 2em 0 2em' }}>
-    <Image src="/images/app-menu/app-menu-deploy.png" alt="Settings" />
-</div>
+## メニューをカスタマイズする
 
-2. Click "**Deploy now**."
+アプリの[設定](/develop/concepts/configuration)で `client.toolbarMode` を使用して、アプリメニューを次の方法で表示できます：
 
-<div style={{ maxWidth: '90%', margin: '0 2em 0 2em' }}>
-    <Image src="/images/app-menu/app-menu-deploy-1.png" alt="Settings" />
-</div>
-
-3. You will be taken to Community Cloud's "Deploy an app" page. Your app's repository, branch, and file name will be prefilled to match your current app! Learn more about [deploying an app](/deploy/streamlit-community-cloud/deploy-your-app) on Streamlit Community Cloud.
-
-The whole process looks like this:
-
-<div style={{ maxWidth: '90%', margin: '0 2em 0 2em' }}>
-    <Image src="/images/app-menu/deploy-from-local.gif" alt="Settings" />
-</div>
-
-## Customize the menu
-
-Using `client.toolbarMode` in your app's [configuration](/develop/concepts/configuration), you can make the app menu appear in the following ways:
-
-- `"developer"` &mdash; Show the developer options to all viewers.
-- `"viewer"` &mdash; Hide the developer options from all viewers.
-- `"minimal"` &mdash; Show only those options set externally. These options can be declared through [`st.set_page_config`](/develop/api-reference/configuration/st.set_page_config) or populated through Streamlit Community Cloud.
-- `"auto"` &mdash; This is the default and will show the developer options when accessed through localhost or through Streamlit Community Cloud when logged into an administrative account for the app. Otherwise, the developer options will not show.
+- `"developer"` &mdash; すべてのビューアーに開発者オプションを表示します。
+- `"viewer"` &mdash; すべてのビューアーから開発者オプションを非表示にします。
+- `"minimal"` &mdash; 外部で設定されたオプションのみを表示します。これらのオプションは[`st.set_page_config`](/develop/api-reference/configuration/st.set_page_config)で宣言されるか、Streamlit Community Cloud を通じて設定されます。
+- `"auto"` &mdash; これはデフォルトの設定であり、localhostからアクセスする場合や Streamlit Community Cloud でアプリの管理者アカウントにログインしている場合に開発者オプションを表示します。それ以外の場合は、開発者オプションは表示されません。
