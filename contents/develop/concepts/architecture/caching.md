@@ -16,12 +16,12 @@ Streamlit は、ユーザーの操作やコードの変更があるたびに、�
 
 でも心配しないでください！Streamlitにはこれらの問題に対処するためのキャッシング機能が組み込まれています。キャッシングは、遅い関数呼び出しの結果を保存し、再実行を避けることでアプリを高速化し、再実行時にオブジェクトを持続させます。キャッシュされた値はアプリのすべてのユーザーに利用可能です。セッション内でのみアクセス可能な結果を保存する必要がある場合は、代わりに[セッションステート](/develop/concepts/architecture/session-state) を使用してください。
 
-1. [最小の例](#minimal-example)
-2. [基本的な使い方](#basic-usage)
-3. [高度な使い方](#advanced-usage)
-4. [st.cache からの移行](#migrating-from-stcache)
+1. [小さな例](#小さな例)
+2. [基本的な使い方](#基本的な使い方)
+3. [高度な使い方](#高度な使い方)
+4. [st.cacheからの移行](#st.cacheからの移行)
 
-## 最小の例
+## 小さな例
 
 Streamlit で関数をキャッシュするには、`st.cache_data` または `st.cache_resource` のいずれかのデコレーターで関数を装飾する必要があります：
 
@@ -49,15 +49,13 @@ Streamlitがこれらのパラメータ値と関数コードを初めて確認�
 
 `st.cache_data` は、データフレーム、NumPy配列、文字列、整数、浮動小数点数など、データを返すすべての関数に使用する基本的なコマンドです。ほとんどのユースケースに適しているため、これが主な使用方法です。各ユーザーセッション内では、`@st.cache_data` で装飾された関数はキャッシュされた戻り値の_コピー_を返します（すでにキャッシュされている場合）。
 
-#### Usage
+#### 使用例
 
-<br />
-
-Let's look at an example of using `st.cache_data`. Suppose your app loads the [Uber ride-sharing dataset](https://github.com/plotly/datasets/blob/master/uber-rides-data1.csv) – a CSV file of 50 MB – from the internet into a DataFrame:
+`st.cache_data` の使用例を見てみましょう。例えば、アプリが[Uberのライドシェアデータセット](https://github.com/plotly/datasets/blob/master/uber-rides-data1.csv)（50 MBのCSVファイル）をインターネットからDataFrameに読み込む場合です：
 
 ```python
 def load_data(url):
-    df = pd.read_csv(url)  # 👈 Download the data
+    df = pd.read_csv(url)  # 👈 データをダウンロード
     return df
 
 df = load_data("https://github.com/plotly/datasets/raw/master/uber-rides-data1.csv")
@@ -66,12 +64,12 @@ st.dataframe(df)
 st.button("Rerun")
 ```
 
-Running the `load_data` function takes 2 to 30 seconds, depending on your internet connection. (Tip: if you are on a slow connection, use [this 5 MB dataset instead](https://github.com/plotly/datasets/blob/master/26k-consumer-complaints.csv)). Without caching, the download is rerun each time the app is loaded or with user interaction. Try it yourself by clicking the button we added! Not a great experience… 😕
+`load_data` 関数の実行には、インターネット接続によっては2〜30秒かかります。（ヒント: 回線が遅い場合は[こちらの5 MBデータセット](https://github.com/plotly/datasets/blob/master/26k-consumer-complaints.csv)を使用してください）。キャッシングなしでは、アプリが読み込まれるたび、またはユーザーが操作するたびにデータが再ダウンロードされます。追加したボタンをクリックして試してみてください！あまり良い体験ではありませんよね… 😕
 
-Now let's add the `@st.cache_data` decorator on `load_data`:
+では、`load_data` に `@st.cache_data` デコレーターを追加してみましょう：
 
 ```python
-@st.cache_data  # 👈 Add the caching decorator
+@st.cache_data  # 👈 キャッシングデコレーターを追加
 def load_data(url):
     df = pd.read_csv(url)
     return df
@@ -82,33 +80,26 @@ st.dataframe(df)
 st.button("Rerun")
 ```
 
-Run the app again. You'll notice that the slow download only happens on the first run. Every subsequent rerun should be almost instant! 💨
+アプリを再実行すると、最初の実行時のみ遅いダウンロードが発生し、次回以降の再実行はほぼ瞬時に行われます！💨
 
-#### Behavior
+#### 動作
 
-<br />
+これがどのように動作するのか、`st.cache_data` の挙動をステップごとに見ていきましょう：
 
-How does this work? Let's go through the behavior of `st.cache_data` step by step:
+- 最初の実行時、Streamlitは指定されたパラメータ値（この場合はCSVファイルのURL）で `load_data` 関数を呼び出したことがないことを認識します。そこで、関数を実行してデータをダウンロードします。
+- ここでキャッシングメカニズムが動作します：返されたDataFrameは[pickle](https://docs.python.org/3/library/pickle.html)を介してシリアライズ（バイトに変換）され、キャッシュに保存されます（`url` パラメータの値と共に）。
+- 次回の実行時、Streamlitは特定の `url` に対する `load_data` のキャッシュエントリを確認します。エントリがあるので、キャッシュされたオブジェクトを取得し、シリアライズ解除してDataFrameに変換し、関数を再実行してデータを再ダウンロードする代わりに返します。
 
-- On the first run, Streamlit recognizes that it has never called the `load_data` function with the specified parameter value (the URL of the CSV file) So it runs the function and downloads the data.
-- Now our caching mechanism becomes active: the returned DataFrame is serialized (converted to bytes) via [pickle](https://docs.python.org/3/library/pickle.html) and stored in the cache (together with the value of the `url` parameter).
-- On the next run, Streamlit checks the cache for an entry of `load_data` with the specific `url`. There is one! So it retrieves the cached object, deserializes it to a DataFrame, and returns it instead of re-running the function and downloading the data again.
+このキャッシュされたオブジェクトのシリアライズとシリアライズ解除のプロセスにより、元のDataFrameのコピーが作成されます。このコピー動作は一見不要に思えますが、データオブジェクトをキャッシュする際には有効であり、ミューテーションや競合状態の問題を効果的に防ぎます。詳しくは、以下の「[ミューテーションと競合状態の問題](#mutation-and-concurrency-issues)」のセクションをご覧ください。
 
-This process of serializing and deserializing the cached object creates a copy of our original DataFrame. While this copying behavior may seem unnecessary, it's what we want when caching data objects since it effectively prevents mutation and concurrency issues. Read the section “[Mutation and concurrency issues](#mutation-and-concurrency-issues)" below to understand this in more detail.
+> [!Warning]
+> `st.cache_data` は暗黙的に `pickle` モジュールを使用しており、これは安全性に問題があることが知られています。キャッシュされた関数が返すものはすべてpickleされて保存され、取り出す際にunpickleされます。キャッシュされた関数が信頼できる値を返すことを確認してください。不正なpickleデータを構築し、unpickle時に任意のコードを実行することが可能です。信頼できないソースから来た可能性があるデータは、安全でないモードで読み込まないでください。**信頼できるデータのみを読み込んでください**。
 
-<Warning>
+#### 使用例
 
-`st.cache_data` implicitly uses the `pickle` module, which is known to be insecure. Anything your cached function returns is pickled and stored, then unpickled on retrieval. Ensure your cached functions return trusted values because it is possible to construct malicious pickle data that will execute arbitrary code during unpickling. Never load data that could have come from an untrusted source in an unsafe mode or that could have been tampered with. **Only load data you trust**.
+**DataFrameの変換**
 
-</Warning>
-
-#### Examples
-
-<br/>
-
-**DataFrame transformations**
-
-In the example above, we already showed how to cache loading a DataFrame. It can also be useful to cache DataFrame transformations such as `df.filter`, `df.apply`, or `df.sort_values`. Especially with large DataFrames, these operations can be slow.
+上記の例では、DataFrameの読み込みをキャッシュする方法を示しました。`df.filter`、`df.apply`、`df.sort_values` などのDataFrame変換もキャッシュすることが有効です。特に大規模なDataFrameでは、これらの操作は遅くなることがあります。
 
 ```python
 @st.cache_data
@@ -118,9 +109,9 @@ def transform(df):
 	return df
 ```
 
-**Array computations**
+**配列の計算**
 
-Similarly, it can make sense to cache computations on NumPy arrays:
+同様に、NumPy配列の計算をキャッシュすることも意味があります：
 
 ```python
 @st.cache_data
@@ -128,9 +119,9 @@ def add(arr1, arr2):
 	return arr1 + arr2
 ```
 
-**Database queries**
+**データベースクエリ**
 
-You usually make SQL queries to load data into your app when working with databases. Repeatedly running these queries can be slow, cost money, and degrade the performance of your database. We strongly recommend caching any database queries in your app. See also [our guides on connecting Streamlit to different databases](/develop/tutorials/databases) for in-depth examples.
+データベースを扱う場合、SQLクエリを使用してデータをアプリに読み込むことが一般的です。これらのクエリを繰り返し実行するのは遅くなり、コストがかかり、データベースのパフォーマンスも低下させる可能性があります。アプリ内のデータベースクエリはキャッシュすることを強く推奨します。詳細な例については、[Streamlitと異なるデータベースを接続するためのガイド](/develop/tutorials/databases)も参照してください。
 
 ```python
 connection = database.connect()
@@ -140,15 +131,12 @@ def query():
     return pd.read_sql_query("SELECT * from table", connection)
 ```
 
-<Tip>
+> [!Tip]
+> データベースから新しい結果を取得するために `ttl`（有効期限）を設定することをお勧めします。`st.cache_data(ttl=3600)` を設定すると、Streamlitは1時間（3600秒）後にキャッシュされた値を無効化し、再度キャッシュされた関数を実行します。詳細は[キャッシュのサイズと期間の制御](#controlling-cache-size-and-duration)で確認してください。
 
-You should set a `ttl` (time to live) to get new results from your database. If you set `st.cache_data(ttl=3600)`, Streamlit invalidates any cached values after 1 hour (3600 seconds) and runs the cached function again. See details in [Controlling cache size and duration](#controlling-cache-size-and-duration).
+**API呼び出し**
 
-</Tip>
-
-**API calls**
-
-Similarly, it makes sense to cache API calls. Doing so also avoids rate limits.
+API呼び出しをキャッシュするのも有効です。これにより、レート制限を回避することもできます。
 
 ```python
 @st.cache_data
@@ -157,9 +145,9 @@ def api_call():
     return response.json()
 ```
 
-**Running ML models (inference)**
+**MLモデルの実行（推論）**
 
-Running complex machine learning models can use significant time and memory. To avoid rerunning the same computations over and over, use caching.
+複雑な機械学習モデルを実行するには、多くの時間とメモリを使用することがあります。同じ計算を何度も再実行するのを避けるために、キャッシングを使用してください。
 
 ```python
 @st.cache_data
