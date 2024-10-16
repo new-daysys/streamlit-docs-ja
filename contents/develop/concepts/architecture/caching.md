@@ -3,33 +3,27 @@ title: Caching overview
 slug: /develop/concepts/architecture/caching
 ---
 
-<Note>
+> [!Note]
+> `@st.cache` デコレーターは廃止されました。
+> 関連ドキュメントは [Optimize performance with st.cache](/develop/concepts/architecture/st.cache) にて確認できます。
 
-Documentation for the deprecated `@st.cache` decorator can be found in [Optimize performance with st.cache](/develop/concepts/architecture/st.cache).
+# キャッシング概要
 
-</Note>
+Streamlit は、ユーザーの操作やコードの変更があるたびに、スクリプトを上から下まで再実行します。この実行モデルにより、開発が非常に簡単になりますが、2つの大きな課題もあります：
 
-# Caching overview
+1. 長時間実行される関数が何度も再実行されるため、アプリが遅くなる。
+2. オブジェクトが何度も再作成されるため、再実行やセッションをまたいでオブジェクトを保持するのが難しくなる。
 
-Streamlit runs your script from top to bottom at every user interaction or code change. This execution model makes development super easy. But it comes with two major challenges:
+でも心配しないでください！Streamlitにはこれらの問題に対処するためのキャッシング機能が組み込まれています。キャッシングは、遅い関数呼び出しの結果を保存し、再実行を避けることでアプリを高速化し、再実行時にオブジェクトを持続させます。キャッシュされた値はアプリのすべてのユーザーに利用可能です。セッション内でのみアクセス可能な結果を保存する必要がある場合は、代わりに[セッションステート](/develop/concepts/architecture/session-state) を使用してください。
 
-1. Long-running functions run again and again, which slows down your app.
-2. Objects get recreated again and again, which makes it hard to persist them across reruns or sessions.
+1. [最小の例](#minimal-example)
+2. [基本的な使い方](#basic-usage)
+3. [高度な使い方](#advanced-usage)
+4. [st.cache からの移行](#migrating-from-stcache)
 
-But don't worry! Streamlit lets you tackle both issues with its built-in caching mechanism. Caching stores the results of slow function calls, so they only need to run once. This makes your app much faster and helps with persisting objects across reruns. Cached values are available to all users of your app. If you need to save results that should only be accessible within a session, use [Session State](/develop/concepts/architecture/session-state) instead.
+## 最小の例
 
-<Collapse title="Table of contents" expanded={true}>
-
-1. [Minimal example](#minimal-example)
-2. [Basic usage](#basic-usage)
-3. [Advanced usage](#advanced-usage)
-4. [Migrating from st.cache](#migrating-from-stcache)
-
-</Collapse>
-
-## Minimal example
-
-To cache a function in Streamlit, you must decorate it with one of two decorators (`st.cache_data` or `st.cache_resource`):
+Streamlit で関数をキャッシュするには、`st.cache_data` または `st.cache_resource` のいずれかのデコレーターで関数を装飾する必要があります：
 
 ```python
 @st.cache_data
@@ -37,25 +31,23 @@ def long_running_function(param1, param2):
     return …
 ```
 
-In this example, decorating `long_running_function` with `@st.cache_data` tells Streamlit that whenever the function is called, it checks two things:
+この例では、`long_running_function` に `@st.cache_data` を付与することで、Streamlitは関数が呼び出されるたびに以下の2つのことを確認します：
 
-1. The values of the input parameters (in this case, `param1` and `param2`).
-2. The code inside the function.
+1. 入力パラメータの値（この場合、`param1` と `param2`）。
+2. 関数内のコード。
 
-If this is the first time Streamlit sees these parameter values and function code, it runs the function and stores the return value in a cache. The next time the function is called with the same parameters and code (e.g., when a user interacts with the app), Streamlit will skip executing the function altogether and return the cached value instead. During development, the cache updates automatically as the function code changes, ensuring that the latest changes are reflected in the cache.
+Streamlitがこれらのパラメータ値と関数コードを初めて確認した場合、関数を実行し、その戻り値をキャッシュに保存します。同じパラメータとコードで再度呼び出されると（例：ユーザーがアプリを操作した場合）、Streamlitは関数の実行をスキップし、代わりにキャッシュされた値を返します。開発中は、関数コードが変更されるたびにキャッシュが自動的に更新され、最新の変更がキャッシュに反映されるようになります。
 
-As mentioned, there are two caching decorators:
+前述のとおり、キャッシングには2つのデコレーターがあります：
 
-- `st.cache_data` is the recommended way to cache computations that return data: loading a DataFrame from CSV, transforming a NumPy array, querying an API, or any other function that returns a serializable data object (str, int, float, DataFrame, array, list, …). It creates a new copy of the data at each function call, making it safe against [mutations and race conditions](#mutation-and-concurrency-issues). The behavior of `st.cache_data` is what you want in most cases – so if you're unsure, start with `st.cache_data` and see if it works!
-- `st.cache_resource` is the recommended way to cache global resources like ML models or database connections – unserializable objects that you don't want to load multiple times. Using it, you can share these resources across all reruns and sessions of an app without copying or duplication. Note that any mutations to the cached return value directly mutate the object in the cache (more details below).
+- `st.cache_data` は、データを返す計算のキャッシュに推奨されます。例えば、CSVからのデータフレームの読み込み、NumPy配列の変換、APIクエリなど、シリアライズ可能なデータオブジェクト（文字列、整数、浮動小数点数、データフレーム、配列、リストなど）を返す関数に適しています。関数が呼び出されるたびにデータの新しいコピーを作成するため、[ミューテーションや競合状態](#mutation-and-concurrency-issues)に対して安全です。ほとんどの場合、`st.cache_data` を使用するのが適切なので、迷った場合は `st.cache_data` を試してみてください！
+- `st.cache_resource` は、機械学習モデルやデータベース接続などのグローバルリソースをキャッシュするために推奨されます。これは、複数回読み込む必要のないシリアライズ不可能なオブジェクトに適しており、アプリの再実行やセッションをまたいでリソースを共有できます。ただし、キャッシュされた戻り値を変更すると、キャッシュ内のオブジェクトも直接変更されることに注意してください（詳細は後述）。
 
-<Image src="/images/caching-high-level-diagram.png" caption="Streamlit's two caching decorators and their use cases." alt="Streamlit's two caching decorators and their use cases. Use st.cache_data for anything you'd store in a database. Use st.cache_resource for anything you can't store in a database, like a connection to a database or a machine learning model." />
-
-## Basic usage
+## 基本的な使い方
 
 ### st.cache_data
 
-`st.cache_data` is your go-to command for all functions that return data – whether DataFrames, NumPy arrays, str, int, float, or other serializable types. It's the right command for almost all use cases! Within each user session, an `@st.cache_data`-decorated function returns a _copy_ of the cached return value (if the value is already cached).
+`st.cache_data` は、データフレーム、NumPy配列、文字列、整数、浮動小数点数など、データを返すすべての関数に使用する基本的なコマンドです。ほとんどのユースケースに適しているため、これが主な使用方法です。各ユーザーセッション内では、`@st.cache_data` で装飾された関数はキャッシュされた戻り値の_コピー_を返します（すでにキャッシュされている場合）。
 
 #### Usage
 
