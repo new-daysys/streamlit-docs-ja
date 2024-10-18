@@ -157,28 +157,28 @@ def run_model(inputs):
 
 ### st.cache_resource
 
-`st.cache_resource` is the right command to cache “resources" that should be available globally across all users, sessions, and reruns. It has more limited use cases than `st.cache_data`, especially for caching database connections and ML models. Within each user session, an `@st.cache_resource`-decorated function returns the cached instance of the return value (if the value is already cached). Therefore, objects cached by `st.cache_resource` act like singletons and can mutate.
+`st.cache_resource` は、すべてのユーザー、セッション、および再実行でグローバルに利用できる「リソース」をキャッシュするためのコマンドです。`st.cache_data` よりも限定的なユースケースを持ち、特にデータベース接続や機械学習モデルのキャッシュに適しています。各ユーザーセッション内で、`@st.cache_resource` で装飾された関数はキャッシュされた返り値のインスタンスを返します（すでにキャッシュされている場合）。したがって、`st.cache_resource` でキャッシュされたオブジェクトはシングルトンのように振る舞い、ミューテーションを引き起こす可能性があります。
 
-#### Usage
+#### 使用例
 
-As an example for `st.cache_resource`, let's look at a typical machine learning app. As a first step, we need to load an ML model. We do this with [Hugging Face's transformers library](https://huggingface.co/docs/transformers/index):
+`st.cache_resource` の例として、典型的な機械学習アプリを見てみましょう。まず、機械学習モデルを読み込む必要があります。ここでは、[Hugging Faceのtransformersライブラリ](https://huggingface.co/docs/transformers/index)を使用します：
 
 ```python
 from transformers import pipeline
-model = pipeline("sentiment-analysis")  # 👈 Load the model
+model = pipeline("sentiment-analysis")  # 👈 モデルを読み込む
 ```
 
-If we put this code into a Streamlit app directly, the app will load the model at each rerun or user interaction. Repeatedly loading the model poses two problems:
+このコードをStreamlitアプリに直接書き込むと、アプリは再実行やユーザーの操作のたびにモデルを読み込みます。この繰り返しのモデル読み込みには2つの問題があります：
 
-- Loading the model takes time and slows down the app.
-- Each session loads the model from scratch, which takes up a huge amount of memory.
+- モデルの読み込みに時間がかかり、アプリの速度が低下する。
+- 各セッションがモデルを最初から読み込むため、膨大なメモリを消費する。
 
-Instead, it would make much more sense to load the model once and use that same object across all users and sessions. That's exactly the use case for `st.cache_resource`! Let's add it to our app and process some text the user entered:
+代わりに、モデルを一度だけ読み込み、すべてのユーザーとセッションで同じオブジェクトを使い回す方が合理的です。これこそが `st.cache_resource` の使用例です！アプリに追加して、ユーザーが入力したテキストを処理してみましょう：
 
 ```python
 from transformers import pipeline
 
-@st.cache_resource  # 👈 Add the caching decorator
+@st.cache_resource  # 👈 キャッシングデコレーターを追加
 def load_model():
     return pipeline("sentiment-analysis")
 
@@ -186,35 +186,29 @@ model = load_model()
 
 query = st.text_input("Your query", value="I love Streamlit! 🎈")
 if query:
-    result = model(query)[0]  # 👈 Classify the query text
+    result = model(query)[0]  # 👈 クエリテキストを分類
     st.write(result)
 ```
 
-If you run this app, you'll see that the app calls `load_model` only once – right when the app starts. Subsequent runs will reuse that same model stored in the cache, saving time and memory!
+このアプリを実行すると、`load_model` はアプリの起動時に1回だけ呼び出されることが確認できます。以降の再実行では、キャッシュされた同じモデルが再利用され、時間とメモリが節約されます！
 
-#### Behavior
+#### 動作
 
-<br />
+`st.cache_resource` の使用は `st.cache_data` に非常によく似ていますが、いくつか重要な違いがあります：
 
-Using `st.cache_resource` is very similar to using `st.cache_data`. But there are a few important differences in behavior:
+- `st.cache_resource` はキャッシュされた返り値のコピーを作成せず、オブジェクト自体をキャッシュに保存します。そのため、関数の返り値に対するすべての変更は、キャッシュ内のオブジェクトに直接影響します。複数のセッションからの変更が問題を引き起こさないように、返り値がスレッドセーフであることを確認する必要があります。簡単に言えば、返り値はスレッドセーフでなければなりません。
 
-- `st.cache_resource` does **not** create a copy of the cached return value but instead stores the object itself in the cache. All mutations on the function's return value directly affect the object in the cache, so you must ensure that mutations from multiple sessions do not cause problems. In short, the return value must be thread-safe.
+> [!Warning]
+> スレッドセーフでないオブジェクトに `st.cache_resource` を使用すると、クラッシュやデータの破損が発生する可能性があります。詳細は[ミューテーションと競合状態の問題](#mutation-and-concurrency-issues)を参照してください。
 
-    <Warning>
+- コピーが作成されないため、キャッシュされた返り値のグローバルインスタンスが1つだけ存在し、特に大規模な機械学習モデルを使用する場合にメモリが節約されます。コンピュータサイエンスの用語では、[シングルトン](https://en.wikipedia.org/wiki/Singleton_pattern)を作成しています。
+- 関数の返り値はシリアライズ可能である必要はありません。この動作は、データベース接続、ファイルハンドル、スレッドなど、もともとシリアライズできない型に対して非常に有効です。これらのオブジェクトは `st.cache_data` でキャッシュすることはできません。
 
-  Using `st.cache_resource` on objects that are not thread-safe might lead to crashes or corrupted data. Learn more below under [Mutation and concurrency issues](#mutation-and-concurrency-issues).
-  </Warning>
+#### 使用例
 
-- Not creating a copy means there's just one global instance of the cached return object, which saves memory, e.g. when using a large ML model. In computer science terms, we create a [singleton](https://en.wikipedia.org/wiki/Singleton_pattern).
-- Return values of functions do not need to be serializable. This behavior is great for types not serializable by nature, e.g., database connections, file handles, or threads. Caching these objects with `st.cache_data` is not possible.
+**データベース接続**
 
-#### Examples
-
-<br />
-
-**Database connections**
-
-`st.cache_resource` is useful for connecting to databases. Usually, you're creating a connection object that you want to reuse globally for every query. Creating a new connection object at each run would be inefficient and might lead to connection errors. That's exactly what `st.cache_resource` can do, e.g., for a Postgres database:
+`st.cache_resource` はデータベース接続に非常に便利です。通常、クエリごとに再利用したい接続オブジェクトを作成します。毎回新しい接続オブジェクトを作成するのは非効率で、接続エラーを引き起こす可能性があります。これがまさに `st.cache_resource` の用途です。例えば、Postgresデータベースの場合：
 
 ```python
 @st.cache_resource
@@ -228,11 +222,12 @@ def init_connection():
 conn = init_connection()
 ```
 
-Of course, you can do the same for any other database. Have a look at [our guides on how to connect Streamlit to databases](/develop/tutorials/databases) for in-depth examples.
+もちろん、他のデータベースでも同様にできます。詳細な例については、[Streamlitとデータベースの接続方法に関するガイド](/develop/tutorials/databases) を参照してください。
 
-**Loading ML models**
 
-Your app should always cache ML models, so they are not loaded into memory again for every new session. See the [example](#usage-1) above for how this works with 🤗 Hugging Face models. You can do the same thing for PyTorch, TensorFlow, etc. Here's an example for PyTorch:
+**機械学習モデルの読み込み**
+
+アプリは機械学習モデルを常にキャッシュする必要があります。そうしないと、新しいセッションごとにモデルがメモリに再度読み込まれてしまいます。🤗 Hugging Faceモデルを使用する方法の[例](#usage-1)を参照してください。PyTorchやTensorFlowでも同様にできます。以下はPyTorchの例です：
 
 ```python
 @st.cache_resource
@@ -244,103 +239,101 @@ def load_model():
 model = load_model()
 ```
 
-### Deciding which caching decorator to use
+### どのキャッシングデコレーターを使用するかの判断
 
-<br />
+上記のセクションでは、それぞれのキャッシングデコレーターに共通する多くの例を示しましたが、どちらのデコレーターを使用すべきか決定するのが難しいエッジケースも存在します。最終的には、「データ」と「リソース」の違いに帰着します：
 
-The sections above showed many common examples for each caching decorator. But there are edge cases for which it's less trivial to decide which caching decorator to use. Eventually, it all comes down to the difference between “data" and “resource":
+- データはシリアライズ可能なオブジェクトです（[pickle](https://docs.python.org/3/library/pickle.html)を介してバイトに変換可能）。ディスクに簡単に保存できるものを指します。通常、データベースやファイルシステムに保存する基本的な型（str、int、floatなど）、または配列、データフレーム、画像など、これらの型を組み合わせたリスト、タプル、辞書などが含まれます。
+- リソースはシリアライズ不可能なオブジェクトで、通常はディスクやデータベースに保存しないものです。リソースは、データベース接続、機械学習モデル、ファイルハンドル、スレッドなどのより複雑で一時的なオブジェクトであることが多いです。
 
-- Data are serializable objects (objects that can be converted to bytes via [pickle](https://docs.python.org/3/library/pickle.html)) that you could easily save to disk. Imagine all the types you would usually store in a database or on a file system – basic types like str, int, and float, but also arrays, DataFrames, images, or combinations of these types (lists, tuples, dicts, and so on).
-- Resources are unserializable objects that you usually would not save to disk or a database. They are often more complex, non-permanent objects like database connections, ML models, file handles, threads, etc.
+上記の型リストから、Pythonのほとんどのオブジェクトが「データ」であることは明らかです。これが `st.cache_data` がほとんどのユースケースで正しいコマンドである理由でもあります。`st.cache_resource` は、特定の状況でのみ使用すべきやや特殊なコマンドです。
 
-From the types listed above, it should be obvious that most objects in Python are “data." That's also why `st.cache_data` is the correct command for almost all use cases. `st.cache_resource` is a more exotic command that you should only use in specific situations.
+あるいは、あまり考えたくない場合は、以下の表を参照して、ユースケースや返り値の型を確認してください😉：
 
-Or if you're lazy and don't want to think too much, look up your use case or return type in the table below 😉:
-
-| Use case                             |                                                                                                       Typical return types |                                                                                                                                            Caching decorator |
+| ユースケース                             |                                                                                                       典型的な返り値の型 |                                                                                                                                            推奨されるデコレーター |
 | :----------------------------------- | -------------------------------------------------------------------------------------------------------------------------: | -----------------------------------------------------------------------------------------------------------------------------------------------------------: |
-| Reading a CSV file with pd.read_csv  |                                                                                                           pandas.DataFrame |                                                                                                                                                st.cache_data |
-| Reading a text file                  |                                                                                                           str, list of str |                                                                                                                                                st.cache_data |
-| Transforming pandas dataframes       |                                                                                            pandas.DataFrame, pandas.Series |                                                                                                                                                st.cache_data |
-| Computing with numpy arrays          |                                                                                                              numpy.ndarray |                                                                                                                                                st.cache_data |
-| Simple computations with basic types |                                                                                                         str, int, float, … |                                                                                                                                                st.cache_data |
-| Querying a database                  |                                                                                                           pandas.DataFrame |                                                                                                                                                st.cache_data |
-| Querying an API                      |                                                                                                pandas.DataFrame, str, dict |                                                                                                                                                st.cache_data |
-| Running an ML model (inference)      |                                                                                     pandas.DataFrame, str, int, dict, list |                                                                                                                                                st.cache_data |
-| Creating or processing images        |                                                                                             PIL.Image.Image, numpy.ndarray |                                                                                                                                                st.cache_data |
-| Creating charts                      |                                                        matplotlib.figure.Figure, plotly.graph_objects.Figure, altair.Chart | st.cache_data (but some libraries require st.cache_resource, since the chart object is not serializable – make sure not to mutate the chart after creation!) |
-| Loading ML models                    |                                                             transformers.Pipeline, torch.nn.Module, tensorflow.keras.Model |                                                                                                                                            st.cache_resource |
-| Initializing database connections    | pyodbc.Connection, sqlalchemy.engine.base.Engine, psycopg2.connection, mysql.connector.MySQLConnection, sqlite3.Connection |                                                                                                                                            st.cache_resource |
-| Opening persistent file handles      |                                                                                                         \_io.TextIOWrapper |                                                                                                                                            st.cache_resource |
-| Opening persistent threads           |                                                                                                           threading.thread |                                                                                                                                            st.cache_resource |
+| pd.read_csv でCSVファイルを読み込む  |                                                                                                           pandas.DataFrame |                                                                                                                                                st.cache_data |
+| テキストファイルを読み込む            |                                                                                                           str, list of str |                                                                                                                                                st.cache_data |
+| pandasデータフレームを変換する         |                                                                                            pandas.DataFrame, pandas.Series |                                                                                                                                                st.cache_data |
+| numpy配列を使って計算する             |                                                                                                              numpy.ndarray |                                                                                                                                                st.cache_data |
+| 基本的な型を使った単純な計算           |                                                                                                         str, int, float, … |                                                                                                                                                st.cache_data |
+| データベースにクエリを送信する         |                                                                                                           pandas.DataFrame |                                                                                                                                                st.cache_data |
+| APIにクエリを送信する                  |                                                                                                pandas.DataFrame, str, dict |                                                                                                                                                st.cache_data |
+| 機械学習モデル（推論）を実行する      |                                                                                     pandas.DataFrame, str, int, dict, list |                                                                                                                                                st.cache_data |
+| 画像を作成または処理する               |                                                                                             PIL.Image.Image, numpy.ndarray |                                                                                                                                                st.cache_data |
+| グラフを作成する                       |                                                        matplotlib.figure.Figure, plotly.graph_objects.Figure, altair.Chart | st.cache_data（ただし、ライブラリによっては、グラフオブジェクトがシリアライズ不可能なため、st.cache_resource が必要な場合があります。作成後にグラフを変更しないでください！） |
+| 機械学習モデルを読み込む               |                                                             transformers.Pipeline, torch.nn.Module, tensorflow.keras.Model |                                                                                                                                            st.cache_resource |
+| データベース接続を初期化する           | pyodbc.Connection, sqlalchemy.engine.base.Engine, psycopg2.connection, mysql.connector.MySQLConnection, sqlite3.Connection |                                                                                                                                            st.cache_resource |
+| 永続的なファイルハンドルを開く         |                                                                                                         \_io.TextIOWrapper |                                                                                                                                            st.cache_resource |
+| 永続的なスレッドを開く                 |                                                                                                           threading.thread |                                                                                                                                            st.cache_resource |
 
-## Advanced usage
 
-### Controlling cache size and duration
+## 高度な使い方
 
-If your app runs for a long time and constantly caches functions, you might run into two problems:
+### キャッシュのサイズと期間の制御
 
-1. The app runs out of memory because the cache is too large.
-2. Objects in the cache become stale, e.g. because you cached old data from a database.
+アプリが長時間実行され、関数をキャッシュし続けると、次の2つの問題に直面する可能性があります：
 
-You can combat these problems with the `ttl` and `max_entries` parameters, which are available for both caching decorators.
+1. キャッシュが大きすぎてメモリ不足になる。
+2. キャッシュ内のオブジェクトが古くなる（例：古いデータベースのデータをキャッシュしてしまう）。
 
-**The `ttl` (time-to-live) parameter**
+これらの問題に対処するために、両方のキャッシングデコレーターで使用できる `ttl` と `max_entries` パラメータがあります。
 
-`ttl` sets a time to live on a cached function. If that time is up and you call the function again, the app will discard any old, cached values, and the function will be rerun. The newly computed value will then be stored in the cache. This behavior is useful for preventing stale data (problem 2) and the cache from growing too large (problem 1). Especially when pulling data from a database or API, you should always set a `ttl` so you are not using old data. Here's an example:
+
+**`ttl`（time-to-live）パラメータ**
+
+`ttl` はキャッシュされた関数に有効期限を設定します。この期限が切れ、関数が再度呼び出されると、アプリは古いキャッシュ値を破棄し、関数を再実行します。その後、新たに計算された値がキャッシュに保存されます。この動作は、古いデータを防止する（問題2）およびキャッシュが大きくなりすぎるのを防ぐ（問題1）ために役立ちます。特にデータベースやAPIからデータを取得する場合、`ttl` を設定して古いデータを使用しないようにすることが重要です。次の例を見てみましょう：
 
 ```python
-@st.cache_data(ttl=3600)  # 👈 Cache data for 1 hour (=3600 seconds)
+@st.cache_data(ttl=3600)  # 👈 データを1時間（=3600秒）キャッシュ
 def get_api_data():
     data = api.get(...)
     return data
 ```
 
-<Tip>
+> [!Tip]
+> `ttl` の値を `timedelta` を使って設定することもできます。例えば `ttl=datetime.timedelta(hours=1)` のようにします。
 
-You can also set `ttl` values using `timedelta`, e.g., `ttl=datetime.timedelta(hours=1)`.
 
-</Tip>
+**`max_entries` パラメータ**
 
-**The `max_entries` parameter**
-
-`max_entries` sets the maximum number of entries in the cache. An upper bound on the number of cache entries is useful for limiting memory (problem 1), especially when caching large objects. The oldest entry will be removed when a new entry is added to a full cache. Here's an example:
+`max_entries` はキャッシュ内のエントリ数の最大値を設定します。キャッシュエントリ数の上限を設定することは、特に大きなオブジェクトをキャッシュする場合にメモリを制限するために役立ちます（問題1）。キャッシュが満杯になると、最も古いエントリが削除され、新しいエントリが追加されます。次の例を見てみましょう：
 
 ```python
-@st.cache_data(max_entries=1000)  # 👈 Maximum 1000 entries in the cache
+@st.cache_data(max_entries=1000)  # 👈 キャッシュ内のエントリを最大1000に制限
 def get_large_array(seed):
     np.random.seed(seed)
     arr = np.random.rand(100000)
     return arr
 ```
 
-### Customizing the spinner
+### スピナーのカスタマイズ
 
-By default, Streamlit shows a small loading spinner in the app when a cached function is running. You can modify it easily with the `show_spinner` parameter, which is available for both caching decorators:
+デフォルトでは、キャッシュされた関数が実行中にStreamlitはアプリ内に小さなロードスピナーを表示します。`show_spinner` パラメータを使って、これを簡単にカスタマイズできます。これは、両方のキャッシングデコレーターで使用可能です：
 
 ```python
-@st.cache_data(show_spinner=False)  # 👈 Disable the spinner
+@st.cache_data(show_spinner=False)  # 👈 スピナーを無効にする
 def get_api_data():
     data = api.get(...)
     return data
 
-@st.cache_data(show_spinner="Fetching data from API...")  # 👈 Use custom text for spinner
+@st.cache_data(show_spinner="APIからデータを取得中...")  # 👈 スピナーにカスタムテキストを設定
 def get_api_data():
     data = api.get(...)
     return data
 ```
 
-### Excluding input parameters
+### 入力パラメータの除外
 
-In a cached function, all input parameters must be hashable. Let's quickly explain why and what it means. When the function is called, Streamlit looks at its parameter values to determine if it was cached before. Therefore, it needs a reliable way to compare the parameter values across function calls. Trivial for a string or int – but complex for arbitrary objects! Streamlit uses [hashing](https://en.wikipedia.org/wiki/Hash_function) to solve that. It converts the parameter to a stable key and stores that key. At the next function call, it hashes the parameter again and compares it with the stored hash key.
+キャッシュされた関数では、すべての入力パラメータがハッシュ可能である必要があります。ここでは、その理由と意味を簡単に説明します。関数が呼び出されると、Streamlitはそのパラメータ値を見て、以前にキャッシュされたかどうかを確認します。そのため、パラメータ値を関数呼び出し間で比較する信頼性のある方法が必要です。文字列や整数の場合は簡単ですが、任意のオブジェクトでは複雑です。Streamlitは[ハッシュ化](https://en.wikipedia.org/wiki/Hash_function)を使用してこの問題を解決します。パラメータを安定したキーに変換し、そのキーを保存します。次の関数呼び出しで、パラメータを再度ハッシュ化し、保存されたハッシュキーと比較します。
 
-Unfortunately, not all parameters are hashable! E.g., you might pass an unhashable database connection or ML model to your cached function. In this case, you can exclude input parameters from caching. Simply prepend the parameter name with an underscore (e.g., `_param1`), and it will not be used for caching. Even if it changes, Streamlit will return a cached result if all the other parameters match up.
+しかし、すべてのパラメータがハッシュ可能なわけではありません。例えば、ハッシュ不可能なデータベース接続や機械学習モデルをキャッシュされた関数に渡す場合があります。この場合、キャッシュから入力パラメータを除外できます。パラメータ名の前にアンダースコアを付けるだけで（例：`_param1`）、そのパラメータはキャッシュには使用されません。他のすべてのパラメータが一致すれば、そのパラメータが変わっていてもStreamlitはキャッシュされた結果を返します。
 
-Here's an example:
+以下はその例です：
 
 ```python
 @st.cache_data
-def fetch_data(_db_connection, num_rows):  # 👈 Don't hash _db_connection
+def fetch_data(_db_connection, num_rows):  # 👈 _db_connection をハッシュ化しない
     data = _db_connection.fetch(num_rows)
     return data
 
@@ -348,20 +341,21 @@ connection = init_connection()
 fetch_data(connection, 10)
 ```
 
-But what if you want to cache a function that takes an unhashable parameter? For example, you might want to cache a function that takes an ML model as input and returns the layer names of that model. Since the model is the only input parameter, you cannot exclude it from caching. In this case you can use the `hash_funcs` parameter to specify a custom hashing function for the model.
+しかし、ハッシュ不可能なパラメータを受け取る関数をキャッシュしたい場合はどうすればよいでしょうか？例えば、機械学習モデルを入力として受け取り、そのモデルの層の名前を返す関数をキャッシュしたい場合があります。モデルが唯一の入力パラメータであるため、それをキャッシュから除外することはできません。この場合、`hash_funcs` パラメータを使用して、モデルのカスタムハッシュ関数を指定することができます。
 
-### The `hash_funcs` parameter
+### `hash_funcs` パラメータ
 
-As described above, Streamlit's caching decorators hash the input parameters and cached function's signature to determine whether the function has been run before and has a return value stored ("cache hit") or needs to be run ("cache miss"). Input parameters that are not hashable by Streamlit's hashing implementation can be ignored by prepending an underscore to their name. But there two rare cases where this is undesirable. i.e. where you want to hash the parameter that Streamlit is unable to hash:
+前述のとおり、Streamlitのキャッシングデコレーターは入力パラメータとキャッシュされた関数のシグネチャをハッシュして、関数が以前に実行されて結果が保存されているか（「キャッシュヒット」）、または再実行が必要か（「キャッシュミス」）を判断します。Streamlitのハッシュ処理ができない入力パラメータは、名前の前にアンダースコアを付けて無視することができます。ただし、2つの稀なケースでは、これは望ましくありません。つまり、Streamlitがハッシュできないパラメータをハッシュしたい場合です：
 
-1. When Streamlit's hashing mechanism fails to hash a parameter, resulting in a `UnhashableParamError` being raised.
-2. When you want to override Streamlit's default hashing mechanism for a parameter.
+1. Streamlitのハッシュメカニズムがパラメータのハッシュに失敗し、`UnhashableParamError` が発生する場合。
+2. 特定のパラメータに対してStreamlitのデフォルトのハッシュメカニズムを上書きしたい場合。
 
-Let's discuss each of these cases in turn with examples.
+これらのケースをそれぞれ例を使って説明します。
 
-#### Example 1: Hashing a custom class
 
-Streamlit does not know how to hash custom classes. If you pass a custom class to a cached function, Streamlit will raise a `UnhashableParamError`. For example, let's define a custom class `MyCustomClass` that accepts an initial integer score. Let's also define a cached function `multiply_score` that multiplies the score by a multiplier:
+#### 例1: カスタムクラスのハッシュ
+
+Streamlitはカスタムクラスのハッシュ方法を知りません。キャッシュされた関数にカスタムクラスを渡すと、Streamlitは `UnhashableParamError` を発生させます。例えば、初期の整数スコアを受け取るカスタムクラス `MyCustomClass` を定義し、スコアを乗数で掛けるキャッシュされた関数 `multiply_score` を定義します：
 
 ```python
 import streamlit as st
@@ -382,13 +376,13 @@ multiplier = 2
 st.write(multiply_score(score, multiplier))
 ```
 
-If you run this app, you'll see that Streamlit raises a `UnhashableParamError` since it does not know how to hash `MyCustomClass`:
+このアプリを実行すると、Streamlitが `UnhashableParamError` を発生させるのがわかります。これは、`MyCustomClass` のハッシュ方法をStreamlitが知らないためです：
 
 ```python
 UnhashableParamError: Cannot hash argument 'obj' (of type __main__.MyCustomClass) in 'multiply_score'.
 ```
 
-To fix this, we can use the `hash_funcs` parameter to tell Streamlit how to hash `MyCustomClass`. We do this by passing a dictionary to `hash_funcs` that maps the name of the parameter to a hash function. The choice of hash function is up to the developer. In this case, let's define a custom hash function `hash_func` that takes the custom class as input and returns the score. We want the score to be the unique identifier of the object, so we can use it to deterministically hash the object:
+これを修正するには、`hash_funcs` パラメータを使用して `MyCustomClass` のハッシュ方法をStreamlitに伝える必要があります。これには、パラメータ名とハッシュ関数の対応を持つ辞書を `hash_funcs` に渡します。どのハッシュ関数を使用するかは開発者が選択できます。この場合、カスタムクラスを入力として受け取り、そのスコアを返すカスタムハッシュ関数 `hash_func` を定義しましょう。スコアがオブジェクトの一意の識別子として使用できるため、それを使用してオブジェクトを決定論的にハッシュします：
 
 ```python
 import streamlit as st
@@ -398,7 +392,7 @@ class MyCustomClass:
         self.my_score = initial_score
 
 def hash_func(obj: MyCustomClass) -> int:
-    return obj.my_score  # or any other value that uniquely identifies the object
+    return obj.my_score  # またはオブジェクトを一意に識別する他の値
 
 @st.cache_data(hash_funcs={MyCustomClass: hash_func})
 def multiply_score(obj: MyCustomClass, multiplier: int) -> int:
@@ -412,9 +406,9 @@ multiplier = 2
 st.write(multiply_score(score, multiplier))
 ```
 
-Now if you run the app, you'll see that Streamlit no longer raises a `UnhashableParamError` and the app runs as expected.
+これでアプリを実行すると、Streamlitは `UnhashableParamError` を発生させず、アプリが期待通りに動作します。
 
-Let's now consider the case where `multiply_score` is an attribute of `MyCustomClass` and we want to hash the entire object:
+次に、`multiply_score` が `MyCustomClass` の属性であり、オブジェクト全体をハッシュしたい場合を考えます：
 
 ```python
 import streamlit as st
@@ -435,7 +429,7 @@ multiplier = 2
 st.write(score.multiply_score(multiplier))
 ```
 
-If you run this app, you'll see that Streamlit raises a `UnhashableParamError` since it cannot hash the argument `'self' (of type __main__.MyCustomClass) in 'multiply_score'`. A simple fix here could be to use Python's `hash()` function to hash the object:
+このアプリを実行すると、Streamlitが `UnhashableParamError` を発生させるのがわかります。これは、`multiply_score` 内の `self` がハッシュできないためです。この問題を解決する簡単な方法は、Pythonの `hash()` 関数を使用してオブジェクトをハッシュすることです：
 
 ```python
 import streamlit as st
@@ -456,9 +450,9 @@ multiplier = 2
 st.write(score.multiply_score(multiplier))
 ```
 
-Above, the hash function is defined as `lambda x: hash(x.my_score)`. This creates a hash based on the `my_score` attribute of the `MyCustomClass` instance. As long as `my_score` remains the same, the hash remains the same. Thus, the result of `multiply_score` can be retrieved from the cache without recomputation.
+上記では、ハッシュ関数を `lambda x: hash(x.my_score)` として定義しています。これにより、`MyCustomClass` インスタンスの `my_score` 属性に基づいたハッシュが作成されます。`my_score` が同じであれば、ハッシュも同じです。そのため、`multiply_score` の結果をキャッシュから再取得することが可能です。
 
-As an astute Pythonista, you may have been tempted to use Python's `id()` function to hash the object like so:
+もしPythonの `id()` 関数を使ってオブジェクトをハッシュしたくなるかもしれませんが、以下のように書くことができます：
 
 ```python
 import streamlit as st
@@ -479,9 +473,9 @@ multiplier = 2
 st.write(score.multiply_score(multiplier))
 ```
 
-If you run the app, you'll notice that Streamlit recomputes `multiply_score` each time even if `my_score` hasn't changed! Puzzled? In Python, `id()` returns the identity of an object, which is unique and constant for the object during its lifetime. This means that even if the `my_score` value is the same between two instances of `MyCustomClass`, `id()` will return different values for these two instances, leading to different hash values. As a result, Streamlit considers these two different instances as needing separate cached values, thus it recomputes the `multiply_score` each time even if `my_score` hasn't changed.
+このアプリを実行すると、`my_score` が変わっていなくても `multiply_score` が毎回再計算されることがわかります。なぜでしょうか？Pythonでは、`id()` はオブジェクトの一意の識別子を返し、そのオブジェクトの生存期間中に変更されません。つまり、`MyCustomClass` の2つのインスタンス間で `my_score` の値が同じであっても、`id()` は異なる値を返すため、異なるハッシュ値が生成されます。結果として、Streamlitはこれらのインスタンスを別々のキャッシュされた値が必要なものとして扱い、`my_score` が変わっていなくても `multiply_score` を毎回再計算します。
 
-This is why we discourage using it as hash func, and instead encourage functions that return deterministic, true hash values. That said, if you know what you're doing, you can use `id()` as a hash function. Just be aware of the consequences. For example, `id` is often the _correct_ hash func when you're passing the result of an `@st.cache_resource` function as the input param to another cached function. There's a whole class of object types that aren’t otherwise hashable.
+このため、`id()` をハッシュ関数として使用することは推奨されず、決定論的で真のハッシュ値を返す関数を使用することが推奨されます。しかし、もし適切な知識を持っている場合は、`id()` をハッシュ関数として使用することもできます。ただし、その影響については十分に理解しておく必要があります。例えば、`id()` は、`@st.cache_resource` 関数の結果を別のキャッシュ関数への入力パラメータとして渡す場合に適切なハッシュ関数です。これは、ハッシュ不可能なオブジェクトタイプ全体に適用されます。
 
 #### Example 2: Hashing a Pydantic model
 
