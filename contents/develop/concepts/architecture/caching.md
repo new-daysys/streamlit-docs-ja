@@ -477,9 +477,10 @@ st.write(score.multiply_score(multiplier))
 
 このため、`id()` をハッシュ関数として使用することは推奨されず、決定論的で真のハッシュ値を返す関数を使用することが推奨されます。しかし、もし適切な知識を持っている場合は、`id()` をハッシュ関数として使用することもできます。ただし、その影響については十分に理解しておく必要があります。例えば、`id()` は、`@st.cache_resource` 関数の結果を別のキャッシュ関数への入力パラメータとして渡す場合に適切なハッシュ関数です。これは、ハッシュ不可能なオブジェクトタイプ全体に適用されます。
 
-#### Example 2: Hashing a Pydantic model
 
-Let's consider another example where we want to hash a Pydantic model:
+#### 例2: Pydantic モデルのハッシュ
+
+次に、Pydanticモデルをハッシュする例を見てみましょう：
 
 ```python
 import streamlit as st
@@ -496,11 +497,11 @@ person = identity(Person(name="Lee"))
 st.write(f"The person is {person.name}")
 ```
 
-Above, we define a custom class `Person` using Pydantic's `BaseModel` with a single attribute name. We also define an `identity` function which accepts an instance of `Person` as an arg and returns it without modification. This function is intended to cache the result, therefore, if called multiple times with the same `Person` instance, it won't recompute but return the cached instance.
+上記では、Pydanticの `BaseModel` を使用して、1つの属性 `name` を持つカスタムクラス `Person` を定義しています。また、`identity` 関数を定義しており、この関数は `Person` のインスタンスを引数として受け取り、変更せずに返します。この関数は結果をキャッシュすることを目的としているため、同じ `Person` インスタンスが複数回渡された場合、再計算せずにキャッシュされたインスタンスを返すはずです。
 
-If you run the app, however, you'll run into a `UnhashableParamError: Cannot hash argument 'person' (of type __main__.Person) in 'identity'.` error. This is because Streamlit does not know how to hash the `Person` class. To fix this, we can use the `hash_funcs` kwarg to tell Streamlit how to hash `Person`.
+しかし、このアプリを実行すると、`UnhashableParamError: Cannot hash argument 'person' (of type __main__.Person) in 'identity'.` というエラーが発生します。これは、Streamlitが `Person` クラスをハッシュする方法を知らないためです。この問題を解決するために、`hash_funcs` キーワード引数を使用して、`Person` クラスのハッシュ方法をStreamlitに教えることができます。
 
-In the version below, we define a custom hash function `hash_func` that takes the `Person` instance as input and returns the name attribute. We want the name to be the unique identifier of the object, so we can use it to deterministically hash the object:
+以下のバージョンでは、`Person` インスタンスを入力として受け取り、その `name` 属性を返すカスタムハッシュ関数 `hash_func` を定義しています。`name` をオブジェクトの一意の識別子として使用することで、オブジェクトを決定論的にハッシュします：
 
 ```python
 import streamlit as st
@@ -517,9 +518,12 @@ person = identity(Person(name="Lee"))
 st.write(f"The person is {person.name}")
 ```
 
-#### Example 3: Hashing a ML model
+このように、`Person` クラスのインスタンスは `name` 属性を使用してハッシュされ、同じ名前のインスタンスが渡された場合はキャッシュされた値が返されます。
 
-There may be cases where you want to pass your favorite machine learning model to a cached function. For example, let's say you want to pass a TensorFlow model to a cached function, based on what model the user selects in the app. You might try something like this:
+
+#### 例3: 機械学習モデルのハッシュ
+
+機械学習モデルをキャッシュされた関数に渡したい場合もあります。例えば、ユーザーがアプリ内で選択したモデルに基づいてTensorFlowモデルをキャッシュされた関数に渡したいとします。次のようなコードを試すかもしれません：
 
 ```python
 import streamlit as st
@@ -545,11 +549,11 @@ layers = load_layers(base_model)
 st.write(layers)
 ```
 
-In the above app, the user can select one of two models. Based on the selection, the app loads the corresponding model and passes it to `load_layers`. This function then returns the names of the layers in the model. If you run the app, you'll see that Streamlit raises a `UnhashableParamError` since it cannot hash the argument `'base_model' (of type keras.engine.functional.Functional) in 'load_layers'`.
+上記のアプリでは、ユーザーは2つのモデルのうち1つを選択できます。選択に基づいて、アプリは対応するモデルを読み込み、それを `load_layers` に渡します。この関数は、モデル内のレイヤーの名前を返します。しかし、アプリを実行すると、Streamlitは `UnhashableParamError` を発生させます。これは、`base_model` （タイプ `keras.engine.functional.Functional`）をハッシュする方法をStreamlitが知らないためです。
 
-If you disable hashing for `base_model` by prepending an underscore to its name, you'll observe that regardless of which base model is chosen, the layers displayed are same. This subtle bug is due to the fact that the `load_layers` function is not re-run when the base model changes. This is because Streamlit does not hash the `base_model` argument, so it does not know that the function needs to be re-run when the base model changes.
+もし `base_model` のハッシュを無効にするために名前の前にアンダースコアを付けると、選択されたベースモデルに関係なく、表示されるレイヤーが同じであることがわかります。この微妙なバグは、`base_model` が変更されたときに `load_layers` 関数が再実行されないことが原因です。Streamlitが `base_model` の引数をハッシュしないため、ベースモデルが変更されたときに関数を再実行する必要があることを認識できないのです。
 
-To fix this, we can use the `hash_funcs` kwarg to tell Streamlit how to hash the `base_model` argument. In the version below, we define a custom hash function `hash_func`: `Functional: lambda x: x.name`. Our choice of hash func is informed by our knowledge that the `name` attribute of a `Functional` object or model uniquely identifies it. As long as the `name` attribute remains the same, the hash remains the same. Thus, the result of `load_layers` can be retrieved from the cache without recomputation.
+これを修正するには、`hash_funcs` キーワード引数を使用して `base_model` 引数をハッシュする方法をStreamlitに伝える必要があります。以下のバージョンでは、カスタムハッシュ関数 `hash_func` を定義します：`Functional: lambda x: x.name`。このハッシュ関数の選択は、`Functional` オブジェクトまたはモデルの `name` 属性が一意にオブジェクトを識別することを知っているためです。`name` 属性が同じであれば、ハッシュも同じです。そのため、`load_layers` の結果は再計算されずにキャッシュから再取得できます。
 
 ```python
 import streamlit as st
@@ -576,11 +580,12 @@ layers = load_layers(base_model)
 st.write(layers)
 ```
 
-In the above case, we could also have used `hash_funcs={Functional: id}` as the hash function. This is because `id` is often the _correct_ hash func when you're passing the result of an `@st.cache_resource` function as the input param to another cached function.
+この場合、`hash_funcs={Functional: id}` をハッシュ関数として使用することも可能です。`id` は、`@st.cache_resource` 関数の結果を別のキャッシュ関数への入力パラメータとして渡す場合に、しばしば適切なハッシュ関数です。
 
-#### Example 4: Overriding Streamlit's default hashing mechanism
 
-Let's consider another example where we want to override Streamlit's default hashing mechanism for a pytz-localized datetime object:
+#### 例4: Streamlitのデフォルトのハッシュメカニズムを上書きする
+
+次に、pytzでローカライズされた日時オブジェクトに対して、Streamlitのデフォルトのハッシュメカニズムを上書きしたい場合を考えます：
 
 ```python
 from datetime import datetime
@@ -600,11 +605,10 @@ now_tz = tz.localize(datetime.now())
 st.text(load_data(dt=now_tz))
 ```
 
-It may be surprising to see that although `now` and `now_tz` are of the same `<class 'datetime.datetime'>` type, Streamlit does not how to hash `now_tz` and raises a `UnhashableParamError`. In this case, we can override Streamlit's default hashing mechanism for `datetime` objects by passing a custom hash function to the `hash_funcs` kwarg:
+上記のコードでは、`now` と `now_tz` が同じ `<class 'datetime.datetime'>` 型であるにもかかわらず、Streamlitが `now_tz` をハッシュする方法を知らず、`UnhashableParamError` を発生させることに驚くかもしれません。この場合、`hash_funcs` キーワード引数を使って、`datetime` オブジェクトに対するStreamlitのデフォルトのハッシュメカニズムを上書きできます：
 
 ```python
 from datetime import datetime
-
 import pytz
 import streamlit as st
 
@@ -621,9 +625,11 @@ now_tz = tz.localize(datetime.now())
 st.text(load_data(dt=now_tz))
 ```
 
-Let's now consider a case where we want to override Streamlit's default hashing mechanism for NumPy arrays. While Streamlit natively hashes Pandas and NumPy objects, there may be cases where you want to override Streamlit's default hashing mechanism for these objects.
+---
 
-For example, let's say we create a cache-decorated `show_data` function that accepts a NumPy array and returns it without modification. In the bellow app, `data = df["str"].unique()` (which is a NumPy array) is passed to the `show_data` function.
+次に、NumPy配列に対するStreamlitのデフォルトのハッシュメカニズムを上書きしたい場合を考えます。StreamlitはPandasおよびNumPyオブジェクトをネイティブにハッシュできますが、これらのオブジェクトに対するハッシュメカニズムを上書きしたい場合もあります。
+
+例えば、キャッシュデコレートされた `show_data` 関数を作成し、NumPy配列を引数として受け取り、変更せずに返す場合を考えます。次のアプリでは、`data = df["str"].unique()` （NumPy配列）が `show_data` 関数に渡されます。
 
 ```python
 import time
@@ -638,7 +644,7 @@ def get_data():
 
 @st.cache_data
 def show_data(data):
-    time.sleep(2)  # This makes the function take 2s to run
+    time.sleep(2)  # この関数の実行に2秒かかるようにする
     return data
 
 df = get_data()
@@ -648,9 +654,9 @@ st.dataframe(show_data(data))
 st.button("Re-run")
 ```
 
-Since `data` is always the same, we expect the `show_data` function to return the cached value. However, if you run the app, and click the `Re-run` button, you'll notice that the `show_data` function is re-run each time. We can assume this behavior is a consequence of Streamlit's default hashing mechanism for NumPy arrays.
+`data` は常に同じであるため、`show_data` 関数はキャッシュされた値を返すはずです。しかし、アプリを実行して `Re-run` ボタンをクリックすると、`show_data` 関数が毎回再実行されることに気付くでしょう。これは、StreamlitのNumPy配列に対するデフォルトのハッシュメカニズムが原因であると考えられます。
 
-To work around this, let's define a custom hash function `hash_func` that takes a NumPy array as input and returns a string representation of the array:
+これを解決するために、NumPy配列を入力として受け取り、配列の文字列表現を返すカスタムハッシュ関数 `hash_func` を定義します：
 
 ```python
 import time
@@ -665,7 +671,7 @@ def get_data():
 
 @st.cache_data(hash_funcs={np.ndarray: str})
 def show_data(data):
-    time.sleep(2)  # This makes the function take 2s to run
+    time.sleep(2)  # この関数の実行に2秒かかるようにする
     return data
 
 df = get_data()
@@ -675,61 +681,59 @@ st.dataframe(show_data(data))
 st.button("Re-run")
 ```
 
-Now if you run the app, and click the `Re-run` button, you'll notice that the `show_data` function is no longer re-run each time. It's important to note here that our choice of hash function was very naive and not necessarily the best choice. For example, if the NumPy array is large, converting it to a string representation may be expensive. In such cases, it is up to you as the developer to define what a good hash function is for your use case.
+これで、アプリを実行して `Re-run` ボタンをクリックすると、`show_data` 関数が毎回再実行されることはなくなります。ただし、ここで使用したハッシュ関数の選択は非常に単純で、必ずしも最適な選択ではありません。例えば、NumPy配列が大きい場合、文字列表現に変換するのは高コストになる可能性があります。このような場合、どのようなハッシュ関数が最適かは、開発者がユースケースに応じて判断する必要があります。
 
-#### Static elements
 
-Since version 1.16.0, cached functions can contain Streamlit commands! For example, you can do this:
+#### 静的要素
+
+バージョン1.16.0以降、キャッシュされた関数内でStreamlitのコマンドを使用できるようになりました！例えば、次のように記述できます：
 
 ```python
 @st.cache_data
 def get_api_data():
     data = api.get(...)
-    st.success("Fetched data from API!")  # 👈 Show a success message
+    st.success("APIからデータを取得しました！")  # 👈 成功メッセージを表示
     return data
 ```
 
-As we know, Streamlit only runs this function if it hasn't been cached before. On this first run, the `st.success` message will appear in the app. But what happens on subsequent runs? It still shows up! Streamlit realizes that there is an `st.` command inside the cached function, saves it during the first run, and replays it on subsequent runs. Replaying static elements works for both caching decorators.
+Streamlitはこの関数が以前にキャッシュされていなければ実行します。この最初の実行時には `st.success` メッセージがアプリに表示されます。しかし、次回以降の実行時にはどうなるのでしょうか？それでもメッセージは表示されます！Streamlitはキャッシュされた関数内に `st.` コマンドがあることを認識し、最初の実行時にそれを保存し、その後の実行時に再生します。この静的要素の再生機能は、両方のキャッシングデコレーターで動作します。
 
-You can also use this functionality to cache entire parts of your UI:
+また、この機能を使用してUI全体をキャッシュすることもできます：
 
 ```python
 @st.cache_data
 def show_data():
-    st.header("Data analysis")
+    st.header("データ分析")
     data = api.get(...)
-    st.success("Fetched data from API!")
-    st.write("Here is a plot of the data:")
+    st.success("APIからデータを取得しました！")
+    st.write("以下にデータのプロットを表示します:")
     st.line_chart(data)
-    st.write("And here is the raw data:")
+    st.write("こちらは生データです:")
     st.dataframe(data)
 ```
 
-#### Input widgets
+#### 入力ウィジェット
 
-You can also use [interactive input widgets](/develop/api-reference/widgets) like `st.slider` or `st.text_input` in cached functions. Widget replay is an experimental feature at the moment. To enable it, you need to set the `experimental_allow_widgets` parameter:
+[インタラクティブな入力ウィジェット](https://docs.streamlit.io/develop/api-reference/widgets) （`st.slider` や `st.text_input` など）もキャッシュされた関数内で使用できます。ウィジェットの再生は現在実験的な機能です。これを有効にするには、`experimental_allow_widgets` パラメータを設定する必要があります：
 
 ```python
-@st.cache_data(experimental_allow_widgets=True)  # 👈 Set the parameter
+@st.cache_data(experimental_allow_widgets=True)  # 👈 パラメータを設定
 def get_data():
-    num_rows = st.slider("Number of rows to get")  # 👈 Add a slider
+    num_rows = st.slider("取得する行数")  # 👈 スライダーを追加
     data = api.get(..., num_rows)
     return data
 ```
 
-Streamlit treats the slider like an additional input parameter to the cached function. If you change the slider position, Streamlit will see if it has already cached the function for this slider value. If yes, it will return the cached value. If not, it will rerun the function using the new slider value.
+Streamlitはスライダーをキャッシュ関数の追加の入力パラメータとして扱います。スライダーの位置を変更すると、Streamlitはこのスライダー値で関数が既にキャッシュされているかどうかを確認します。キャッシュされている場合は、そのキャッシュされた値を返し、キャッシュされていない場合は、新しいスライダー値で関数を再実行します。
 
-Using widgets in cached functions is extremely powerful because it lets you cache entire parts of your app. But it can be dangerous! Since Streamlit treats the widget value as an additional input parameter, it can easily lead to excessive memory usage. Imagine your cached function has five sliders and returns a 100 MB DataFrame. Then we'll add 100 MB to the cache for _every permutation_ of these five slider values – even if the sliders do not influence the returned data! These additions can make your cache explode very quickly. Please be aware of this limitation if you use widgets in cached functions. We recommend using this feature only for isolated parts of your UI where the widgets directly influence the cached return value.
+キャッシュされた関数内でウィジェットを使用することは非常に強力です。これにより、アプリの大部分をキャッシュできるようになります。しかし、注意が必要です！Streamlitはウィジェットの値を追加の入力パラメータとして扱うため、メモリ使用量が急増する可能性があります。たとえば、キャッシュされた関数に5つのスライダーがあり、100MBのDataFrameを返す場合、そのスライダー値の _すべての組み合わせ_ に対して100MBがキャッシュに追加されます。たとえスライダーが返されるデータに影響を与えない場合でもです！これにより、キャッシュが非常に早く膨れ上がる可能性があります。この制限を理解した上で、キャッシュされた関数でウィジェットを使用する際には注意が必要です。ウィジェットがキャッシュされた返り値に直接影響を与えるUIの限定的な部分にのみこの機能を使用することを推奨します。
 
-<Warning>
+> [!Warning]
+> キャッシュされた関数内でのウィジェットのサポートは実験的です。この機能は予告なく変更または削除される可能性がありますので、注意して使用してください！
 
-Support for widgets in cached functions is experimental. We may change or remove it anytime without warning. Please use it with care!
-</Warning>
+> [!Note]
+> 現在、`st.file_uploader` と `st.camera_input` の2つのウィジェットは、キャッシュされた関数内ではサポートされていません。将来的にはサポートされる可能性があります。もしこれらの機能が必要であれば、[GitHub issue](https://github.com/streamlit/streamlit/issues) を開いてリクエストしてください！
 
-<Note>
-
-Two widgets are currently not supported in cached functions: `st.file_uploader` and `st.camera_input`. We may support them in the future. Feel free to [open a GitHub issue](https://github.com/streamlit/streamlit/issues) if you need them!
-</Note>
 
 ### Dealing with large data
 
