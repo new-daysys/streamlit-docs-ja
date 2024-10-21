@@ -23,7 +23,7 @@ slug: /develop/concepts/architecture
 
    結果をキャッシュして再計算を避け、アプリのパフォーマンスを向上させます。
 
-+ [**セッションステート**](/contsnts/develop/concepts/architecture/session-state.md)
++ [**セッションステート**](/contents/develop/concepts/architecture/session-state.md)
 
    セッションステートを使用してアプリの状態管理を行います。
 
