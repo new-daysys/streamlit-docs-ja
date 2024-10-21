@@ -3,25 +3,27 @@ title: Add statefulness to apps
 slug: /develop/concepts/architecture/session-state
 ---
 
-# Add statefulness to apps
 
-## What is State?
+# アプリにステートフルな機能を追加する
 
-We define access to a Streamlit app in a browser tab as a **session**. For each browser tab that connects to the Streamlit server, a new session is created. Streamlit reruns your script from top to bottom every time you interact with your app. Each reruns takes place in a blank slate: no variables are shared between runs.
+## ステートとは？
 
-Session State is a way to share variables between reruns, for each user session. In addition to the ability to store and persist state, Streamlit also exposes the ability to manipulate state using Callbacks. Session state also persists across pages inside a [multipage app](/develop/concepts/multipage-apps).
+Streamlit アプリへのアクセスを1つのブラウザタブでの**セッション**と定義します。Streamlit サーバーに接続する各ブラウザタブごとに新しいセッションが作成されます。Streamlit は、アプリに対する操作があるたびに、スクリプトを上から下まで再実行します。再実行時には、変数が前回の実行から共有されることはなく、すべてが初期状態から始まります。
 
-In this guide, we will illustrate the usage of **Session State** and **Callbacks** as we build a stateful Counter app.
+**セッションステート** は、各ユーザーセッションごとに、再実行間で変数を共有するための方法です。状態を保存し、持続させる機能に加え、Streamlit はコールバックを使用して状態を操作する機能も提供しています。セッションステートは、[マルチページアプリ](/develop/concepts/multipage-apps)のページ間でも持続されます。
 
-For details on the Session State and Callbacks API, please refer to our [Session State API Reference Guide](/develop/api-reference/caching-and-state/st.session_state).
+このガイドでは、**セッションステート** と **Callbacks** を使用して、状態を保持するカウンターアプリを構築する方法を説明します。
 
-Also, check out this Session State basics tutorial video by Streamlit Developer Advocate Dr. Marisa Smith to get started:
+セッションステートおよびCallbacks APIの詳細については、[セッションステート APIリファレンスガイド](/develop/api-reference/caching-and-state/st.session_state)をご参照ください。
 
-<YouTube videoId="92jUAXBmZyU" />
+また、Streamlit の開発者アドボケートDr. Marisa Smithによるセッションステートの基本チュートリアル動画もご覧ください：
 
-## Build a Counter
+[![](http://img.youtube.com/vi/92jUAXBmZyU/0.jpg)](https://www.youtube.com/watch?v=92jUAXBmZyU)
 
-Let's call our script `counter.py`. It initializes a `count` variable and has a button to increment the value stored in the `count` variable:
+
+## カウンターの作成
+
+スクリプトを `counter.py` と呼びます。このスクリプトは `count` 変数を初期化し、`count` 変数に格納された値をインクリメントするボタンを持っています：
 
 ```python
 import streamlit as st
@@ -36,35 +38,37 @@ if increment:
 st.write('Count = ', count)
 ```
 
-No matter how many times we press the **_Increment_** button in the above app, the `count` remains at 1. Let's understand why:
+上記のアプリでは、**_Increment_** ボタンを何回押しても、`count` は1のままです。その理由を理解しましょう：
 
-- Each time we press the **_Increment_** button, Streamlit reruns `counter.py` from top to bottom, and with every run, `count` gets initialized to `0` .
-- Pressing **_Increment_** subsequently adds 1 to 0, thus `count=1` no matter how many times we press **_Increment_**.
+- **_Increment_** ボタンを押すたびに、Streamlit は `counter.py` を上から下まで再実行します。そして、毎回 `count` が `0` に初期化されます。
+- **_Increment_** を押すと、0に1が加えられるため、何回押しても `count=1` となります。
 
-As we'll see later, we can avoid this issue by storing `count` as a Session State variable. By doing so, we're indicating to Streamlit that it should maintain the value stored inside a Session State variable across app reruns.
+この問題は、`count` をセッションステート変数として保存することで解決できます。これにより、アプリの再実行間で `count` の値を維持するようにStreamlitに指示することができます。
 
-Let's learn more about the API to use Session State.
+では、セッションステートを使用するためのAPIについて学んでいきましょう。
 
-### Initialization
 
-The Session State API follows a field-based API, which is very similar to Python dictionaries:
+### 初期化
+
+セッションステート APIはフィールドベースのAPIを採用しており、Pythonの辞書に非常に似ています：
 
 ```python
-import streamlit as st
+import Streamlit  as st
 
-# Check if 'key' already exists in session_state
-# If not, then initialize it
+# session_stateに 'key' が存在するか確認
+# 存在しない場合は初期化する
 if 'key' not in st.session_state:
     st.session_state['key'] = 'value'
 
-# Session State also supports the attribute based syntax
+# セッションステートは属性ベースの構文もサポートしています
 if 'key' not in st.session_state:
     st.session_state.key = 'value'
 ```
 
-### Reads and updates
 
-Read the value of an item in Session State by passing the item to `st.write` :
+### 読み取りと更新
+
+セッションステート 内のアイテムの値を読み取るには、アイテムを `st.write` に渡します：
 
 ```python
 import streamlit as st
@@ -72,13 +76,13 @@ import streamlit as st
 if 'key' not in st.session_state:
     st.session_state['key'] = 'value'
 
-# Reads
+# 読み取り
 st.write(st.session_state.key)
 
-# Outputs: value
+# 出力: value
 ```
 
-Update an item in Session State by assigning it a value:
+セッションステート 内のアイテムを更新するには、値を代入します：
 
 ```python
 import streamlit as st
@@ -86,28 +90,29 @@ import streamlit as st
 if 'key' not in st.session_state:
     st.session_state['key'] = 'value'
 
-# Updates
-st.session_state.key = 'value2'     # Attribute API
-st.session_state['key'] = 'value2'  # Dictionary like API
+# 更新
+st.session_state.key = 'value2'     # 属性ベースのAPI
+st.session_state['key'] = 'value2'  # 辞書のようなAPI
 ```
 
-Streamlit throws an exception if an uninitialized variable is accessed:
+初期化されていない変数にアクセスすると、Streamlitは例外をスローします：
 
 ```python
 import streamlit as st
 
 st.write(st.session_state['value'])
 
-# Throws an exception!
+# 例外をスロー！
 ```
 
 ![state-uninitialized-exception](/images/state_uninitialized_exception.png)
 
-Let's now take a look at a few examples that illustrate how to add Session State to our Counter app.
+それでは、セッションステートをカウンターアプリに追加する方法を示すいくつかの例を見ていきましょう。
 
-### Example 1: Add Session State
 
-Now that we've got a hang of the Session State API, let's update our Counter app to use Session State:
+### 例 1: セッションステート を追加
+
+セッションステート APIに慣れてきたところで、カウンターアプリをセッションステートを使って更新してみましょう：
 
 ```python
 import streamlit as st
@@ -123,13 +128,14 @@ if increment:
 st.write('Count = ', st.session_state.count)
 ```
 
-As you can see in the above example, pressing the **_Increment_** button updates the `count` each time.
+上記の例では、**_Increment_** ボタンを押すたびに `count` が更新されることがわかります。
 
-### Example 2: Session State and Callbacks
 
-Now that we've built a basic Counter app using Session State, let's move on to something a little more complex. The next example uses Callbacks with Session State.
+### 例 2: セッションステート と Callbacks
 
-**Callbacks**: A callback is a Python function which gets called when an input widget changes. Callbacks can be used with widgets using the parameters `on_change` (or `on_click`), `args`, and `kwargs`. The full Callbacks API can be found in our [Session State API Reference Guide](/develop/api-reference/caching-and-state/st.session_state#use-callbacks-to-update-session-state).
+セッションステート を使った基本的なカウンターアプリができたので、少し複雑なものに進みましょう。次の例では、セッションステート と Callbacks を使用します。
+
+**コールバック**：コールバックとは、入力ウィジェットが変更されたときに呼び出されるPython関数です。コールバックは、ウィジェットの `on_change`（または `on_click`）、`args`、`kwargs` パラメーターを使用して設定できます。コールバックAPIの詳細は、[セッションステート API リファレンスガイド](/develop/api-reference/caching-and-state/st.session_state#use-callbacks-to-update-session-state)をご覧ください。
 
 ```python
 import streamlit as st
@@ -146,11 +152,12 @@ st.button('Increment', on_click=increment_counter)
 st.write('Count = ', st.session_state.count)
 ```
 
-Now, pressing the **_Increment_** button updates the count each time by calling the `increment_counter()` function.
+この例では、**_Increment_** ボタンを押すと、`increment_counter()` 関数が呼び出され、`count` が毎回更新されます。
 
-### Example 3: Use args and kwargs in Callbacks
 
-Callbacks also support passing arguments using the `args` parameter in a widget:
+### 例 3: Callbacksでargsとkwargsを使用する
+
+Callbacksは、ウィジェット内の `args` パラメータを使用して引数を渡すこともサポートしています：
 
 ```python
 import streamlit as st
@@ -170,7 +177,7 @@ increment = st.button('Increment', on_click=increment_counter,
 st.write('Count = ', st.session_state.count)
 ```
 
-Additionally, we can also use the `kwargs` parameter in a widget to pass named arguments to the callback function as shown below:
+さらに、`kwargs` パラメータを使用して名前付き引数をコールバック関数に渡すことも可能です。次の例をご覧ください：
 
 ```python
 import streamlit as st
@@ -194,9 +201,10 @@ st.button('Decrement', on_click=decrement_counter,
 st.write('Count = ', st.session_state.count)
 ```
 
-### Example 4: Forms and Callbacks
 
-Say we now want to not only increment the `count`, but also store when it was last updated. We illustrate doing this using Callbacks and `st.form`:
+### 例 4: フォームとコールバック
+
+次に、`count` をインクリメントするだけでなく、最後に更新された時刻も保存したいとします。この操作を Callbacks と `st.form` を使って実現する例を示します：
 
 ```python
 import streamlit as st
@@ -220,21 +228,22 @@ st.write('Current Count = ', st.session_state.count)
 st.write('Last Updated = ', st.session_state.last_updated)
 ```
 
-## Advanced concepts
 
-### Session State and Widget State association
+## 高度な概念
 
-Session State provides the functionality to store variables across reruns. Widget state (i.e. the value of a widget) is also stored in a session.
+### セッションステートとウィジェット状態の関連付け
 
-For simplicity, we have _unified_ this information in one place. i.e. the Session State. This convenience feature makes it super easy to read or write to the widget's state anywhere in the app's code. Session State variables mirror the widget value using the `key` argument.
+セッションステートは再実行間で変数を保持する機能を提供します。ウィジェットの状態（つまり、ウィジェットの値）もセッション内で保持されます。
 
-We illustrate this with the following example. Let's say we have an app with a slider to represent temperature in Celsius. We can **set** and **get** the value of the temperature widget by using the Session State API, as follows:
+簡単にするために、これらの情報を **セッションステート** に統一しています。この便利な機能により、アプリのコードのどこでもウィジェットの状態を簡単に読み書きできるようになっています。セッションステートの変数は、`key` 引数を使用してウィジェットの値と連動します。
+
+次の例でこれを説明します。例えば、摂氏温度を表すスライダーがあるアプリがあるとします。次のように、セッションステート API を使用して温度ウィジェットの値を **設定** し、**取得** できます。
 
 ```python
 import streamlit as st
 
 if "celsius" not in st.session_state:
-    # set the initial default value of the slider widget
+    # スライダーウィジェットの初期デフォルト値を設定
     st.session_state.celsius = 50.0
 
 st.slider(
@@ -244,39 +253,38 @@ st.slider(
     key="celsius"
 )
 
-# This will get the value of the slider widget
+# これでスライダーウィジェットの値を取得します
 st.write(st.session_state.celsius)
 ```
 
-There is a limitation to setting widget values using the Session State API.
+ただし、セッションステート API を使用してウィジェットの値を設定する場合には制限があります。
 
 <Important>
 
-Streamlit **does not allow** setting widget values via the Session State API for `st.button` and `st.file_uploader`.
+Streamlit は `st.button` と `st.file_uploader` のウィジェット値をセッションステート API を介して設定することを **許可していません**。
 
 </Important>
 
-The following example will raise a `StreamlitAPIException` on trying to set the state of `st.button` via the Session State API:
+次の例では、セッションステート API を使用して `st.button` の状態を設定しようとすると、`StreamlitAPIException` が発生します。
 
 ```python
 import streamlit as st
 
 if 'my_button' not in st.session_state:
     st.session_state.my_button = True
-    # Streamlit will raise an Exception on trying to set the state of button
+    # ボタンの状態を設定しようとすると、Streamlit が例外をスローします
 
 st.button('Submit', key='my_button')
 ```
 
-<Image alt="state-button-exception" src="/images/state_button_exception.png" clean />
 
-### Serializable Session State
+### シリアライズ可能なセッションステート
 
-Serialization refers to the process of converting an object or data structure into a format that can be persisted and shared, and allowing you to recover the data’s original structure. Python’s built-in [pickle](https://docs.python.org/3/library/pickle.html) module serializes Python objects to a byte stream ("pickling") and deserializes the stream into an object ("unpickling").
+シリアライズとは、オブジェクトやデータ構造を永続化して共有できる形式に変換し、データの元の構造を復元できるようにするプロセスを指します。Pythonの組み込みモジュールである [pickle](https://docs.python.org/3/library/pickle.html) は、Pythonオブジェクトをバイトストリームにシリアライズ（「ピックル化」）し、そのストリームをオブジェクトにデシリアライズ（「アンピックル化」）します。
 
-By default, Streamlit’s [Session State](/develop/concepts/architecture/session-state) allows you to persist any Python object for the duration of the session, irrespective of the object’s pickle-serializability. This property lets you store Python primitives such as integers, floating-point numbers, complex numbers and booleans, dataframes, and even [lambdas](https://docs.python.org/3/reference/expressions.html#lambda) returned by functions. However, some execution environments may require serializing all data in Session State, so it may be useful to detect incompatibility during development, or when the execution environment will stop supporting it in the future.
+デフォルトでは、Streamlitの [セッションステート](/develop/concepts/architecture/session-state) は、オブジェクトのピックルシリアライズ性に関係なく、セッションの期間中、任意のPythonオブジェクトを永続化できます。このプロパティにより、整数、浮動小数点数、複素数、ブーリアン、データフレーム、さらには関数が返す [lambdas](https://docs.python.org/3/reference/expressions.html#lambda) などのPythonプリミティブを保存することができます。しかし、いくつかの実行環境では、セッションステート内のすべてのデータをシリアライズする必要があるため、開発中に非互換性を検出するか、将来的に実行環境がその機能をサポートしなくなる場合には、便利です。
 
-To that end, Streamlit provides a `runner.enforceSerializableSessionState` [configuration option](/develop/concepts/configuration) that, when set to `true`, only allows pickle-serializable objects in Session State. To enable the option, either create a global or project config file with the following or use it as a command-line flag:
+そのために、Streamlitは `runner.enforceSerializableSessionState` という [設定オプション](/develop/concepts/configuration) を提供しており、これを `true` に設定すると、セッションステート内ではピックルシリアライズ可能なオブジェクトのみが許可されます。このオプションを有効にするには、次の内容でグローバルまたはプロジェクト設定ファイルを作成するか、コマンドラインフラグとして使用します：
 
 ```toml
 # .streamlit/config.toml
@@ -284,7 +292,7 @@ To that end, Streamlit provides a `runner.enforceSerializableSessionState` [conf
 enforceSerializableSessionState = true
 ```
 
-By "_pickle-serializable_", we mean calling `pickle.dumps(obj)` should not raise a [`PicklingError`](https://docs.python.org/3/library/pickle.html#pickle.PicklingError) exception. When the config option is enabled, adding unserializable data to session state should result in an exception. E.g.,
+"_ピックルシリアライズ可能_" とは、`pickle.dumps(obj)` を呼び出したときに [`PicklingError`](https://docs.python.org/3/library/pickle.html#pickle.PicklingError) 例外が発生しないことを意味します。この設定オプションが有効な場合、シリアライズ不可能なデータをセッションステートに追加すると例外が発生します。例：
 
 ```python
 import streamlit as st
@@ -292,22 +300,18 @@ import streamlit as st
 def unserializable_data():
 		return lambda x: x
 
-#👇 results in an exception when enforceSerializableSessionState is on
+#👇 enforceSerializableSessionState がオンのときに例外を発生させる
 st.session_state.unserializable = unserializable_data()
 ```
 
-<Image alt="UnserializableSessionStateError" src="/images/unserializable-session-state-error.png" clean />
+> [!Warning]
+> `runner.enforceSerializableSessionState` が `true` に設定されている場合、セッションステートは暗黙的に `pickle` モジュールを使用しますが、これはセキュリティ上の問題があることが知られています。セッションステートから保存および取得されたすべてのデータが信頼できるものであることを確認してください。ピックルデータはアンピックル時に任意のコードを実行する悪意のあるデータが構築される可能性があるためです。不正なソースから取得された、または改ざんされた可能性のあるデータをロードしないでください。**信頼できるデータのみをロードしてください**。
 
-<Warning>
 
-When `runner.enforceSerializableSessionState` is set to `true`, Session State implicitly uses the `pickle` module, which is known to be insecure. Ensure all data saved and retrieved from Session State is trusted because it is possible to construct malicious pickle data that will execute arbitrary code during unpickling. Never load data that could have come from an untrusted source in an unsafe mode or that could have been tampered with. **Only load data you trust**.
+### 注意点と制限
 
-</Warning>
+セッションステートを使用する際に考慮すべきいくつかの制限事項は次のとおりです：
 
-### Caveats and limitations
-
-Here are some limitations to keep in mind when using Session State:
-
-- Session State exists for as long as the tab is open and connected to the Streamlit server. As soon as you close the tab, everything stored in Session State is lost.
-- Session State is not persisted. If the Streamlit server crashes, then everything stored in Session State gets wiped
-- For caveats and limitations with the Session State API, please see the [API limitations](/develop/api-reference/caching-and-state/st.session_state#caveats-and-limitations).
+- セッションステートはタブが開かれていてStreamlitサーバーに接続されている限り存在します。タブを閉じると、セッションステートに保存されたすべての情報は失われます。
+- セッションステートは永続化されません。Streamlitサーバーがクラッシュすると、セッションステートに保存されたすべてのデータは消去されます。
+- For caveats and limitations with the セッションステート API, please see the [API limitations](/develop/api-reference/caching-and-state/st.session_state#caveats-and-limitations).
