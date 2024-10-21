@@ -625,8 +625,6 @@ now_tz = tz.localize(datetime.now())
 st.text(load_data(dt=now_tz))
 ```
 
----
-
 次に、NumPy配列に対するStreamlitのデフォルトのハッシュメカニズムを上書きしたい場合を考えます。StreamlitはPandasおよびNumPyオブジェクトをネイティブにハッシュできますが、これらのオブジェクトに対するハッシュメカニズムを上書きしたい場合もあります。
 
 例えば、キャッシュデコレートされた `show_data` 関数を作成し、NumPy配列を引数として受け取り、変更せずに返す場合を考えます。次のアプリでは、`data = df["str"].unique()` （NumPy配列）が `show_data` 関数に渡されます。
@@ -735,45 +733,44 @@ Streamlitはスライダーをキャッシュ関数の追加の入力パラメ�
 > 現在、`st.file_uploader` と `st.camera_input` の2つのウィジェットは、キャッシュされた関数内ではサポートされていません。将来的にはサポートされる可能性があります。もしこれらの機能が必要であれば、[GitHub issue](https://github.com/streamlit/streamlit/issues) を開いてリクエストしてください！
 
 
-### Dealing with large data
+### 大規模データの処理
 
-As we explained, you should cache data objects with `st.cache_data`. But this can be slow for extremely large data, e.g., DataFrames or arrays with >100 million rows. That's because of the [copying behavior](#copying-behavior) of `st.cache_data`: on the first run, it serializes the return value to bytes and deserializes it on subsequent runs. Both operations take time.
+前述のように、データオブジェクトは `st.cache_data` でキャッシュする必要があります。ただし、非常に大きなデータ（例: 1億行以上のDataFrameや配列）では、`st.cache_data` の[コピー動作](#copying-behavior)のために遅くなる可能性があります。最初の実行では返り値をバイトにシリアライズし、次回以降の実行時にはデシリアライズするため、両方の操作に時間がかかります。
 
-If you're dealing with extremely large data, it can make sense to use `st.cache_resource` instead. It does not create a copy of the return value via serialization/deserialization and is almost instant. But watch out: any mutation to the function's return value (such as dropping a column from a DataFrame or setting a value in an array) directly manipulates the object in the cache. You must ensure this doesn't corrupt your data or lead to crashes. See the section on [Mutation and concurrency issues](#mutation-and-concurrency-issues) below.
+極めて大規模なデータを扱う場合は、`st.cache_resource` を使用する方が効率的です。`st.cache_resource` は返り値をシリアライズ/デシリアライズせず、ほぼ瞬時に実行されます。ただし注意が必要です。関数の返り値を変更すると（例: DataFrameから列を削除したり、配列の値を設定したりすると）、キャッシュ内のオブジェクト自体が直接操作されます。これによりデータが破損したり、クラッシュしたりしないように注意してください。詳細は[ミューテーションと競合状態の問題](#mutation-and-concurrency-issues)セクションを参照してください。
 
-When benchmarking `st.cache_data` on pandas DataFrames with four columns, we found that it becomes slow when going beyond 100 million rows. The table shows runtimes for both caching decorators at different numbers of rows (all with four columns):
+pandasのDataFrameに対する `st.cache_data` のベンチマークを行ったところ、行数が1億を超えると遅くなることが分かりました。以下の表は、4列のDataFrameにおける両方のキャッシングデコレーターのランタイムを示しています。
 
-|                   |                 | 10M rows | 50M rows | 100M rows | 200M rows |
-| ----------------- | --------------- | :------: | :------: | :-------: | :-------: |
-| st.cache_data     | First run\*     |  0.4 s   |   3 s    |   14 s    |   28 s    |
-|                   | Subsequent runs |  0.2 s   |   1 s    |    2 s    |    7 s    |
-| st.cache_resource | First run\*     |  0.01 s  |  0.1 s   |   0.2 s   |    1 s    |
-|                   | Subsequent runs |   0 s    |   0 s    |    0 s    |    0 s    |
+|                   |                 | 10M行 | 50M行 | 100M行 | 200M行 |
+| ----------------- | --------------- | :---: | :---: | :----: | :----: |
+| st.cache_data     | 初回実行\*      | 0.4秒 |  3秒  |  14秒  |  28秒  |
+|                   | 再実行          | 0.2秒 |  1秒  |   2秒  |   7秒  |
+| st.cache_resource | 初回実行\*      | 0.01秒| 0.1秒 |  0.2秒 |  1秒   |
+|                   | 再実行          |   0秒 |  0秒  |   0秒  |   0秒  |
 
-|                                                                                                                                                              |
-| :----------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| _\*For the first run, the table only shows the overhead time of using the caching decorator. It does not include the runtime of the cached function itself._ |
+_\*初回実行に関しては、この表はキャッシングデコレーターを使用する際のオーバーヘッド時間のみを示しています。キャッシュされた関数自体の実行時間は含まれていません。_
 
-### Mutation and concurrency issues
 
-In the sections above, we talked a lot about issues when mutating return objects of cached functions. This topic is complicated! But it's central to understanding the behavior differences between `st.cache_data` and `st.cache_resource`. So let's dive in a bit deeper.
+### ミューテーションと競合状態の問題
 
-First, we should clearly define what we mean by mutations and concurrency:
+上記のセクションでは、キャッシュされた関数の戻り値をミューテート（変更）する際の問題について多く取り上げました。この話題は少し複雑ですが、`st.cache_data` と `st.cache_resource` の動作の違いを理解するために重要です。それでは、もう少し詳しく見ていきましょう。
 
-- By **mutations**, we mean any changes made to a cached function's return value _after_ that function has been called. I.e. something like this:
+まず、**ミューテーション** と **競合状態** について明確に定義します：
+
+- **ミューテーション** とは、キャッシュされた関数の戻り値に対して、その関数が呼び出された後に行われる変更のことを指します。例えば、次のようなものです：
 
   ```python
   @st.cache_data
   def create_list():
       l = [1, 2, 3]
 
-  l = create_list()  # 👈 Call the function
-  l[0] = 2  # 👈 Mutate its return value
+  l = create_list()  # 👈 関数を呼び出す
+  l[0] = 2  # 👈 戻り値を変更する
   ```
 
-- By **concurrency**, we mean that multiple sessions can cause these mutations at the same time. Streamlit is a web framework that needs to handle many users and sessions connecting to an app. If two people view an app at the same time, they will both cause the Python script to rerun, which may manipulate cached return objects at the same time – concurrently.
+- **競合状態** とは、複数のセッションが同時にこれらの変更（ミューテーション）を引き起こすことを指します。StreamlitはWebフレームワークであり、アプリに接続する多くのユーザーやセッションを処理する必要があります。2人が同時にアプリを閲覧すると、両者がPythonスクリプトを再実行し、同時にキャッシュされた戻り値を操作する可能性があり、これが**並行処理**（concurrently）です。
 
-Mutating cached return objects can be dangerous. It can lead to exceptions in your app and even corrupt your data (which can be worse than a crashed app!). Below, we'll first explain the copying behavior of `st.cache_data` and show how it can avoid mutation issues. Then, we'll show how concurrent mutations can lead to data corruption and how to prevent it.
+キャッシュされた戻り値をミューテートすることは危険です。それはアプリに例外を引き起こしたり、データを破損させる可能性があります（クラッシュするアプリよりも、データの破損はより深刻な問題になることがあります！）。以下では、まず `st.cache_data` のコピー動作を説明し、ミューテーションの問題を回避する方法を示します。次に、並行して行われるミューテーションがデータの破損を引き起こす方法と、それを防ぐ方法を説明します。
 
 #### Copying behavior
 
