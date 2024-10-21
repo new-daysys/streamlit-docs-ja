@@ -772,17 +772,18 @@ _\*初回実行に関しては、この表はキャッシングデコレータ�
 
 キャッシュされた戻り値をミューテートすることは危険です。それはアプリに例外を引き起こしたり、データを破損させる可能性があります（クラッシュするアプリよりも、データの破損はより深刻な問題になることがあります！）。以下では、まず `st.cache_data` のコピー動作を説明し、ミューテーションの問題を回避する方法を示します。次に、並行して行われるミューテーションがデータの破損を引き起こす方法と、それを防ぐ方法を説明します。
 
-#### Copying behavior
 
-`st.cache_data` creates a copy of the cached return value each time the function is called. This avoids most mutations and concurrency issues. To understand it in detail, let's go back to the [Uber ridesharing example](#usage) from the section on `st.cache_data` above. We are making two modifications to it:
+#### コピー動作
 
-1. We are using `st.cache_resource` instead of `st.cache_data`. `st.cache_resource` does **not** create a copy of the cached object, so we can see what happens without the copying behavior.
-2. After loading the data, we manipulate the returned DataFrame (in place!) by dropping the column `"Lat"`.
+`st.cache_data` は、関数が呼び出されるたびにキャッシュされた戻り値のコピーを作成します。これにより、多くのミューテーションや競合状態の問題が回避されます。この動作を詳しく理解するために、前述の `st.cache_data` に関する[Uberライドシェアの例](#usage)に戻ってみましょう。ここでは、2つの変更を加えています：
 
-Here's the code:
+1. `st.cache_data` の代わりに `st.cache_resource` を使用しています。`st.cache_resource` はキャッシュオブジェクトのコピーを作成しないため、コピー動作がない場合に何が起こるかを確認できます。
+2. データを読み込んだ後、返されたDataFrameをその場で（in place）操作し、`"Lat"`列を削除しています。
+
+以下はそのコードです：
 
 ```python
-@st.cache_resource   # 👈 Turn off copying behavior
+@st.cache_resource   # 👈 コピー動作をオフにする
 def load_data(url):
     df = pd.read_csv(url)
     return df
@@ -790,24 +791,25 @@ def load_data(url):
 df = load_data("https://raw.githubusercontent.com/plotly/datasets/master/uber-rides-data1.csv")
 st.dataframe(df)
 
-df.drop(columns=['Lat'], inplace=True)  # 👈 Mutate the dataframe inplace
+df.drop(columns=['Lat'], inplace=True)  # 👈 DataFrameをその場で変更
 
 st.button("Rerun")
 ```
 
-Let's run it and see what happens! The first run should work fine. But in the second run, you see an exception: `KeyError: "['Lat'] not found in axis"`. Why is that happening? Let's go step by step:
+これを実行してみましょう！最初の実行は問題なく動作するはずです。しかし、2回目の実行では、`KeyError: "['Lat'] not found in axis"` という例外が発生します。なぜこのようなことが起こるのでしょうか？ステップごとに見ていきましょう：
 
-- On the first run, Streamlit runs `load_data` and stores the resulting DataFrame in the cache. Since we're using `st.cache_resource`, it does **not** create a copy but stores the original DataFrame.
-- Then we drop the column `"Lat"` from the DataFrame. Note that this is dropping the column from the _original_ DataFrame stored in the cache. We are manipulating it!
-- On the second run, Streamlit returns that exact same manipulated DataFrame from the cache. It does not have the column `"Lat"` anymore! So our call to `df.drop` results in an exception. Pandas cannot drop a column that doesn't exist.
+- 最初の実行時、Streamlitは `load_data` を実行し、結果のDataFrameをキャッシュに保存します。`st.cache_resource` を使用しているため、コピーは作成されず、元のDataFrameが保存されます。
+- その後、`"Lat"` 列をDataFrameから削除します。これはキャッシュに保存された _元の_ DataFrame から列を削除していることに注意してください。つまり、キャッシュ内のDataFrameを操作しているのです！
+- 2回目の実行時、Streamlitはキャッシュからその変更されたDataFrameを返します。そのため、`"Lat"` 列がもう存在しません！したがって、`df.drop` の呼び出しは例外を引き起こします。Pandasは存在しない列を削除できないためです。
 
-The copying behavior of `st.cache_data` prevents this kind of mutation error. Mutations can only affect a specific copy and not the underlying object in the cache. The next rerun will get its own, unmutated copy of the DataFrame. You can try it yourself, just replace `st.cache_resource` with `st.cache_data` above, and you'll see that everything works.
+`st.cache_data` のコピー動作は、このようなミューテーションエラーを防ぎます。ミューテーションは特定のコピーにのみ影響を与え、キャッシュ内の基礎オブジェクトには影響しません。次回の再実行時には、ミューテーションされていないDataFrameのコピーが返されます。試してみてください。上記の `st.cache_resource` を `st.cache_data` に置き換えると、すべてが正常に動作することがわかります。
 
-Because of this copying behavior, `st.cache_data` is the recommended way to cache data transforms and computations – anything that returns a serializable object.
+このコピー動作のため、`st.cache_data` は、データ変換や計算（シリアライズ可能なオブジェクトを返すもの）をキャッシュする際に推奨されます。
 
-#### Concurrency issues
 
-Now let's look at what can happen when multiple users concurrently mutate an object in the cache. Let's say you have a function that returns a list. Again, we are using `st.cache_resource` to cache it so that we are not creating a copy:
+#### 競合状態の問題
+
+次に、複数のユーザーがキャッシュ内のオブジェクトを同時に変更した場合に何が起こるかを見てみましょう。例えば、リストを返す関数があるとします。ここでも `st.cache_resource` を使用してキャッシュし、コピーを作成しないようにしています。
 
 ```python
 @st.cache_resource
@@ -822,55 +824,53 @@ l[0] = first_list_value + 1
 st.write("l[0] is:", l[0])
 ```
 
-Let's say user A runs the app. They will see the following output:
+ユーザーAがアプリを実行すると、次のような出力が表示されます：
 
 ```python
 l[0] is: 2
 ```
 
-Let's say another user, B, visits the app right after. In contrast to user A, they will see the following output:
+その直後にユーザーBがアプリにアクセスすると、ユーザーAとは異なる出力が表示されます：
 
 ```python
 l[0] is: 3
 ```
 
-Now, user A reruns the app immediately after user B. They will see the following output:
+さらに、ユーザーAがすぐにアプリを再実行すると、次のような出力が表示されます：
 
 ```python
 l[0] is: 4
 ```
 
-What is happening here? Why are all outputs different?
+ここで何が起こっているのでしょうか？なぜすべての出力が異なるのでしょうか？
 
-- When user A visits the app, `create_list()` is called, and the list `[1, 2, 3]` is stored in the cache. This list is then returned to user A. The first value of the list, `1`, is assigned to `first_list_value` , and `l[0]` is changed to `2`.
-- When user B visits the app, `create_list()` returns the mutated list from the cache: `[2, 2, 3]`. The first value of the list, `2`, is assigned to `first_list_value` and `l[0]` is changed to `3`.
-- When user A reruns the app, `create_list()` returns the mutated list again: `[3, 2, 3]`. The first value of the list, `3`, is assigned to `first_list_value,` and `l[0]` is changed to 4.
+- ユーザーAがアプリにアクセスすると、`create_list()` が呼び出され、リスト `[1, 2, 3]` がキャッシュに保存されます。このリストがユーザーAに返されます。リストの最初の値 `1` が `first_list_value` に代入され、`l[0]` が `2` に変更されます。
+- ユーザーBがアプリにアクセスすると、`create_list()` はキャッシュから変更されたリストを返します：`[2, 2, 3]`。リストの最初の値 `2` が `first_list_value` に代入され、`l[0]` が `3` に変更されます。
+- ユーザーAがアプリを再実行すると、`create_list()` は再び変更されたリストを返します：`[3, 2, 3]`。リストの最初の値 `3` が `first_list_value` に代入され、`l[0]` が `4` に変更されます。
 
-If you think about it, this makes sense. Users A and B use the same list object (the one stored in the cache). And since the list object is mutated, user A's change to the list object is also reflected in user B's app.
+これをよく考えてみると理にかなっています。ユーザーAとBは同じリストオブジェクト（キャッシュに保存されたもの）を使用しています。そして、そのリストオブジェクトが変更されるため、ユーザーAがリストオブジェクトに加えた変更はユーザーBのアプリにも反映されます。
 
-This is why you must be careful about mutating objects cached with `st.cache_resource`, especially when multiple users access the app concurrently. If we had used `st.cache_data` instead of `st.cache_resource`, the app would have copied the list object for each user, and the above example would have worked as expected – users A and B would have both seen:
+このため、`st.cache_resource` でキャッシュされたオブジェクトをミューテーションする際は、特に複数のユーザーが同時にアプリにアクセスする場合に注意が必要です。`st.cache_resource` の代わりに `st.cache_data` を使用していた場合、アプリは各ユーザーごとにリストオブジェクトをコピーし、上記の例は期待どおりに動作していたでしょう。ユーザーAとBはどちらも次のように見えていたはずです：
 
 ```python
 l[0] is: 2
 ```
 
-<Note>
+> [!Note]
+> この簡単な例は一見無害に見えるかもしれません。しかし、データの破損は非常に危険です！例えば、ここで大手銀行の財務記録を扱っていたとしたら、誰かが間違ったキャッシングデコレーターを使用したせいで、朝起きたら口座の残高が減っているなんてことは望まないでしょう 😉
 
-This toy example might seem benign. But data corruption can be extremely dangerous! Imagine we had worked with the financial records of a large bank here. You surely don't want to wake up with less money on your account just because someone used the wrong caching decorator 😉
 
-</Note>
+## st.cacheからの移行
 
-## Migrating from st.cache
+上記で説明したキャッシングコマンドは、Streamlit 1.18.0で導入されました。それ以前は、1つの万能コマンド `st.cache` がありました。これを使うと、しばしば混乱を招き、奇妙な例外が発生し、動作が遅くなることがありました。そのため、1.18.0で `st.cache` を新しいコマンドに置き換えました（詳細はこの[ブログ記事](https://blog.streamlit.io/introducing-two-new-caching-commands-to-replace-st-cache/)をご覧ください）。新しいコマンドは、データやリソースをキャッシュするための直感的で効率的な方法を提供し、新しい開発において `st.cache` を置き換えることを目的としています。
 
-We introduced the caching commands described above in Streamlit 1.18.0. Before that, we had one catch-all command `st.cache`. Using it was often confusing, resulted in weird exceptions, and was slow. That's why we replaced `st.cache` with the new commands in 1.18.0 (read more in this [blog post](https://blog.streamlit.io/introducing-two-new-caching-commands-to-replace-st-cache/)). The new commands provide a more intuitive and efficient way to cache your data and resources and are intended to replace `st.cache` in all new development.
+もしあなたのアプリがまだ `st.cache` を使用している場合も、心配しないでください！以下は移行に関するいくつかの注意点です：
 
-If your app is still using `st.cache`, don't despair! Here are a few notes on migrating:
+- アプリが `st.cache` を使用している場合、Streamlitは非推奨の警告を表示します。
+- `st.cache` がすぐに削除されることはないため、古いアプリが突然動かなくなる心配はありません。しかし、今後は新しいコマンドを試してみることをお勧めします。はるかに扱いやすくなっています！
+- 新しいコマンドへのコードの切り替えは、ほとんどの場合、簡単です。どちらのキャッシングデコレーターを使用するべきかについては、[どのキャッシングデコレーターを使用するかの決定](#deciding-which-caching-decorator-to-use)を参照してください。Streamlitは一般的なユースケースを認識し、非推奨の警告内でヒントを表示します。
+- `st.cache` の多くのパラメーターは新しいコマンドでも使用可能ですが、いくつかの例外があります：
+  - `allow_output_mutation` は廃止されました。安全に削除できます。ユースケースに合った適切なキャッシングコマンドを使用してください。
+  - `suppress_st_warning` は廃止されました。これも安全に削除できます。キャッシュされた関数にはStreamlitコマンドを含めることができ、これらは再実行されます。キャッシュされた関数内でウィジェットを使用したい場合は、`experimental_allow_widgets=True` を設定してください。[入力ウィジェット](#input-widgets) の例を参照してください。
 
-- Streamlit will show a deprecation warning if your app uses `st.cache`.
-- We will not remove `st.cache` soon, so you don't need to worry about your 2-year-old app breaking. But we encourage you to try the new commands going forward – they will be way less annoying!
-- Switching code to the new commands should be easy in most cases. To decide whether to use `st.cache_data` or `st.cache_resource`, read [Deciding which caching decorator to use](#deciding-which-caching-decorator-to-use). Streamlit will also recognize common use cases and show hints right in the deprecation warnings.
-- Most parameters from `st.cache` are also present in the new commands, with a few exceptions:
-  - `allow_output_mutation` does not exist anymore. You can safely delete it. Just make sure you use the right caching command for your use case.
-  - `suppress_st_warning` does not exist anymore. You can safely delete it. Cached functions can now contain Streamlit commands and will replay them. If you want to use widgets inside cached functions, set `experimental_allow_widgets=True`. See [Input widgets](#input-widgets) for an example.
-
-If you have any questions or issues during the migration process, please contact us on the [forum](https://discuss.streamlit.io/), and we will be happy to assist you. 🎈
+移行プロセス中に質問や問題があれば、[フォーラム](https://discuss.streamlit.io/)でご連絡ください。喜んでお手伝いします！ 🎈
