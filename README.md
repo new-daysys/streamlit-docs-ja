@@ -25,7 +25,7 @@
    + Streamlit Community Cloud
    + Streamlit in Snowflake
    + Other platforms
-5. [ナレッジベース](/contents/knowledge-base)
+5. [ナレッジベース](/contents/kb)
    + FAQ
    + Installing dependencies
    + Deployment issues
