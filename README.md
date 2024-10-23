@@ -26,9 +26,9 @@
    + Streamlit in Snowflake
    + Other platforms
 5. [ナレッジベース](/contents/kb)
-   + FAQ
-   + Installing dependencies
-   + Deployment issues
+   + [FAQ](/contents/kb/FAQ)
+   + [依存関係のインストール](/contents/kb/dependencies)
+   + [デプロイでの問題](/contents/kb/deployments)
 
 # See Also
 + いい感じのStreamlitのコンポーネント集 - https://qiita.com/papasim824/items/b6aef456644321af0010
