@@ -5,17 +5,17 @@ slug: /knowledge-base/dependencies/libgl
 
 # ImportError libGL.so.1 cannot open shared object file No such file or directory
 
-## Problem
+## 問題
 
-You receive the error `ImportError libGL.so.1 cannot open shared object file No such file or directory` when using OpenCV in your app deployed on [Streamlit Community Cloud](https://streamlit.io/cloud).
+[Streamlit Community Cloud](https://streamlit.io/cloud) にデプロイしたアプリでOpenCVを使用すると、`ImportError libGL.so.1 cannot open shared object file No such file or directory` というエラーが発生します。
 
-## Solution
+## 解決策
 
-If you use OpenCV in your app, include `opencv-python-headless` in your requirements file on Streamlit Community Cloud in place of `opencv_contrib_python` and `opencv-python`.
+アプリでOpenCVを使用している場合、Streamlit Community Cloud上のrequirementsファイルに `opencv_contrib_python` や `opencv-python` の代わりに `opencv-python-headless` を含めてください。
 
-If `opencv-python` is a _required_ (non-optional) dependency of your app or a dependency of a library used in your app, the above solution is not applicable. Instead, you can use the following solution:
+もし、`opencv-python` がアプリにとって **必須の依存関係**（オプションではない）である場合、またはアプリ内で使用しているライブラリの依存関係である場合、上記の解決策は適用できません。この場合は、次の方法を使用してください：
 
-Create a `packages.txt` file in your repo with the following line to install the [apt-get dependency](/deploy/streamlit-community-cloud/deploy-your-app/app-dependencies#apt-get-dependencies) `libgl`:
+リポジトリに `packages.txt` ファイルを作成し、次の行を追加して [apt-get 依存関係](/deploy/streamlit-community-cloud/deploy-your-app/app-dependencies#apt-get-dependencies) `libgl` をインストールします：
 
 ```
 libgl1
