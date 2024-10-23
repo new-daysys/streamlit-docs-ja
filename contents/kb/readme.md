@@ -7,7 +7,7 @@ slug: /knowledge-base
 
 ナレッジベースは、Streamlitアプリの作成およびデプロイに関する質問に答えるための、ヒント、ステップバイステップのチュートリアル、記事を提供するセルフサーブライブラリです。
 
-## [FAQ](using-streamlit)
+## [FAQ](FAQ)
 
 こちらは、Streamlitの使用に関するよくある質問です。
 
