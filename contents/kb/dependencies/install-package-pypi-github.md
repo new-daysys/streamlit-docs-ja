@@ -3,56 +3,56 @@ title: How to install a package not on PyPI/Conda but available on GitHub
 slug: /knowledge-base/dependencies/install-package-not-pypi-conda-available-github
 ---
 
-# How to install a package not on PyPI/Conda but available on GitHub
+# PyPI/Conda にはないが GitHub で利用可能なパッケージをインストールする方法
 
-## Overview
+## 概要
 
-Are you trying to deploy your app to [Streamlit Community Cloud](/deploy/streamlit-community-cloud), but don't know how to specify a [Python dependency](/deploy/streamlit-community-cloud/deploy-your-app/app-dependencies#add-python-dependencies) in your requirements file that is available on a public GitHub repo but not any package index like PyPI or Conda? If so, continue reading to find out how!
+[Streamlit Community Cloud](/deploy/streamlit-community-cloud) にアプリをデプロイしようとしていて、requirements ファイルに [Python依存関係](/deploy/streamlit-community-cloud/deploy-your-app/app-dependencies#add-python-dependencies) を指定したいが、PyPI や Conda のようなパッケージインデックスにはないパブリックな GitHub リポジトリにしかない場合、どうすればよいかわからない場合は、この方法をお読みください！
 
-Let's suppose you want to install `SomePackage` and its Python dependencies from GitHub, a hosting service for the popular version control system (VCS) Git. And suppose `SomePackage` is found at the the following URL: `https://github.com/SomePackage.git`.
+例えば、`SomePackage` をG itHub からインストールしたいとします。Git は人気のあるバージョン管理システム（VCS）で、GitHub はそのホスティングサービスです。`SomePackage` が次の URL にあるとします：`https://github.com/SomePackage.git`。
 
-pip (via `requirements.txt`) [supports](https://pip.pypa.io/en/stable/topics/vcs-support/) installing from GitHub. This support requires a working executable to be available (for Git). It is used through a URL prefix: `git+`.
+pip（`requirements.txt`経由）では、GitHub からのインストールを [サポート](https://pip.pypa.io/en/stable/topics/vcs-support/) しています。このサポートには、実行可能な Git が必要です。`git+` というURLプレフィックスを使用してインストールします。
 
-## Specify the GitHub web URL
+## GitHub のウェブ URL を指定
 
-To install `SomePackage`, innclude the following in your `requirements.txt` file:
+`SomePackage` をインストールするには、`requirements.txt` ファイルに以下を含めます：
 
 ```bash
 git+https://github.com/SomePackage#egg=SomePackage
 ```
 
-You can even specify a "git ref" such as branch name, a commit hash or a tag name, as shown in the examples below.
+以下の例のように、ブランチ名、コミットハッシュ、またはタグ名を指定することもできます。
 
-## Specify a Git branch name
+## Gitブランチ名を指定
 
-Install `SomePackage` by specifying a branch name such as `main`, `master`, `develop`, etc, in `requirements.txt`:
+`SomePackage` をブランチ名（`main`、`master`、`develop` など）を指定してインストールするには、`requirements.txt` に以下を記述します：
 
 ```bash
 git+https://github.com/SomePackage.git@main#egg=SomePackage
 ```
 
-## Specify a commit hash
+## コミットハッシュを指定
 
-Install `SomePackage` by specifying a commit hash in `requirements.txt`:
+`SomePackage` をコミットハッシュを指定してインストールするには、`requirements.txt` に以下を記述します：
 
 ```bash
 git+https://github.com/SomePackage.git@eb40b4ff6f7c5c1e4366cgfg0671291bge918#egg=SomePackage
 ```
 
-## Specify a tag
+## タグを指定
 
-Install `SomePackage` by specifying a tag in `requirements.txt`:
+`SomePackage` をタグを指定してインストールするには、`requirements.txt` に以下を記述します：
 
 ```bash
 git+https://github.com/SomePackage.git@v1.1.0#egg=SomePackage
 ```
 
-## Limitations
+## 制限事項
 
-It is currently **not possible** to install private packages from private GitHub repos using the URI form:
+現在、プライベートなGitHubリポジトリからプライベートパッケージをURI形式でインストールすることは **できません**：
 
 ```bash
 git+https://{token}@github.com/user/project.git@{version}
 ```
 
-where `version` is a tag, a branch, or a commit. And `token` is a personal access token with read only permissions. Streamlit Community Cloud only supports installing public packages from public GitHub repos.
+ここで、`version` はタグ、ブランチ、またはコミットで、`token` は読み取り専用の権限を持つ個人アクセストークンです。Streamlit Community Cloud では、パブリックなGitHubリポジトリからのパブリックパッケージのインストールのみがサポートされています。
