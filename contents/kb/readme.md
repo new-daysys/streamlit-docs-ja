@@ -3,27 +3,18 @@ title: Knowledge Base
 slug: /knowledge-base
 ---
 
-# Knowledge base
+# ナレッジベース
 
-The knowledge base is a self-serve library of tips, step-by-step tutorials, and articles that answer your questions about creating and deploying Streamlit apps.
+ナレッジベースは、Streamlitアプリの作成およびデプロイに関する質問に答えるための、ヒント、ステップバイステップのチュートリアル、記事を提供するセルフサーブライブラリです。
 
-<InlineCalloutContainer>
-  <InlineCallout
-    color="darkBlue-70"
-    icon="quiz"
-    bold="FAQ"
-    href="/knowledge-base/using-streamlit"
-  >Here are some frequently asked questions about using Streamlit.</InlineCallout>
-  <InlineCallout
-    color="darkBlue-70"
-    icon="downloading"
-    bold="Installing dependencies."
-    href="/knowledge-base/dependencies"
-  >If you run into problems installing dependencies for your Streamlit apps, we've got you covered.</InlineCallout>
-  <InlineCallout
-    color="darkBlue-70"
-    icon="report"
-    bold="Deployment issues."
-    href="/knowledge-base/deploy"
-  >Have questions about deploying Streamlit apps to the cloud? This section covers deployment-related issues.</InlineCallout>
-</InlineCalloutContainer>
+## [FAQ](using-streamlit)
+
+こちらは、Streamlitの使用に関するよくある質問です。
+
+## [依存関係のインストール](dependencies)
+
+Streamlitアプリの依存関係のインストールに問題が発生した場合、こちらで対応策をご紹介します。
+
+### [デプロイの問題](deploy)
+
+Streamlitアプリをクラウドにデプロイする際の質問がありますか？このセクションでは、デプロイに関連する問題をカバーしています。
