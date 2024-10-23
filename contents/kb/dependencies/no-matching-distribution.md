@@ -5,19 +5,19 @@ slug: /knowledge-base/dependencies/no-matching-distribution
 
 # ERROR: No matching distribution found for
 
-## Problem
+## 問題
 
-You receive the error `ERROR: No matching distribution found for` when you deploy an app on [Streamlit Community Cloud](https://streamlit.io/cloud).
+[Streamlit Community Cloud](https://streamlit.io/cloud) にアプリをデプロイすると、`ERROR: No matching distribution found for` というエラーが発生します。
 
-## Solution
+## 解決策
 
-This error occurs when you deploy an app on Streamlit Community Cloud and have one or more of the following issues with your [Python dependencies](/deploy/streamlit-community-cloud/deploy-your-app/app-dependencies#add-python-dependencies) in your requirements file:
+このエラーは、Streamlit Community Cloud にアプリをデプロイした際、requirementsファイルの [Python依存関係](/deploy/streamlit-community-cloud/deploy-your-app/app-dependencies#add-python-dependencies) に次のいずれかの問題がある場合に発生します：
 
-1. The package is part of the [Python Standard Library](https://docs.python.org/3/py-modindex.html). E.g. You will see **`ERROR: No matching distribution found for base64`** if you include [`base64`](https://docs.python.org/3/library/base64.html) in your requirements file, as it is part of the Python Standard Library. The solution is to not include the package in your requirements file. Only include packages in your requirements file that are not distributed with a standard Python installation.
-2. The package name in your requirements file is misspelled. Double-check the package name before including it in your requirements file.
-3. The package does not support the operating system on which your Streamlit app is running. E.g. You see **`ERROR: No matching distribution found for pywin32`** while deploying to Streamlit Community Cloud. The `pywin32` module provides access to many of the Windows APIs from Python. Apps deployed to Streamlit Community Cloud are executed in a Linux environment. As such, `pywin32` fails to install on non-Windows systems, including on Streamlit Community Cloud. The solution is to either exclude `pywin32` from your requirements file, or deploy your app on a cloud service offering Windows machines.
+1. パッケージが [Python標準ライブラリ](https://docs.python.org/3/py-modindex.html) の一部である。例えば、requirementsファイルに [`base64`](https://docs.python.org/3/library/base64.html) を含めると、 **`ERROR: No matching distribution found for base64`** が表示されます。これは `base64` がPython標準ライブラリの一部であるためです。解決策は、requirementsファイルにパッケージを含めないことです。標準のPythonインストールに含まれていないパッケージのみをrequirementsファイルに含めてください。
+2. requirementsファイル内のパッケージ名がスペルミスである。パッケージ名をrequirementsファイルに含める前に、綴りが正しいことを確認してください。
+3. パッケージが、Streamlitアプリが実行されているオペレーティングシステムをサポートしていない。例えば、`pywin32` を含めた状態で Streamlit Community Cloud にデプロイすると、**`ERROR: No matching distribution found for pywin32`** というエラーが表示されます。`pywin32` モジュールは、Pythonから多くのWindows APIにアクセスするためのものですが、Streamlit Community Cloud上ではLinux環境でアプリが実行されるため、非Windowsシステム上では `pywin32` のインストールに失敗します。解決策は、requirementsファイルから `pywin32` を除外するか、Windowsマシンを提供するクラウドサービスにアプリをデプロイすることです。
 
-Related forum posts:
+関連フォーラム投稿:
 
 - https://discuss.streamlit.io/t/error-no-matching-distribution-found-for-base64/15758
 - https://discuss.streamlit.io/t/error-could-not-find-a-version-that-satisfies-the-requirement-pywin32-301-from-versions-none/15343/2
