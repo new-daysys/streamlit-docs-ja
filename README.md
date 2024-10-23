@@ -29,3 +29,6 @@
    + FAQ
    + Installing dependencies
    + Deployment issues
+
+# See Also
++ いい感じのStreamlitのコンポーネント集 - https://qiita.com/papasim824/items/b6aef456644321af0010
