@@ -3,38 +3,38 @@ title: Trigger a full-script rerun from inside a fragment
 slug: /develop/tutorials/execution-flow/trigger-a-full-script-rerun-from-a-fragment
 ---
 
-# Trigger a full-script rerun from inside a fragment
+# フラグメント内からフルスクリプトの再実行をトリガーする
 
-Streamlit lets you turn functions into [fragments](/develop/concepts/architecture/fragments), which can rerun independently from the full script. When a user interacts with a widget inside a fragment, only the fragment reruns. Sometimes, you may want to trigger a full-script rerun from inside a fragment. To do this, call [`st.rerun`](/develop/api-reference/execution-flow/st.rerun) inside the fragment.
+Streamlitでは、関数を[フラグメント](/develop/concepts/architecture/fragments)に変換し、フルスクリプトとは独立して再実行させることができます。ユーザーがフラグメント内のウィジェットと対話すると、フラグメントだけが再実行されます。ただし、場合によってはフラグメント内からフルスクリプトの再実行をトリガーしたいことがあります。その場合、フラグメント内で[`st.rerun`](/develop/api-reference/execution-flow/st.rerun) を呼び出します。
 
-## Applied concepts
+## 応用概念
 
-- Use a fragment to rerun part or all of your app, depending on user input.
+- フラグメントを使用して、ユーザー入力に応じてアプリの一部または全体を再実行します。
 
-## Prerequisites
+## 前提条件
 
-- The following must be installed in your Python environment:
+- Python環境に以下がインストールされている必要があります：
 
   ```text
   streamlit>=1.37.0
   ```
 
-- You should have a clean working directory called `your-repository`.
-- You should have a basic understanding of fragments and `st.rerun`.
+- `your-repository` という名前のクリーンな作業ディレクトリが必要です。
+- フラグメントおよび `st.rerun` の基本的な理解が必要です。
 
-## Summary
+## 概要
 
-In this example, you'll build an app to display sales data. The app has two sets of elements that depend on a date selection. One set of elements displays information for the selected day. The other set of elements displays information for the associated month. If the user changes days within a month, Streamlit only needs to update the first set of elements. If the user selects a day in a different month, Streamlit needs to update all the elements.
+この例では、売上データを表示するアプリを構築します。このアプリには、日付選択に依存する2つの要素セットがあります。1つのセットは選択された日の情報を表示し、もう1つのセットは関連する月の情報を表示します。ユーザーが同じ月内で日を変更した場合、Streamlitは最初のセットだけを更新する必要がありますが、異なる月の日を選択した場合、すべての要素を更新する必要があります。
 
-You'll collect the day-specific elements into a fragment to avoid rerunning the full app when a user changes days within the same month. If you want to jump ahead to the fragment function definition, see [Build a function to show daily sales data](#build-a-function-to-show-daily-sales-data).
+フラグメント内に日別の要素を集約し、ユーザーが同じ月内で日を変更した場合にフルアプリの再実行を避けます。フラグメント関数の定義にすぐジャンプしたい場合は、[日別売上データを表示する関数を作成する](#build-a-function-to-show-daily-sales-data) をご覧ください。
 
 <div style={{ maxWidth: '60%', margin: 'auto' }}>
-<Image alt="Execution flow of example Streamlit app showing daily sales on the left and monthly sales on the right" src="/images/tutorials/fragment-rerun-tutorial-execution-flow.png" />
+<Image alt="日別売上データを左に、月別売上データを右に表示するStreamlitアプリの実行フロー" src="/images/tutorials/fragment-rerun-tutorial-execution-flow.png" />
 </div>
 
-Here's a look at what you'll build:
+以下が構築するアプリの概要です：
 
-<Collapse title="Complete code" expanded={false}>
+<Collapse title="完全なコード" expanded={false}>
 
 ```python
 import streamlit as st
@@ -47,9 +47,9 @@ import time
 
 @st.cache_data
 def get_data():
-    """Generate random sales data for Widget A through Widget Z"""
+    """ウィジェットAからウィジェットZのランダム売上データを生成"""
 
-    product_names = ["Widget " + letter for letter in string.ascii_uppercase]
+    product_names = ["ウィジェット " + letter for letter in string.ascii_uppercase]
     average_daily_sales = np.random.normal(1_000, 300, len(product_names))
     products = dict(zip(product_names, average_daily_sales))
 
@@ -67,7 +67,7 @@ def show_daily_sales(data):
     time.sleep(1)
     with st.container(height=100):
         selected_date = st.date_input(
-            "Pick a day ",
+            "日を選択してください",
             value=date(2023, 1, 1),
             min_value=date(2023, 1, 1),
             max_value=date(2023, 12, 31),
@@ -83,14 +83,14 @@ def show_daily_sales(data):
         st.rerun()
 
     with st.container(height=510):
-        st.header(f"Best sellers, {selected_date:%m/%d/%y}")
+        st.header(f"ベストセラー, {selected_date:%m/%d/%y}")
         top_ten = data.loc[selected_date].sort_values(ascending=False)[0:10]
         cols = st.columns([1, 4])
         cols[0].dataframe(top_ten)
         cols[1].bar_chart(top_ten)
 
     with st.container(height=510):
-        st.header(f"Worst sellers, {selected_date:%m/%d/%y}")
+        st.header(f"ワーストセラー, {selected_date:%m/%d/%y}")
         bottom_ten = data.loc[selected_date].sort_values()[0:10]
         cols = st.columns([1, 4])
         cols[0].dataframe(bottom_ten)
@@ -105,18 +105,18 @@ def show_monthly_sales(data):
 
     st.container(height=100, border=False)
     with st.container(height=510):
-        st.header(f"Daily sales for all products, {this_month:%B %Y}")
+        st.header(f"すべての製品の日別売上, {this_month:%B %Y}")
         monthly_sales = data[(data.index < next_month) & (data.index >= this_month)]
         st.write(monthly_sales)
     with st.container(height=510):
-        st.header(f"Total sales for all products, {this_month:%B %Y}")
+        st.header(f"すべての製品の総売上, {this_month:%B %Y}")
         st.bar_chart(monthly_sales.sum())
 
 
 st.set_page_config(layout="wide")
 
-st.title("Daily vs monthly sales, by product")
-st.markdown("This app shows the 2023 daily sales for Widget A through Widget Z.")
+st.title("製品ごとの日別および月別売上")
+st.markdown("このアプリは、ウィジェットAからウィジェットZの2023年の日別売上を表示します。")
 
 data = get_data()
 daily, monthly = st.columns(2)
@@ -128,9 +128,9 @@ with monthly:
 
 </Collapse>
 
-![Example Streamlit app showing daily sales on the left and monthly sales on the right](/images/tutorials/fragment-rerun-tutorial-app.jpg)
+![日別売上データを左に、月別売上データを右に表示するStreamlitアプリの例](/images/tutorials/fragment-rerun-tutorial-app.jpg)
 
-[Click here to see the example live on Community Cloud.](https://doc-tutorial-fragment-rerun.streamlit.app/)
+[こちらをクリックして、Community Cloudでの例をご覧ください。](https://doc-tutorial-fragment-rerun.streamlit.app/)
 
 ## Build the example
 
