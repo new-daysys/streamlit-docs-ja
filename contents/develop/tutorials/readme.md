@@ -3,10 +3,6 @@ title: Tutorials
 slug: /develop/tutorials
 ---
 
-翻訳しました。
-
----
-
 # チュートリアル
 
 チュートリアルでは、Streamlitでさまざまなタイプのアプリを構築するためのステップバイステップの例を紹介しています。
