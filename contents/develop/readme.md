@@ -8,7 +8,7 @@ Streamlitの仕組みを、実行モデルや機能に関する詳細なガイ�
 ### 📄 [APIリファレンス](/contents/develop/api-reference)
 APIについて、関数定義と例を使って学びましょう。
 
-### 🚀 [チュートリアル](/contents/develop/tutrials)
+### 🚀 [チュートリアル](/contents/develop/tutorials)
 ステップバイステップの指示に従って、アプリの例や便利なスニペットを作成しましょう。
 
 ### ⚡ [クイックリファレンス](/contents/develop/quick-reference)
