@@ -3,34 +3,20 @@ title: Use core features to work with Streamlit's execution model
 slug: /develop/tutorials/execution-flow
 ---
 
-# Use core features to work with Streamlit's execution model
+# Streamlit の実行モデルを使った基本機能の活用
 
-## Fragments
+## フラグメント
 
-<TileContainer layout="list">
+### [フラグメント内からフルスクリプトの再実行をトリガーする](trigger-a-full-script-rerun-from-a-fragment)
 
-<RefCard href="/develop/tutorials/execution-flow/trigger-a-full-script-rerun-from-a-fragment">
+条件が満たされたときに `st.rerun` をフラグメント内から呼び出し、フルスクリプトの再実行をトリガーします。
 
-<h5>Trigger a full-script rerun from inside a fragment</h5>
 
-Call `st.rerun` from inside a fragment to trigger a full-script rerun when a condition is met.
+### [複数のコンテナにわたるフラグメントを作成する](create-a-multiple-container-fragment)
 
-</RefCard>
+フラグメントを使用してアプリ全体の複数のコンテナに書き込みます。
 
-<RefCard href="/develop/tutorials/execution-flow/create-a-multiple-container-fragment">
+### [ストリーミングフラグメントの自動再実行の開始と停止](start-and-stop-fragment-auto-reruns)
 
-<h5>Create a fragment across multiple containers</h5>
+フラグメントを使用してデータをライブストリームします。ボタンを使用してライブストリーミングの開始と停止を行います。
 
-Use a fragment to write to multiple containers across your app.
-
-</RefCard>
-
-<RefCard href="/develop/tutorials/execution-flow/start-and-stop-fragment-auto-reruns">
-
-<h5>Start and stop a streaming fragment</h5>
-
-Use a fragment to live-stream data. Use a button to start and stop the live-streaming.
-
-</RefCard>
-
-</TileContainer>
