@@ -3,44 +3,28 @@ title: Tutorials
 slug: /develop/tutorials
 ---
 
-# Tutorials
+翻訳しました。
 
-Our tutorials include step-by-step examples of building different types of apps in Streamlit.
+---
 
-<TileContainer layout="list">
+# チュートリアル
 
-<RefCard href="/develop/tutorials/execution-flow">
+チュートリアルでは、Streamlitでさまざまなタイプのアプリを構築するためのステップバイステップの例を紹介しています。
 
-<h5>Use core features to work with Streamlit's execution model</h5>
+### Streamlit の実行モデルを使った基本機能の活用
 
-Build simple apps and walk through examples to learn about Streamlit's core features and execution model.
+シンプルなアプリを構築し、Streamlitの基本機能と実行モデルについて学ぶ例を紹介します。
 
-</RefCard>
+### データソースへの接続
 
-<RefCard href="/develop/tutorials/databases">
+人気のあるデータソースに接続します。
 
-<h5>Connect to data sources</h5>
+### マルチページアプリの作成
 
-Connect to popular datasources.
+マルチページアプリ、ナビゲーション、フローを作成します。
 
-</RefCard>
+### チャットアプリとLLMs
 
-<RefCard href="/develop/tutorials/multipage">
+LLMを活用し、チャットアプリを作成します。
 
-<h5>Create multipage apps</h5>
-
-Create multipage apps, navigation, and flows.
-
-</RefCard>
-
-<RefCard href="/develop/tutorials/llms">
-
-<h5>Chat apps and LLMs</h5>
-
-Work with LLMs and create chat apps.
-
-</RefCard>
-
-</TileContainer>
-
-When you're done developing your app, see our [deployment tutorials](/deploy/tutorials), too!
+アプリの開発が完了したら、[デプロイのチュートリアル](/deploy/tutorials) もご覧ください！
