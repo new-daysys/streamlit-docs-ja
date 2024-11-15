@@ -7,18 +7,14 @@ slug: /deploy
 
 アプリをデプロイしてユーザーと共有するために必要な情報をご覧ください。
 
-### [コンセプト](./concepts)
+### 📘[コンセプト](https://deploy/concepts)
+アプリデプロイの基本を理解しましょう。
 
-アプリデプロイの基本を理解する。
+### ☁️[Streamlit Community Cloud](https://deploy/streamlit-community-cloud)
+無料のプラットフォームでアプリをデプロイし、世界中の開発者コミュニティに参加しましょう。非商用、個人、教育用アプリに最適です。
 
-### [Streamlit Community Cloud](./community-cloud)
+### ❄️[Snowflake](https://deploy/snowflake)
+Snowflake にアプリをデプロイし、セキュアでエンタープライズ向けの環境を提供します。ビジネス用途のアプリに最適です。
 
-アプリを無料のプラットフォームでデプロイし、世界中の開発者が共有するコミュニティに参加する。
-
-### [Streamlit in Snowflake](./snowflake) 
-
-Snowflake内でアプリをデプロイし、安全で企業向けの環境を実現する。
-
-### [その他のプラットフォーム](./tutorials)
-
-チュートリアルでさまざまなプラットフォームへのアプリのデプロイ方法を学ぶ。
+### ⚡[その他のプラットフォーム](https://deploy/tutorials)
+さまざまなプラットフォームでアプリをデプロイする方法を学べる便利なチュートリアル集をご覧ください。
