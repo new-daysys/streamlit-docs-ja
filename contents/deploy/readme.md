@@ -15,7 +15,7 @@ slug: /deploy
 
 アプリを無料のプラットフォームでデプロイし、世界中の開発者が共有するコミュニティに参加する。
 
-### [Streamlit in Snowflake](https://docs.snowflake.com/developer-guide/streamlit/about-streamlit) 
+### [Streamlit in Snowflake](./snowflake) 
 
 Snowflake内でアプリをデプロイし、安全で企業向けの環境を実現する。
 
