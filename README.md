@@ -8,7 +8,7 @@ Streamlit の日本語ドキュメントについては、https://github.com/str
 基本的には GTP4 に翻訳をさせているだけです。気になった部分は修正をしていますが、誤りや正しくない翻訳が残っているかもしれません。
 Streamlit を始める一歩として、少しくらい誰かの役に立つかもな、という気持ちでやります。
 
-1. [さぁはじめよう！](/contents/get-started)
+1. [はじめよう](/contents/get-started)
    + [インストール](/contents/get-started/installation.md)
    + [基礎的なこと](/contents/get-started/fundamentals/)
        - [基本的な概念](/contents/get-started/fundamentals/main-concepts.md)
