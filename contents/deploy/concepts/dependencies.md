@@ -3,10 +3,6 @@ title: Managing dependencies when deploying your app
 slug: /deploy/concepts/dependencies
 ---
 
-修正しました。
-
----
-
 # アプリデプロイ時の依存関係の管理
 
 アプリ開ブを始める前に、Python や Streamlit をインストールして開発環境を設定したかと思います。アプリをデプロイする際も、同様にデプロイ環境を設定する必要があります。アプリをクラウドサービスにデプロイする場合、アプリの `Python サーバー` はリモートマシン上で動作します。このリモートマシンは、個人のコンピュータにあるすべてのファイルやプログラムにアクセスできません。
