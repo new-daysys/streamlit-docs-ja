@@ -3,43 +3,31 @@ title: Streamlit Community Cloud
 slug: /deploy/streamlit-community-cloud
 ---
 
-# Welcome to Streamlit Community Cloud
+# Streamlit Community Cloud へようこそ
 
-With Streamlit Community Cloud, you can create, deploy, and manage your Streamlit apps &mdash; all for free. Share your apps with the world and build a customized profile page to display your work. Your Community Cloud account connects directly to your GitHub repositories (public or private). Most apps will launch in only a few minutes. Community Cloud handles all of the containerization, so deploying is easy. Bring your own code, or start from one of our popular templates. Rapidly prototype, explore, and update apps by simply changing your code in GitHub. Most changes appear immediately!
+Streamlit Community Cloud を使用すると、Streamlit アプリを無料で作成、デプロイ、管理することができます。アプリを世界と共有し、自分の成果を表示するカスタマイズされたプロフィールページを作成しましょう。Community Cloud アカウントは、あなたの GitHub リポジトリ（パブリックまたはプライベート）に直接接続します。ほとんどのアプリは数分で起動します。Community Cloud がコンテナ化をすべて処理するため、デプロイは簡単です。既存のコードを使用することも、人気のテンプレートから始めることもできます。コードを GitHub で変更するだけで、アプリをすばやくプロトタイプ化、探索、更新できます。ほとんどの場合、変更は即座に反映されます！
 
-Want to avoid the work of setting up a local development environment? Community Cloud can help you quickly configure a codespace to develop in the cloud. Start coding or editing a Streamlit app with just a few clicks. See [Edit your app](/deploy/streamlit-community-cloud/manage-your-app/edit-your-app).
+ローカル開発環境のセットアップを省きたいですか？Community Cloud を使用すれば、クラウド内での開発用コードスペースをすばやく構成できます。ほんの数クリックで Streamlit アプリのコーディングや編集を開始できます。[アプリの編集](/deploy/streamlit-community-cloud/manage-your-app/edit-your-app) を参照してください。
 
-Go to our [Community Cloud quickstart](/deploy/streamlit-community-cloud/get-started/quickstart) to speed-run through creating your account, deploying an example app, and editing it using GitHub Codespaces. If you haven't built your first Streamlit app yet, see [Get started with Streamlit](/get-started).
+[Community Cloud クイックスタート](/deploy/streamlit-community-cloud/get-started/quickstart) に進むと、アカウントの作成、サンプルアプリのデプロイ、および GitHub Codespaces を使用したアプリの編集をすばやく学べます。まだ最初の Streamlit アプリを作成していない場合は、[Streamlit のはじめ方](/get-started) をご覧ください。
 
-<InlineCalloutContainer>
-    <InlineCallout
-        color="lightBlue-70"
-        icon="arrow_forward"
-        bold="Get started."
-        href="/deploy/streamlit-community-cloud/get-started"
-    >Learn about Streamlit Community Cloud accounts and how to create one.</InlineCallout>
-    <InlineCallout
-        color="lightBlue-70"
-        icon="flight_takeoff"
-        bold="Deploy your app."
-        href="/deploy/streamlit-community-cloud/deploy-your-app"
-    >A step-by-step guide on how to get your app deployed.</InlineCallout>
-    <InlineCallout
-        color="lightBlue-70"
-        icon="settings"
-        bold="Manage your app."
-        href="/deploy/streamlit-community-cloud/manage-your-app"
-    >Access logs, reboot apps, set favorites, and more. Jump into a GitHub codespace to edit your app in the cloud.</InlineCallout>
-    <InlineCallout
-        color="lightBlue-70"
-        icon="share"
-        bold="Share your app."
-        href="/deploy/streamlit-community-cloud/share-your-app"
-    >Share or embed your app.</InlineCallout>
-    <InlineCallout
-        color="lightBlue-70"
-        icon="manage_accounts"
-        bold="Manage your account."
-        href="/deploy/streamlit-community-cloud/manage-your-account"
-    >Update your email, manage connections, or delete your account.</InlineCallout>
+### [はじめる](./get-started)
+
+Streamlit Community Cloud アカウントとその作成方法について学びましょう。
+
+### [アプリをデプロイする](./deploy-your-app)
+
+アプリのデプロイ手順をステップバイステップで学びましょう。
+
+### [アプリを管理する](./manage-your-app)
+
+ログのアクセス、アプリの再起動、お気に入りの設定などを行い、GitHub コードスペースでクラウド内のアプリを編集しましょう。
+
+### [アプリを共有する](./share-your-app)
+
+アプリを共有または埋め込みます。
+
+### [アカウントを管理する](./manage-your-account)
+
+メールアドレスの更新、接続の管理、アカウントの削除などを行います。
 </InlineCalloutContainer>
