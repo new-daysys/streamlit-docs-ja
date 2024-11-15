@@ -3,62 +3,35 @@ title: Get started with Streamlit Community Cloud
 slug: /deploy/streamlit-community-cloud/get-started
 ---
 
-# Get started with Streamlit Community Cloud
+# Streamlit Community Cloud を始めよう
 
-Welcome to Streamlit Community Cloud, where you can share your Streamlit apps with the world! Whether you've already created your first Streamlit app or you're just getting started, you're in the right place.
+Streamlit Community Cloud へようこそ！ここでは、Streamlit アプリを世界と共有することができます。すでに最初の Streamlit アプリを作成した方も、これから始める方も、ここがスタート地点です。
 
-First things first, you need to create your Streamlit Community Cloud account to start deploying apps.
+まずは、Streamlit Community Cloud アカウントを作成してアプリのデプロイを始めましょう。
 
-<TileContainer>
-    <Tile
-        icon="rocket_launch"
-        title="Quickstart"
-        text="Create your account and deploy an example app as fast as possible. Jump right into coding with GitHub Codespaces."
-        link="/deploy/streamlit-community-cloud/get-started/quickstart"
-        background="lightBlue-70"
-    />
-    <Tile
-        icon="security"
-        title="Trust and Security"
-        text="Security first! If you want to read up on how we handle your data before you get started, we've got you covered."
-        link="/deploy/streamlit-community-cloud/get-started/trust-and-security"
-        background="lightBlue-70"
-    />
-</TileContainer>
+### 🚀[クイックスタート](https://deploy/streamlit-community-cloud/get-started/quickstart)
+アカウントを作成し、サンプルアプリを素早くデプロイ。GitHub Codespaces を使ってすぐにコーディングを始めましょう。
 
-If you're looking for help to build your first Streamlit app, read our [Get started](/get-started) docs for the Streamlit library. If you want to fork an app and start with an example, check out our <a href="https://streamlit.io/gallery" target="_blank">App gallery</a>. Either way, it only takes a few minutes to create your first app.
+### 🔒[信頼とセキュリティ](https://deploy/streamlit-community-cloud/get-started/trust-and-security)
+セキュリティが最優先！始める前にデータの取り扱いについて知りたい方はこちらをご覧ください。
 
-If you're looking for more detailed instructions than the quickstart, try the following:
 
-<InlineCalloutContainer>
-    <InlineCallout
-        color="lightBlue-70"
-        icon="person"
-        bold="Create your account."
-        href="/deploy/streamlit-community-cloud/get-started/create-your-account"
-    >See all the options and get complete explanations as you create your Streamlit Community Cloud account.</InlineCallout>
-    <InlineCallout
-        color="lightBlue-70"
-        icon="code"
-        bold="Connect your GitHub account."
-        href="/deploy/streamlit-community-cloud/get-started/connect-your-github-account"
-    >After your create your Community Cloud account, connect GitHub for source control.</InlineCallout>
-    <InlineCallout
-        color="lightBlue-70"
-        icon="computer"
-        bold="Explore your workspace."
-        href="/deploy/streamlit-community-cloud/get-started/explore-your-workspace"
-    >Take a quick tour of your Community Cloud workspace. See where all the magic happens.</InlineCallout>
-    <InlineCallout
-        color="lightBlue-70"
-        icon="auto_fix_high"
-        bold="Deploy an app from a template."
-        href="/deploy/streamlit-community-cloud/get-started/deploy-from-a-template"
-    >Use a template to get your own app up and running in minutes.</InlineCallout>
-    <InlineCallout
-        color="lightBlue-70"
-        icon="fork_right"
-        bold="Fork and edit a public app."
-        href="/deploy/streamlit-community-cloud/get-started/fork-and-edit-a-public-app"
-    >Start with a bang! Fork a public app and jump right into the code.</InlineCallout>
-</InlineCalloutContainer>
+最初の Streamlit アプリを作成する方法をお探しですか？[Streamlit のスタートガイド](/get-started)をぜひお読みください。アプリの例を手軽に始めたい場合は、[アプリギャラリー](https://streamlit.io/gallery) をチェックしてみてください。どちらを選んでも、数分で最初のアプリを作成できます。
+
+クイックスタート以上に詳しい手順が必要な場合は、以下をお試しください：
+
+### 👤[アカウントを作成](https://deploy/streamlit-community-cloud/get-started/create-your-account)
+Streamlit Community Cloud アカウントを作成する際のすべてのオプションと完全な説明をご覧ください。
+
+### 💻[GitHub アカウントを接続](https://deploy/streamlit-community-cloud/get-started/connect-your-github-account)
+Community Cloud アカウントを作成した後、GitHub を接続してソース管理を行いましょう。
+
+### 🖥️[ワークスペースを探索](https://deploy/streamlit-community-cloud/get-started/explore-your-workspace)
+Community Cloud ワークスペースを簡単に見学。すべての魔法が起きる場所を見てみましょう。
+
+### ✨[テンプレートからアプリをデプロイ](https://deploy/streamlit-community-cloud/get-started/deploy-from-a-template)
+テンプレートを使用して、数分で独自のアプリを立ち上げましょう。
+
+### 🌟[公開アプリをフォークして編集](https://deploy/streamlit-community-cloud/get-started/fork-and-edit-a-public-app)
+注目を集めるスタートを！公開アプリをフォークして、すぐにコードを編集できます。
+
