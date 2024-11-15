@@ -3,28 +3,31 @@ title: Managing dependencies when deploying your app
 slug: /deploy/concepts/dependencies
 ---
 
-# Managing dependencies when deploying your app
+修正しました。
 
-Before you began developing your app, you set up and configured your development environment by installing Python and Streamlit. When you deploy your app, you need to set up and configure your deployment environment in the same way. When you deploy your app to a cloud service, your app's [Python server](/develop/concepts/architecture/architecture#python-backend-server) will be running on a remote machine. This remote machine will not have access all the files and programs on your personal computer.
+---
 
-All Streamlit apps have at least two dependencies: Python and Streamlit. Your app may have additional dependencies in the form of Python packages or software that must be installed to properly execute your script. If you are using a service like Streamlit Community Cloud which is designed for Streamlit apps, we'll take care of Python and Streamlit for you!
+# アプリデプロイ時の依存関係の管理
 
-## Install Python and other software
+アプリ開ブを始める前に、Python や Streamlit をインストールして開発環境を設定したかと思います。アプリをデプロイする際も、同様にデプロイ環境を設定する必要があります。アプリをクラウドサービスにデプロイする場合、アプリの `Python サーバー` はリモートマシン上で動作します。このリモートマシンは、個人のコンピュータにあるすべてのファイルやプログラムにアクセスできません。
 
-If you are using Streamlit Community Cloud, Python is already installed. You can just pick the version in the deployment dialog. If you need to install Python yourself or you have other non-Python software to install, follow your platform's instructions to install additional software. You will commonly use a package management tool to do this.
-For example, Streamlit Community Cloud uses Advanced Package Tool (`apt`) for Debian-based Linux systems. For more information about installing non-Python depencies on Streamlit Community Cloud, see [`apt-get` dependencies](/deploy/streamlit-community-cloud/deploy-your-app/app-dependencies#apt-get-dependencies).
+すべての Streamlit アプリには少なくとも 2 つの依存関係があります：Python と Streamlit。さらに、Python パッケージやスクリプトの実行に必要なソフトウェアが追加の依存関係になる場合もあります。Streamlit アプリ用に設計された Streamlit Community Cloud のようなサービスを利用する場合、Python と Streamlit のインストールはお任せください！
 
-## Install Python packages
+## Python とその他のソフトウェアのインストール
 
-Once you have Python installed in your deployment environment, you'll need to install all the necessary Python packages, including Streamlit! With each `import` of an installed package, you add a Python dependency to your script. You need to install those dependencies in your deployment environment through a Python package manager.
+Streamlit Community Cloud を利用している場合、Python はすでにインストールされています。デプロイ時のダイアログでバージョンを選択するだけです。もし Python を自分でインストールする必要がある場合や、Python 以外のソフトウェアをインストールする必要がある場合は、プラットフォームの指示に従って追加のソフトウェアをインストールしてください。一般的には、パッケージ管理ツールを使用します。例えば、Streamlit Community Cloud では Debian ベースの Linux システム用に Advanced Package Tool（`apt`）を使用します。Streamlit Community Cloud での非 Python 依存関係のインストールについては、[`apt-get` 依存関係](/deploy/streamlit-community-cloud/deploy-your-app/app-dependencies#apt-get-dependencies) をご覧ください。
 
-If you are using Streamlit Community Cloud, you'll have the latest version of Streamlit and all of its dependencies installed by default. So, if you're making a simple app and don't need additional dependencies, you won't have to do anything at all!
+## Python パッケージのインストール
 
-### `pip` and `requirements.txt`
+デプロイ環境に Python をインストールしたら、必要な Python パッケージをすべてインストールする必要があります。これには Streamlit も含まれます。スクリプトでインストール済みパッケージを `import` するたびに、Python の依存関係が追加されます。それらの依存関係をデプロイ環境で Python パッケージマネージャーを使用してインストールしてください。
 
-Since `pip` comes by default with Python, the most common way to configure your Python environment is with a `requirements.txt` file. Each line of a `requirements.txt` file is a package to `pip install`. You should _not_ include <a href="https://docs.python.org/3/py-modindex.html" target="_blank">built-in Python libraries</a> like `math` or `random` in your `requirements.txt` file. These are a part of Python and aren't installed separately.
+Streamlit Community Cloud を利用している場合、最新バージョンの Streamlit とそのすべての依存関係がデフォルトでインストールされます。そのため、追加の依存関係が必要でないシンプルなアプリを作成している場合、何もする必要はありません！
 
-If you have a script like the following, you would only need to install Streamlit. No extra dependencies would be needed since `pandas` and `numpy` are installed as direct dependencies of `streamlit`. Similarly, `math` and `random` are built into Python.
+### `pip` と `requirements.txt`
+
+Python にはデフォルトで `pip` が含まれているため、Python 環境を構成する最も一般的な方法は `requirements.txt` ファイルを使用することです。`requirements.txt` ファイルの各行には、`pip install` するパッケージを記述します。<a href="https://docs.python.org/3/py-modindex.html" target="_blank">Python 標準ライブラリ</a>（例：`math` や `random`）を `requirements.txt` に含める必要はありません。これらは Python に組み込まれており、別途インストールする必要はありません。
+
+以下のようなスクリプトがある場合、必要なのは Streamlit のインストールだけです。`pandas` や `numpy` は `streamlit` の直接の依存関係としてインストールされ、`math` や `random` は Python に組み込まれています。
 
 ```python
 import streamlit as st
@@ -36,7 +39,7 @@ import random
 st.write('Hi!')
 ```
 
-However, it's a best practice accurately record packages you use, so the recommended `requirements.txt` file would be:
+ただし、使用したパッケージを正確に記録するのがベストプラクティスであるため、推奨される `requirements.txt` ファイルは次のようになります：
 
 ```none
 streamlit
@@ -44,7 +47,7 @@ pandas
 numpy
 ```
 
-If you needed to specify certain versions, another valid example would be:
+特定のバージョンを指定する必要がある場合は、次のように記述することもできます：
 
 ```none
 streamlit==1.24.1
@@ -52,4 +55,4 @@ pandas>2.0
 numpy<=1.25.1
 ```
 
-A `requirements.txt` file is commonly saved in the root of your repository or file directory. If you are using Streamlit Community Cloud, see [Add Python dependencies](/deploy/streamlit-community-cloud/deploy-your-app/app-dependencies#add-python-dependencies) for more information. Otherwise, check your platform's documentation.
+`requirements.txt` ファイルは通常、リポジトリやファイルディレクトリのルートに保存されます。Streamlit Community Cloud を利用している場合は、[Python 依存関係の追加](/deploy/streamlit-community-cloud/deploy-your-app/app-dependencies#add-python-dependencies) をご覧ください。それ以外の場合は、プラットフォームのドキュメントを確認してください。
