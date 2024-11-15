@@ -11,7 +11,7 @@ slug: /deploy
 
 アプリデプロイの基本を理解する。
 
-### [Streamlit Community Cloud](./streamlit-community-cloud)
+### [Streamlit Community Cloud](./community-cloud)
 
 アプリを無料のプラットフォームでデプロイし、世界中の開発者が共有するコミュニティに参加する。
 
