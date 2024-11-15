@@ -13,5 +13,5 @@ slug: /deploy/concepts
 
 Streamlit Community Cloudを利用する場合、これらの多くの作業は自動的に処理されます！
 
-- [**Dependencies.**](/deploy/concepts/dependencies) デプロイ環境の設定に関する基本を理解する。
-- [**Secrets.**](/deploy/concepts/secrets) シークレット管理の基本を理解する。
+- [**Dependencies.**](./dependencies.md) デプロイ環境の設定に関する基本を理解する。
+- [**Secrets.**](./secrets.md) シークレット管理の基本を理解する。
