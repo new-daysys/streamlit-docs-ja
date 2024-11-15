@@ -9,10 +9,10 @@ Streamlit Community Cloud へようこそ！ここでは、Streamlit アプリ�
 
 まずは、Streamlit Community Cloud アカウントを作成してアプリのデプロイを始めましょう。
 
-### 🚀[クイックスタート](https://deploy/streamlit-community-cloud/get-started/quickstart)
+### 🚀[クイックスタート](./quickstart)
 アカウントを作成し、サンプルアプリを素早くデプロイ。GitHub Codespaces を使ってすぐにコーディングを始めましょう。
 
-### 🔒[信頼とセキュリティ](https://deploy/streamlit-community-cloud/get-started/trust-and-security)
+### 🔒[信頼とセキュリティ](./trust-and-security)
 セキュリティが最優先！始める前にデータの取り扱いについて知りたい方はこちらをご覧ください。
 
 
@@ -20,18 +20,18 @@ Streamlit Community Cloud へようこそ！ここでは、Streamlit アプリ�
 
 クイックスタート以上に詳しい手順が必要な場合は、以下をお試しください：
 
-### 👤[アカウントを作成](https://deploy/streamlit-community-cloud/get-started/create-your-account)
+### 👤[アカウントを作成](./create-your-account)
 Streamlit Community Cloud アカウントを作成する際のすべてのオプションと完全な説明をご覧ください。
 
-### 💻[GitHub アカウントを接続](https://deploy/streamlit-community-cloud/get-started/connect-your-github-account)
+### 💻[GitHub アカウントを接続](./connect-your-github-account)
 Community Cloud アカウントを作成した後、GitHub を接続してソース管理を行いましょう。
 
-### 🖥️[ワークスペースを探索](https://deploy/streamlit-community-cloud/get-started/explore-your-workspace)
+### 🖥️[ワークスペースを探索](./explore-your-workspace)
 Community Cloud ワークスペースを簡単に見学。すべての魔法が起きる場所を見てみましょう。
 
-### ✨[テンプレートからアプリをデプロイ](https://deploy/streamlit-community-cloud/get-started/deploy-from-a-template)
+### ✨[テンプレートからアプリをデプロイ](./deploy-from-a-template)
 テンプレートを使用して、数分で独自のアプリを立ち上げましょう。
 
-### 🌟[公開アプリをフォークして編集](https://deploy/streamlit-community-cloud/get-started/fork-and-edit-a-public-app)
+### 🌟[公開アプリをフォークして編集](./fork-and-edit-a-public-app)
 注目を集めるスタートを！公開アプリをフォークして、すぐにコードを編集できます。
 
