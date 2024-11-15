@@ -3,12 +3,12 @@ title: Managing secrets when deploying your app
 slug: /deploy/concepts/secrets
 ---
 
-# Managing secrets when deploying your app
+# アプリデプロイ時のシークレット管理
 
-If you are connecting to data sources or external services, you will likely be handling secret information like credentials or keys. Secret information should be stored and transmitted in a secure manner. When you deploy your app, ensure that you understand your platform's features and mechanisms for handling secrets so you can follow best practice.
+データソースや外部サービスに接続する場合、資格情報やキーのようなシークレット情報を扱うことが一般的です。シークレット情報は、安全に保存および送信する必要があります。アプリをデプロイする際には、プラットフォームが提供する機能やシークレットを扱うための仕組みを理解し、ベストプラクティスに従うようにしてください。
 
-Avoid saving secrets directly in your code and keep `.gitignore` updated to prevent accidentally committing a local secret to your repository. For helpful reminders, see [Security reminders](/develop/concepts/connections/security-reminders).
+シークレットを直接コードに保存することは避け、`.gitignore` を更新して、ローカルのシークレットを誤ってリポジトリにコミットしないようにしてください。便利なリマインダーについては、[セキュリティのリマインダー](/develop/concepts/connections/security-reminders) を参照してください。
 
-If you are using Streamlit Community Cloud, [Secrets management](/deploy/streamlit-community-cloud/deploy-your-app/secrets-management) allows you save environment variables and store secrets outside of your code. If you are using another platform designed for Streamlit, check if they have a built-in mechanism for working with secrets. In some cases, they may even support `st.secrets` or securely uploading your `secrets.toml` file.
+Streamlit Community Cloud を使用している場合、[シークレット管理](/deploy/streamlit-community-cloud/deploy-your-app/secrets-management) を活用することで、環境変数を保存し、コード外でシークレットを管理することができます。Streamlit 用に設計された他のプラットフォームを使用している場合、それらがシークレットを扱うための組み込み機能を提供しているか確認してください。場合によっては、`st.secrets` をサポートしたり、`secrets.toml` ファイルを安全にアップロードする機能を備えていることもあります。
 
-For information about using `st.connection` with environment variables, see [Global secrets, managing multiple apps and multiple data stores](/develop/concepts/connections/connecting-to-data#global-secrets-managing-multiple-apps-and-multiple-data-stores).
+環境変数を使用して `st.connection` を活用する方法については、[グローバルシークレット、複数のアプリおよびデータストアの管理](/develop/concepts/connections/connecting-to-data#global-secrets-managing-multiple-apps-and-multiple-data-stores) をご覧ください。
