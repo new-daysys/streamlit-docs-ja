@@ -3,27 +3,15 @@ title: Deployment concepts
 slug: /deploy/concepts
 ---
 
-# Deployment concepts
+# デプロイメントの基本概念
 
-Learn the fundamental concepts of app deployment. There are three main processes involved in deploying apps.
+アプリをデプロイするための基本概念を学びましょう。デプロイには主に以下の3つのプロセスが関わります。
 
-- Install Python, Streamlit, and other dependencies in your deployment environment.
-- Securely handle your secrets and private information.
-- Remote start your app (`streamlit run`).
+1. デプロイ環境にPython、Streamlit、その他の依存関係をインストールする。
+2. シークレットや機密情報を安全に管理する。
+3. アプリをリモートで起動する（`streamlit run`）。
 
-If you're using Streamlit Community Cloud, we'll do most of the work for you!
+Streamlit Community Cloudを利用する場合、これらの多くの作業は自動的に処理されます！
 
-<InlineCalloutContainer>
-    <InlineCallout
-        color="lightBlue-70"
-        icon="build_circle"
-        bold="Dependencies."
-        href="/deploy/concepts/dependencies"
-    >Understand the basics of configuring your deployment environment.</InlineCallout>
-    <InlineCallout
-        color="lightBlue-70"
-        icon="password"
-        bold="Secrets."
-        href="/deploy/concepts/secrets"
-    >Understand the basics of secret management.</InlineCallout>
-</InlineCalloutContainer>
+- [**Dependencies.**](/deploy/concepts/dependencies) デプロイ環境の設定に関する基本を理解する。
+- [**Secrets.**](/deploy/concepts/secrets) シークレット管理の基本を理解する。
