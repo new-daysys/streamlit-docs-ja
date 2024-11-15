@@ -11,23 +11,18 @@ Streamlit Community Cloud を使用すると、Streamlit アプリを無料で�
 
 [Community Cloud クイックスタート](/deploy/streamlit-community-cloud/get-started/quickstart) に進むと、アカウントの作成、サンプルアプリのデプロイ、および GitHub Codespaces を使用したアプリの編集をすばやく学べます。まだ最初の Streamlit アプリを作成していない場合は、[Streamlit のはじめ方](/get-started) をご覧ください。
 
-### [はじめる](./get-started)
+### ▶️[はじめに](./get-started)
+Streamlit Community Cloud アカウントの作成方法と概要について学びましょう。
 
-Streamlit Community Cloud アカウントとその作成方法について学びましょう。
+### ✈️[アプリをデプロイ](./deploy-your-app)
+アプリのデプロイ手順をステップバイステップでガイドします。
 
-### [アプリをデプロイする](./deploy-your-app)
+### ⚙️[アプリを管理](./manage-your-app)
+ログの確認、アプリの再起動、お気に入り設定などが可能。GitHub Codespaces を使ってクラウドでアプリを編集することもできます。
 
-アプリのデプロイ手順をステップバイステップで学びましょう。
+### 📤[アプリを共有](./share-your-app)
+アプリの共有や埋め込み方法をご紹介します。
 
-### [アプリを管理する](./manage-your-app)
+### 🛠️[アカウントを管理](./manage-your-account)
+メールアドレスの更新、接続の管理、またはアカウントの削除方法を確認できます。
 
-ログのアクセス、アプリの再起動、お気に入りの設定などを行い、GitHub コードスペースでクラウド内のアプリを編集しましょう。
-
-### [アプリを共有する](./share-your-app)
-
-アプリを共有または埋め込みます。
-
-### [アカウントを管理する](./manage-your-account)
-
-メールアドレスの更新、接続の管理、アカウントの削除などを行います。
-</InlineCalloutContainer>
